@@ -1025,6 +1025,10 @@
         gap: 16px;
       }
       
+      .print-fee-section > div:first-child {
+        grid-template-columns: 1fr;
+      }
+      
       .card {
         padding: 24px;
       }
@@ -1172,6 +1176,99 @@
       }
     }
 
+    @media (max-width: 768px) {
+      .quote-template-card {
+        margin: 0 -10px;
+        width: calc(100% + 20px);
+        border-radius: 16px;
+      }
+      
+      .quote-header {
+        padding: 20px 24px !important;
+      }
+      
+      .quote-title-badge {
+        font-size: 1.4rem !important;
+        padding: 10px 20px !important;
+      }
+      
+      .quote-subtitle {
+        font-size: 0.85rem !important;
+        margin-top: 8px !important;
+      }
+      
+      .quote-body {
+        padding: 20px 20px 16px !important;
+      }
+      
+      .quote-info-table {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+      
+      .quote-info-row {
+        padding: 10px 12px !important;
+        font-size: 0.85rem !important;
+      }
+      
+      .quote-price-highlight {
+        padding: 20px 16px !important;
+        margin: 16px 0 !important;
+        border-radius: 12px !important;
+      }
+      
+      .price-item {
+        padding: 12px 0 !important;
+      }
+      
+      .price-value {
+        font-size: 2rem !important;
+      }
+      
+      .price-label {
+        font-size: 0.85rem !important;
+      }
+      
+      .price-desc {
+        font-size: 0.75rem !important;
+        margin-top: 4px !important;
+      }
+      
+      .custom-notes {
+        margin-top: 16px !important;
+        padding: 16px !important;
+      }
+      
+      .notes-title {
+        font-size: 0.95rem !important;
+        margin-bottom: 12px !important;
+      }
+      
+      .note-item {
+        padding: 6px 0 !important;
+        font-size: 0.8rem !important;
+        line-height: 1.6 !important;
+      }
+      
+      .quote-footer {
+        padding: 16px 24px !important;
+      }
+      
+      .quote-footer-brand {
+        font-size: 1rem !important;
+      }
+      
+      .quote-footer-contact {
+        font-size: 0.8rem !important;
+        margin-top: 6px !important;
+      }
+      
+      .quote-footer-disclaimer {
+        font-size: 0.7rem !important;
+        margin-top: 10px !important;
+      }
+    }
+
     @media (max-width: 480px) {
       h1 {
         font-size: clamp(1.6rem, 8vw, 2rem);
@@ -1196,7 +1293,7 @@
       }
       
       .quote-price-highlight .price-value {
-        font-size: clamp(1.8rem, 10vw, 2.5rem);
+        font-size: clamp(1.6rem, 10vw, 2rem);
       }
       
       .price-table-btn {
@@ -1207,6 +1304,71 @@
       .container {
         width: 100% !important;
         padding: 20px 10px 40px !important;
+      }
+      
+      .quote-template-card {
+        margin: 0 -15px;
+        width: calc(100% + 30px);
+        border-radius: 12px;
+      }
+      
+      .quote-header {
+        padding: 16px 20px !important;
+      }
+      
+      .quote-title-badge {
+        font-size: 1.2rem !important;
+        padding: 8px 16px !important;
+      }
+      
+      .quote-body {
+        padding: 16px 16px 12px !important;
+      }
+      
+      .quote-info-row {
+        padding: 8px 10px !important;
+        font-size: 0.8rem !important;
+      }
+      
+      .quote-info-label {
+        min-width: 70px !important;
+      }
+      
+      .price-row-divider {
+        margin: 12px 0 !important;
+      }
+      
+      .custom-notes {
+        padding: 14px !important;
+      }
+      
+      .notes-title {
+        font-size: 0.9rem !important;
+      }
+      
+      .note-item {
+        font-size: 0.75rem !important;
+      }
+      
+      .quote-footer {
+        padding: 14px 20px !important;
+      }
+      
+      .quote-footer-brand {
+        font-size: 0.95rem !important;
+      }
+      
+      .quote-footer-contact {
+        font-size: 0.75rem !important;
+      }
+      
+      .quote-footer-disclaimer {
+        font-size: 0.65rem !important;
+      }
+      
+      .action-btn {
+        padding: 12px 16px !important;
+        font-size: 0.85rem !important;
       }
     }
 
@@ -1807,28 +1969,90 @@
     .checkbox-item {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 14px;
       cursor: pointer;
-      padding: 8px 12px;
-      border-radius: var(--radius-sm);
+      padding: 18px 22px;
+      border-radius: 14px;
+      transition: var(--transition-fast);
+      background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+      border: 3px solid #fed7aa;
+      position: relative;
+      overflow: hidden;
+      transform: scale(1);
+    }
+    
+    .checkbox-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: var(--accent-gradient);
+      opacity: 0;
       transition: var(--transition-fast);
     }
     
+    .checkbox-item:has(input:checked) {
+      border-color: #ea580c;
+      background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 50%, #fdba74 100%);
+      box-shadow: 0 8px 28px rgba(234, 88, 12, 0.35);
+      transform: scale(1.02);
+    }
+    
+    .checkbox-item:has(input:checked)::before {
+      opacity: 0.15;
+    }
+    
+    .checkbox-item:has(input:checked) label {
+      color: #c2410c;
+      font-weight: 800;
+      font-size: 1.05rem;
+    }
+    
+    .checkbox-item:has(input:checked)::after {
+      content: '✓';
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      background: #ea580c;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.4);
+    }
+    
     .checkbox-item:hover {
-      background: var(--card);
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 10px 30px rgba(234, 88, 12, 0.3);
+      border-color: #f97316;
     }
     
     .checkbox-item input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--accent);
+      width: 26px;
+      height: 26px;
+      accent-color: #ea580c;
       cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
     }
     
     .checkbox-item label {
       cursor: pointer;
-      font-weight: 500;
+      font-weight: 700;
       user-select: none;
+      position: relative;
+      z-index: 1;
+      font-size: 1rem;
+      color: #9a3412;
     }
     
     /* 增强打印样式 */
@@ -2058,7 +2282,13 @@
                 </select>
               </div>
 
-              <div class="form-group form-group-full">
+              <div class="form-group">
+                <label>详细收货地址 <span style="color:#999;font-weight:normal">(优先使用)</span></label>
+                <input type="text" id="kd-address" placeholder="请输入详细收货地址">
+                <p class="input-hint">优先使用手动输入地址</p>
+              </div>
+
+              <div class="form-group">
                 <label>材质</label>
                 <select id="kd-material">
                   <option value="huiliao">回料-灰黑色</option>
@@ -2100,9 +2330,15 @@
             </div>
 
             <div class="print-fee-section">
-              <div class="checkbox-group">
-                <input type="checkbox" id="kd-print" checked>
-                <label for="kd-print" style="margin-bottom:0">需要印刷</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="kd-print" checked>
+                  <label for="kd-print">需要印刷</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="kd-vat" onchange="triggerRealTimeCalc()">
+                  <label for="kd-vat">💰 13个点增值税发票</label>
+                </div>
               </div>
               
               <div id="kd-print-options">
@@ -2176,6 +2412,12 @@
               </div>
 
               <div class="form-group">
+                <label>详细收货地址 <span style="color:#999;font-weight:normal">(优先使用)</span></label>
+                <input type="text" id="qp-address" placeholder="请输入详细收货地址">
+                <p class="input-hint">优先使用手动输入地址</p>
+              </div>
+
+              <div class="form-group">
                 <label>自定义材质名称 <span style="color:#999;font-weight:normal">(可选)</span></label>
                 <input type="text" id="qp-custom-material" placeholder="如：加厚气泡膜等">
                 <p class="input-hint">填写后显示此名称</p>
@@ -2191,9 +2433,15 @@
             </div>
 
             <div class="print-fee-section">
-              <div class="checkbox-group">
-                <input type="checkbox" id="qp-print">
-                <label for="qp-print" style="margin-bottom:0">需要印刷</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="qp-print">
+                  <label for="qp-print">需要印刷</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="qp-vat" onchange="triggerRealTimeCalc()">
+                  <label for="qp-vat">💰 13个点增值税发票</label>
+                </div>
               </div>
               
               <div id="qp-print-options" class="hidden">
@@ -2255,7 +2503,13 @@
                 </select>
               </div>
 
-              <div class="form-group form-group-full">
+              <div class="form-group">
+                <label>详细收货地址 <span style="color:#999;font-weight:normal">(优先使用)</span></label>
+                <input type="text" id="lj-address" placeholder="请输入详细收货地址">
+                <p class="input-hint">优先使用手动输入地址</p>
+              </div>
+
+              <div class="form-group">
                 <label>材质</label>
                 <select id="lj-material">
                   <option value="gaoya_huiliao">高压回料</option>
@@ -2289,9 +2543,15 @@
             </div>
 
             <div class="print-fee-section">
-              <div class="checkbox-group">
-                <input type="checkbox" id="lj-print" checked>
-                <label for="lj-print" style="margin-bottom:0">需要印刷</label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="lj-print" checked>
+                  <label for="lj-print">需要印刷</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="lj-vat" onchange="triggerRealTimeCalc()">
+                  <label for="lj-vat">💰 13个点增值税发票</label>
+                </div>
               </div>
               
               <div id="lj-print-options">
@@ -2373,7 +2633,7 @@
     <footer>
       <div class="version-badge">
         <span class="version-icon">🚀</span>
-        <span class="version-text">版本 2.1.0</span>
+        <span class="version-text">版本 2.2.0</span>
         <span class="version-date">2026.05</span>
       </div>
       <p class="footer-note">仅供参考 · 实际价格以最终报价为准</p>
@@ -2694,12 +2954,12 @@
     }
 
     const realtimeInputs = [
-      'kd-width', 'kd-length', 'kd-seal', 'kd-thickness', 'kd-material', 'kd-region',
-      'kd-print', 'kd-print-type', 'kd-colors', 'kd-plate-type', 'kd-quantity',
-      'qp-width', 'qp-length', 'qp-seal', 'qp-weight', 'qp-region',
-      'qp-print', 'qp-print-type', 'qp-colors', 'qp-quantity',
-      'lj-width', 'lj-length', 'lj-thickness', 'lj-material', 'lj-region',
-      'lj-print', 'lj-colors', 'lj-shouti', 'lj-quantity'
+      'kd-width', 'kd-length', 'kd-seal', 'kd-thickness', 'kd-material', 'kd-region', 'kd-address',
+      'kd-print', 'kd-print-type', 'kd-colors', 'kd-plate-type', 'kd-quantity', 'kd-vat',
+      'qp-width', 'qp-length', 'qp-seal', 'qp-weight', 'qp-region', 'qp-address',
+      'qp-print', 'qp-print-type', 'qp-colors', 'qp-quantity', 'qp-vat',
+      'lj-width', 'lj-length', 'lj-thickness', 'lj-material', 'lj-region', 'lj-address',
+      'lj-print', 'lj-colors', 'lj-shouti', 'lj-quantity', 'lj-vat'
     ];
 
     realtimeInputs.forEach(id => {
@@ -2867,7 +3127,16 @@
         
         let printFee = 0;
         if (needPrint) {
-          const plateL = plateType === 'pian' ? (l * 2 + seal + 10 > 85 ? 102 : 85) : (l + seal + 10 > 62 ? 72 : 62);
+          // 片料版长：长度×2+封口+10，选择最接近的大一号固定版长（85→92→102→112→122→135→140）
+          const rawPlateL = plateType === 'pian' ? l * 2 + seal + 10 : l + seal + 10;
+          const plateLengths = plateType === 'pian' ? PLATE_LENGTHS_PIAN : PLATE_LENGTHS_TONG;
+          let plateL = plateLengths[plateLengths.length - 1].length;
+          for (const pl of plateLengths) {
+            if (rawPlateL <= pl.length) {
+              plateL = pl.length;
+              break;
+            }
+          }
           const startPricePerColor = plateL >= 85 ? 250 : 200;
           
           if (printType === 'full') {
@@ -2937,7 +3206,8 @@
             plate: needPrint ? plateFee : null,
             plateFormula: needPrint ? plateFormula : null,
             printFee: printFee,
-            bagType: 'kuaidi'
+            bagType: 'kuaidi',
+            needPrint: needPrint
           }
         });
       } catch (err) {
@@ -3041,9 +3311,18 @@
       let plateFee = 0;
       let plateFormula = '';
       if (needPrint) {
+        // 气泡袋版长：长度×2+封口+10，选择最接近的大一号固定版长（85→92→102→112→122→135→140）
         const rawPlateL = l * 2 + seal + 10;
-        const plateL = rawPlateL <= 85 ? 85 : (rawPlateL <= 102 ? 102 : 122);
-        const minWidth = plateL === 85 ? 35 : (plateL === 102 ? 35 : 42);
+        let plateL = PLATE_LENGTHS_PIAN[PLATE_LENGTHS_PIAN.length - 1].length;
+        let plateInfo = PLATE_LENGTHS_PIAN[PLATE_LENGTHS_PIAN.length - 1];
+        for (const pl of PLATE_LENGTHS_PIAN) {
+          if (rawPlateL <= pl.length) {
+            plateL = pl.length;
+            plateInfo = pl;
+            break;
+          }
+        }
+        const minWidth = plateInfo.minWidth || 35;
         let plateZhou = w + 0.2;
         if (plateZhou < minWidth) plateZhou = plateZhou * 2;
         const singlePlateFee = Math.round(plateL * plateZhou * 0.11);
@@ -3052,8 +3331,8 @@
 
         steps.push({
           title: '版费计算',
-          formula: `版长 = 长×2 + 封口 + 10 = ${rawPlateL} → 标准版长 ${plateL}`,
-          result: `单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colors}色版费 = ${singlePlateFee} × ${colors} = <strong>¥${plateFee.toLocaleString()}</strong>`
+          formula: `版长 = 长×2 + 封口 + 10 = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）`,
+          result: `版周 = ${plateZhou.toFixed(1)} cm\n单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colors}色版费 = ${singlePlateFee} × ${colors} = <strong>¥${plateFee.toLocaleString()}</strong>`
         });
       }
 
@@ -3133,6 +3412,7 @@
           plateFormula: needPrint ? plateFormula : null,
           printFee: printFee,
           bagType: 'qipao',
+          needPrint: needPrint,
           // 气泡袋特有
           boxQty: boxQty,
           boxCount: boxCount,
@@ -3281,7 +3561,8 @@
           plate: needPrint ? plateFee : null,
           plateFormula: needPrint ? plateFormula : null,
           printFee: 0, // 连卷袋印刷费暂不计入单价
-          bagType: 'lianjuan'
+          bagType: 'lianjuan',
+          needPrint: needPrint
         },
         note: extraNote || `起订量：500kg(${moq500.toLocaleString()}个) 或 1000kg(${moq1000.toLocaleString()}个)`
       });
@@ -3293,7 +3574,7 @@
 
     // ===== 精确金额计算：用户输入数量优先，无输入用起订量 =====
     // 重要：严格按照报价单显示的3位小数单价计算，消除计算误差
-    function calculateMoney(pricePerUnit, printFee, userQty, moq, plateFee) {
+    function calculateMoney(pricePerUnit, printFee, userQty, moq, plateFee, withVat) {
       function round1(num) {
         return Math.round(num * 10) / 10;
       }
@@ -3302,9 +3583,13 @@
         return Math.round(num * 1000) / 1000;
       }
       
+      function calcVat(num) {
+        return withVat ? round1(num / 0.92) : num;
+      }
+      
       // ✅ 关键修正：先将单价保留3位小数（与报价单显示完全一致），再进行计算
-      const displayPrice = round3(pricePerUnit);
-      const displayPrintFee = round3(printFee);
+      const displayPrice = withVat ? round3(pricePerUnit / 0.92) : round3(pricePerUnit);
+      const displayPrintFee = withVat ? round3(printFee / 0.92) : round3(printFee);
       
       const qtyForCalc = userQty && userQty > 0 ? Math.round(userQty) : Math.round(moq);
       const qtySource = userQty && userQty > 0 ? '用户输入' : '默认起订量';
@@ -3314,7 +3599,7 @@
       const printFeeTotal = displayPrintFee * qtyForCalc;
       const subTotal = bagFeeTotal + printFeeTotal;
       const halfSubTotal = subTotal * 0.5;
-      const plateFeeNum = plateFee || 0;
+      const plateFeeNum = calcVat(plateFee || 0);
       
       const deposit = halfSubTotal + plateFeeNum;
       const totalAmount = subTotal + plateFeeNum;
@@ -3331,7 +3616,8 @@
         totalAmount: round1(totalAmount),
         deposit: round1(deposit),
         qtyForCalc: qtyForCalc,
-        qtySource: qtySource
+        qtySource: qtySource,
+        withVat: withVat
       };
     }
 
@@ -3355,7 +3641,25 @@
       // 计算金额（用户输入数量优先，无输入用起订量）
       const plateFee = q.plate || 0;
       const printFee = q.printFee || 0;
-      const money = calculateMoney(q.pricePerUnit, printFee, q.quantity, q.moq, plateFee);
+      
+      // 获取当前产品类型对应的专票勾选状态
+      let withVat = false;
+      let customAddress = '';
+      if (q.bagType === 'kuaidi') {
+        withVat = document.getElementById('kd-vat').checked;
+        customAddress = document.getElementById('kd-address').value.trim();
+      } else if (q.bagType === 'qipao') {
+        withVat = document.getElementById('qp-vat').checked;
+        customAddress = document.getElementById('qp-address').value.trim();
+      } else if (q.bagType === 'lianjuan') {
+        withVat = document.getElementById('lj-vat').checked;
+        customAddress = document.getElementById('lj-address').value.trim();
+      }
+      
+      const money = calculateMoney(q.pricePerUnit, printFee, q.quantity, q.moq, plateFee, withVat);
+      
+      // 优先使用用户手动输入的详细地址
+      q.displayRegion = customAddress || q.region;
 
       let col1Steps = '';
       let col2Steps = '';
@@ -3388,6 +3692,7 @@
           <div class="calc-result"><strong>✅ 计算规则说明</strong></div>
           <div class="calc-result">数量取值：用户输入优先，无输入则用起订量</div>
           <div class="calc-result">当前数量：<strong>${money.qtyForCalc.toLocaleString()} 个</strong>（${money.qtySource}）</div>
+          ${money.withVat ? `<div class="calc-result" style="background: #ffebee; padding: 8px; border-radius: 6px; margin-top: 8px;"><strong>🧾 增值税专票已启用：</strong>所有金额 ÷ 0.92，保留一位小数</div>` : ''}
           <div class="calc-result">已启用<strong>实时计算验证</strong></div>
         </div>
       `;
@@ -3445,6 +3750,10 @@
         return;
       }
       
+      // 专票标识
+      const vatLabel = money.withVat ? '<span style="display:inline-block;background:#d32f2f;color:white;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;margin-left:8px;vertical-align:middle;">含专票</span>' : '';
+      const vatPriceLabel = money.withVat ? '（专票价）' : '';
+      
       let quoteHTML = `
         <table class="quote-table">
           <tr>
@@ -3453,17 +3762,17 @@
           </tr>
           <tr>
             <td class="qt-label" style="font-size:1.05rem;">厚度</td><td class="qt-value" style="font-size:1.1rem;">${q.weight}</td>
-            <td class="qt-label" style="font-size:1.05rem;">收货地</td><td class="qt-value" style="font-size:1.1rem;">${q.region}</td>
+            <td class="qt-label" style="font-size:1.05rem;">收货地</td><td class="qt-value" style="font-size:1.1rem;">${q.displayRegion}</td>
           </tr>
           <tr>
             <td class="qt-label" style="font-size:1.05rem;"><strong>数量</strong></td><td class="qt-value" style="font-size:1.15rem;"><strong>${money.qtyForCalc.toLocaleString()} 个</strong></td>
-            <td class="qt-label" style="font-size:1.05rem;">印刷类型</td><td class="qt-value" style="font-size:1.1rem;">${q.print}</td>
+            <td class="qt-label" style="font-size:1.05rem;">印刷类型</td><td class="qt-value" style="font-size:1.1rem;">${q.print}${vatLabel}</td>
           </tr>
           ${q.plate ? `<tr>
-            <td class="qt-label" style="font-size:1.05rem;">版费</td><td class="qt-value" style="font-size:1.1rem;">${q.plateFormula}</td>
-            <td class="qt-label qt-price" style="font-size:1.15rem;">单价</td><td class="qt-value qt-price" style="font-size:1.5rem;">¥${money.unitPrice.toFixed(3)}/个</td>
+            <td class="qt-label" style="font-size:1.05rem;">版费${vatPriceLabel}</td><td class="qt-value" style="font-size:1.1rem;">¥${money.plateFee.toFixed(1)}</td>
+            <td class="qt-label qt-price" style="font-size:1.15rem;">单价${vatPriceLabel}</td><td class="qt-value qt-price" style="font-size:1.5rem;">¥${money.unitPrice.toFixed(3)}/个</td>
           </tr>` : `<tr>
-            <td class="qt-label qt-price" style="font-size:1.15rem;">单价</td><td class="qt-value qt-price" style="font-size:1.5rem;">¥${money.unitPrice.toFixed(3)}/个</td>
+            <td class="qt-label qt-price" style="font-size:1.15rem;">单价${vatPriceLabel}</td><td class="qt-value qt-price" style="font-size:1.5rem;">¥${money.unitPrice.toFixed(3)}/个</td>
             <td></td><td></td>
           </tr>`}
           <tr>
@@ -3485,12 +3794,29 @@
           <tr><td colspan="4" style="font-size:0.85rem;color:#888;text-align:center;padding-top:8px;">不含专票，国内包邮价格（保留1位小数）</td></tr>
       `;
       
-      // 气泡袋特有：装箱信息
+      // 预计出货时效
+      const deliveryTime = q.needPrint ? '12-15天左右' : '12天左右';
+      
+      // 气泡袋特有：装箱信息（两行布局）
       if (q.bagType === 'qipao' && q.boxQty) {
         quoteHTML += `
-          <tr><td class="qt-label">预计装箱数</td><td class="qt-value">${q.boxQty} 个/箱</td></tr>
-          <tr><td class="qt-label">预计箱数</td><td class="qt-value">${q.boxCount} 箱</td></tr>
-          <tr><td class="qt-label">预计方数</td><td class="qt-value">${q.boxVolume}</td></tr>
+          <tr>
+            <td class="qt-label">预计装箱数</td><td class="qt-value">${q.boxQty} 个/箱</td>
+            <td class="qt-label">预计箱数</td><td class="qt-value">${q.boxCount} 箱</td>
+          </tr>
+          <tr>
+            <td class="qt-label">预计方数</td><td class="qt-value">${q.boxVolume}</td>
+            <td class="qt-label" style="color:#2e7d32;">🚚 预计出货时效</td>
+            <td class="qt-value" style="color:#2e7d32;font-weight:700;">${deliveryTime}</td>
+          </tr>
+        `;
+      } else {
+        // 其他产品直接显示出货时效
+        quoteHTML += `
+          <tr>
+            <td class="qt-label" style="color:#2e7d32;">🚚 预计出货时效</td>
+            <td class="qt-value" style="color:#2e7d32;font-weight:700;" colspan="3">${deliveryTime}</td>
+          </tr>
         `;
       }
       
@@ -3554,6 +3880,8 @@
         return;
       }
       
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
       btn.innerHTML = '⏳ 正在生成图片...';
       btn.disabled = true;
       
@@ -3563,10 +3891,11 @@
       tempContainer.style.position = 'absolute';
       tempContainer.style.left = '-9999px';
       tempContainer.style.top = '0';
-      tempContainer.style.width = quoteCard.offsetWidth + 'px';
+      tempContainer.style.width = isMobile ? '600px' : (quoteCard.offsetWidth + 'px');
       tempContainer.style.transform = 'none';
       tempContainer.style.animation = 'none';
       tempContainer.style.opacity = '1';
+      tempContainer.style.zoom = '1';
       document.body.appendChild(tempContainer);
       
       const tempHeader = tempContainer.querySelector('.quote-header');
@@ -3578,30 +3907,59 @@
       
       setTimeout(() => {
         html2canvas(tempContainer, {
-          scale: 2,
+          scale: isMobile ? 1.5 : 2,
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
-          logging: false
+          logging: false,
+          ignoreElements: function(el) {
+            return el.classList && el.classList.contains('no-print');
+          },
+          onclone: function(clonedDoc) {
+            const clonedQuote = clonedDoc.querySelector('.quote-template-card');
+            if (clonedQuote) {
+              clonedQuote.style.transform = 'none';
+              clonedQuote.style.animation = 'none';
+            }
+          }
         }).then(canvas => {
           document.body.removeChild(tempContainer);
           
           canvas.toBlob(blob => {
             try {
-              const item = new ClipboardItem({ 'image/png': blob });
-              navigator.clipboard.write([item]).then(() => {
-                btn.innerHTML = '✅ 图片已复制';
+              if (isMobile) {
+                downloadCanvasAsImage(canvas, blob);
+                btn.innerHTML = '✅ 图片已保存';
                 setTimeout(() => {
                   btn.innerHTML = originalText;
                   btn.disabled = false;
                 }, 2000);
-              }).catch(err => {
-                console.error('复制失败:', err);
-                fallbackCopyText();
-              });
+              } else {
+                const item = new ClipboardItem({ 'image/png': blob });
+                navigator.clipboard.write([item]).then(() => {
+                  btn.innerHTML = '✅ 图片已复制';
+                  setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                  }, 2000);
+                }).catch(err => {
+                  console.error('复制失败:', err);
+                  downloadCanvasAsImage(canvas, blob);
+                  btn.innerHTML = '✅ 图片已保存';
+                  setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                  }, 2000);
+                });
+              }
             } catch (e) {
-              console.error('ClipboardItem error:', e);
-              fallbackCopyText();
+              console.error('Clipboard error:', e);
+              downloadCanvasAsImage(canvas, blob);
+              btn.innerHTML = '✅ 图片已保存';
+              setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+              }, 2000);
             }
           }, 'image/png', 1.0);
         }).catch(err => {
@@ -3611,21 +3969,35 @@
           }
           fallbackCopyText();
         });
-      }, 200);
+      }, 300);
+      
+      function downloadCanvasAsImage(canvas, blob) {
+        const link = document.createElement('a');
+        link.download = '曦光包装报价单.png';
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+      }
       
       function fallbackCopyText() {
         const fullQuote = quoteCard.innerText;
-        navigator.clipboard.writeText(fullQuote).then(() => {
-          btn.innerHTML = '✅ 文本已复制';
-          setTimeout(() => {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(fullQuote).then(() => {
+            btn.innerHTML = '✅ 文本已复制';
+            setTimeout(() => {
+              btn.innerHTML = originalText;
+              btn.disabled = false;
+            }, 2000);
+          }).catch(() => {
+            alert('复制失败，请截图或保存图片');
             btn.innerHTML = originalText;
             btn.disabled = false;
-          }, 2000);
-        }).catch(() => {
-          alert('复制失败，请手动截图');
+          });
+        } else {
+          alert('请使用手机截图功能保存报价单');
           btn.innerHTML = originalText;
           btn.disabled = false;
-        });
+        }
       }
     }
 
