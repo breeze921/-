@@ -1011,6 +1011,20 @@
         padding: 32px 16px;
       }
       
+      .quote-table .qt-label {
+        width: 30% !important;
+        font-size: 0.9rem !important;
+      }
+      
+      .quote-table .qt-value {
+        width: 70% !important;
+        font-size: 0.95rem !important;
+      }
+      
+      .quote-table .qt-price.qt-value {
+        font-size: 1.3rem !important;
+      }
+      
       h1 {
         font-size: 2.2rem;
       }
@@ -1270,6 +1284,42 @@
     }
 
     @media (max-width: 480px) {
+      .quote-table tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border-bottom: 1px solid #eee;
+      }
+      
+      .quote-table td {
+        display: block;
+        width: 100% !important;
+        padding: 8px 12px !important;
+        border: none;
+      }
+      
+      .quote-table .qt-label {
+        font-size: 0.8rem !important;
+        background: #f8f9fa;
+      }
+      
+      .quote-table .qt-value {
+        font-size: 0.9rem !important;
+        background: white;
+      }
+      
+      .quote-table .qt-price.qt-value {
+        font-size: 1.2rem !important;
+      }
+      
+      .quote-table tr:nth-child(even) {
+        background: white;
+      }
+      
+      .quote-table [colspan] {
+        grid-column: 1 / -1;
+        text-align: center;
+      }
+      
       h1 {
         font-size: clamp(1.6rem, 8vw, 2rem);
       }
@@ -2256,13 +2306,13 @@
                   <input type="number" id="kd-width" placeholder="宽" min="10" max="90" step="1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="kd-length" placeholder="长" min="28" max="135" step="1">
+                  <input type="number" id="kd-length" placeholder="长" min="24" max="135" step="1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
                   <input type="number" id="kd-seal" placeholder="封口" value="4" min="3" max="8" step="1">
                 </div>
               </div>
-              <p class="input-hint">宽度10-90cm, 长度28-135cm</p>
+              <p class="input-hint">宽度10-90cm, 长度24-135cm</p>
             </div>
 
             <div class="form-grid">
@@ -2382,15 +2432,16 @@
               <label>尺寸 (宽×长+封口)</label>
               <div class="input-row">
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="qp-width" placeholder="宽" min="10" max="90" step="1">
+                  <input type="number" id="qp-width" placeholder="宽" min="10" max="75" step="1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="qp-length" placeholder="长" min="10" max="70" step="1">
+                  <input type="number" id="qp-length" placeholder="长" min="50" max="145" step="1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
                   <input type="number" id="qp-seal" placeholder="封口" value="4" min="4" max="8" step="1">
                 </div>
               </div>
+              <p class="input-hint">宽度10-75cm, 长度50-145cm（长×2+封口≤145cm）</p>
             </div>
 
             <div class="form-grid">
@@ -2477,13 +2528,13 @@
               <label>尺寸 (宽×长，无封口)</label>
               <div class="input-row-2">
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="lj-width" placeholder="宽" min="10" max="90" step="1">
+                  <input type="number" id="lj-width" placeholder="宽" min="14" max="90" step="1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="lj-length" placeholder="长" min="10" max="200" step="1">
+                  <input type="number" id="lj-length" placeholder="长" min="18" max="200" step="1">
                 </div>
               </div>
-              <p class="input-hint">连卷袋没有封口，只有宽×长</p>
+              <p class="input-hint">连卷袋没有封口，只有宽×长；宽度≥14cm，长度≥18cm</p>
             </div>
 
             <div class="form-grid">
@@ -2633,7 +2684,7 @@
     <footer>
       <div class="version-badge">
         <span class="version-icon">🚀</span>
-        <span class="version-text">版本 2.2.0</span>
+        <span class="version-text">版本 2.3.0</span>
         <span class="version-date">2026.05</span>
       </div>
       <p class="footer-note">仅供参考 · 实际价格以最终报价为准</p>
@@ -3079,17 +3130,58 @@
         });
 
         // 报价单用吨位价上进行计算
-        const pricePerUnit = pricePerUnitUpper;
-        steps.push({
-          title: '报价单计算单价',
-          formula: `使用吨位价上计算（大订单可议吨位价下）`,
-          result: `<strong>¥${pricePerUnit.toFixed(3)}/个</strong>`
-        });
+        let basePrice = pricePerUnitUpper;
+        
+        // ===== 损耗计算 =====
+        let lossRate = 0;
+        let lossDescription = [];
+        let weightLossKg = 0;
+        
+        // 1. 起订量损耗：150kg起订
+        const orderWeight = (quantity || moq) * weight / 1000;
+        if (orderWeight < 80) {
+          weightLossKg = 30;
+          lossDescription.push(`不满80kg，按30kg计算损耗`);
+        } else if (orderWeight < 140) {
+          weightLossKg = 15;
+          lossDescription.push(`80kg≤重量<140kg，按15kg计算损耗`);
+        }
+        
+        // 2. 特殊尺寸损耗：长度<35cm或≥90cm，宽度<15cm或≥80cm，加5-10%损耗
+        let sizeLossRate = 0;
+        if (l < 35 || l >= 90 || w < 15 || w >= 80) {
+          sizeLossRate = 0.08;  // 取中间值8%作为标准损耗率
+          lossDescription.push(`特殊尺寸（长：${l}cm，宽：${w}cm），加8%尺寸损耗`);
+        }
+        
+        // 计算重量损耗对应的单价影响
+        let totalPrice = basePrice;
+        if (weightLossKg > 0 || sizeLossRate > 0) {
+          // 重量损耗：按吨位价计算损耗成本，分摊到每个袋子
+          const lossCostPerBag = (weightLossKg * priceUpper) / (quantity || moq) / 1000;
+          // 尺寸损耗：直接按比例增加单价
+          totalPrice = (basePrice + lossCostPerBag) * (1 + sizeLossRate);
+          
+          steps.push({
+            title: '损耗费用计算',
+            formula: lossDescription.join('；'),
+            result: `基础单价：¥${basePrice.toFixed(3)}/个\n重量损耗成本：¥${lossCostPerBag.toFixed(3)}/个\n尺寸损耗率：${(sizeLossRate * 100).toFixed(0)}%\n<strong>最终单价 = ¥${totalPrice.toFixed(3)}/个</strong>`
+          });
+        } else {
+          lossDescription.push('常规尺寸+满足起订量，无额外损耗');
+          steps.push({
+            title: '损耗费用计算',
+            formula: `常规尺寸：长度35-90cm，宽度15-80cm；重量≥140kg`,
+            result: `<strong>无额外损耗</strong>，单价 = ¥${totalPrice.toFixed(3)}/个`
+          });
+        }
+        
+        const pricePerUnit = totalPrice;
 
         steps.push({
           title: '数量取值规则说明',
           formula: `用户输入数量优先，无输入则使用起订量`,
-          result: `${quantity ? `用户输入数量: <strong>${quantity.toLocaleString()} 个</strong>（用于所有计算）` : `用户未输入数量，使用起订量: <strong>${moq.toLocaleString()} 个</strong>（用于所有计算）`}`
+          result: `${quantity ? `用户输入数量: <strong>${quantity.toLocaleString()} 个</strong>（${orderWeight.toFixed(1)}kg）` : `用户未输入数量，使用起订量: <strong>${moq.toLocaleString()} 个</strong>（${(moq * weight / 1000).toFixed(1)}kg）`}`
         });
 
         // 版费
@@ -3972,11 +4064,18 @@
       }, 300);
       
       function downloadCanvasAsImage(canvas, blob) {
-        const link = document.createElement('a');
-        link.download = '曦光包装报价单.png';
-        link.href = URL.createObjectURL(blob);
-        link.click();
-        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+        if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
+          const win = window.open();
+          win.document.write(`<img src="${canvas.toDataURL('image/png')}" style="max-width: 100%;">`);
+          win.document.title = '曦光包装报价单';
+          alert('📱 请长按图片保存到相册');
+        } else {
+          const link = document.createElement('a');
+          link.download = '曦光包装报价单.png';
+          link.href = URL.createObjectURL(blob);
+          link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+          setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+        }
       }
       
       function fallbackCopyText() {
