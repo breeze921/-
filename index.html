@@ -2200,6 +2200,7 @@
       .action-buttons-bar,
       .options-panel,
       #priceTableSection,
+      #paramTableSection,
       .no-print {
         display: none !important;
       }
@@ -2293,7 +2294,7 @@
       transform: translateY(-2px);
       box-shadow: 0 12px 28px rgba(99, 102, 241, 0.35);
     }
-    #priceTableSection {
+    #priceTableSection, #paramTableSection {
       background: var(--card-gradient);
       border-radius: var(--radius-xl);
       padding: 36px;
@@ -2321,42 +2322,62 @@
       margin-bottom: 20px;
       padding-bottom: 12px;
       border-bottom: 3px solid;
-      border-image: var(--accent-gradient) 1;
+      border-image: linear-gradient(90deg, #ea580c, #f97316) 1;
       display: flex;
       align-items: center;
       gap: 10px;
+      text-align: center;
+      justify-content: center;
     }
     .price-lookup-table {
       width: 100%;
+      max-width: 900px;
+      margin: 0 auto 28px auto;
       border-collapse: collapse;
       font-size: 0.85rem;
-      margin-bottom: 28px;
       border-radius: var(--radius);
       overflow: hidden;
-      box-shadow: var(--shadow);
-      background: rgba(15, 23, 42, 0.4);
-      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(234, 88, 12, 0.15);
+      background: linear-gradient(180deg, #ffffff 0%, #fffbf7 100%);
+      border: 2px solid #fed7aa;
     }
     .price-lookup-table th, .price-lookup-table td {
-      border: 1px solid var(--border);
-      padding: 14px 10px;
+      border: 1px solid #fcd9b6;
+      padding: 12px 16px;
       text-align: center;
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
     }
     .price-lookup-table th {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(99, 102, 241, 0.3) 100%);
+      background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
       font-weight: 700;
       color: white;
-      text-transform: uppercase;
-      font-size: 0.75rem;
-      letter-spacing: 0.05em;
+      font-size: 0.8rem;
+      letter-spacing: 0.03em;
     }
     .price-lookup-table td:first-child {
-      text-align: left;
+      text-align: center;
       font-weight: 600;
+      background: #fff7ed;
+      color: #333;
+    }
+    .price-lookup-table td {
+      background: white;
+      color: #444;
     }
     .price-lookup-table tbody tr:hover td {
-      background: rgba(59, 130, 246, 0.1);
+      background: #fff7ed;
+    }
+    .price-lookup-table .highlight-cell {
+      background: #fed7aa !important;
+      font-weight: 700;
+      color: #c2410c !important;
+      border: 2px solid #f97316 !important;
+    }
+    .price-lookup-table .highlight-row td {
+      background: #fff1e6;
+    }
+    .price-lookup-table .highlight-row .highlight-cell {
+      background: #fed7aa !important;
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -2417,6 +2438,12 @@
                   <option value="1">一区 (江浙沪皖)</option>
                   <option value="2">二区 (其他地区)</option>
                 </select>
+              </div>
+
+              <div class="form-group">
+                <label>自定义吨位价 <span style="color:#999;font-weight:normal">(元/吨，可选)</span></label>
+                <input type="number" id="kd-custom-price" placeholder="如：12000" min="5000" max="50000" step="100">
+                <p class="input-hint">输入后将使用此吨位价计算，优先于地区选择</p>
               </div>
 
               <div class="form-group">
@@ -2550,6 +2577,12 @@
               </div>
 
               <div class="form-group">
+                <label>自定义吨位价 <span style="color:#999;font-weight:normal">(元/吨，可选)</span></label>
+                <input type="number" id="qp-custom-price" placeholder="如：22000" min="10000" max="50000" step="100">
+                <p class="input-hint">输入后将使用此吨位价计算，优先于地区选择</p>
+              </div>
+
+              <div class="form-group">
                 <label>详细收货地址 <span style="color:#999;font-weight:normal">(优先使用)</span></label>
                 <input type="text" id="qp-address" placeholder="请输入详细收货地址">
                 <p class="input-hint">优先使用手动输入地址</p>
@@ -2642,6 +2675,12 @@
               </div>
 
               <div class="form-group">
+                <label>自定义吨位价 <span style="color:#999;font-weight:normal">(元/吨，可选)</span></label>
+                <input type="number" id="lj-custom-price" placeholder="如：12000" min="5000" max="50000" step="100">
+                <p class="input-hint">输入后将使用此吨位价计算，优先于地区选择</p>
+              </div>
+
+              <div class="form-group">
                 <label>详细收货地址 <span style="color:#999;font-weight:normal">(优先使用)</span></label>
                 <input type="text" id="lj-address" placeholder="请输入详细收货地址">
                 <p class="input-hint">优先使用手动输入地址</p>
@@ -2726,7 +2765,10 @@
             <span class="btn-text">📊 计算报价</span>
           </button>
           
-          <button class="price-table-btn no-print" onclick="togglePriceTable()" style="margin-top: 16px; margin-bottom: 0;">📊 查看吨位价表</button>
+          <div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap;">
+            <button class="price-table-btn no-print" onclick="togglePriceTable()">📊 查看吨位价表</button>
+            <button class="price-table-btn no-print" onclick="toggleParamTable()">📋 查看印刷版费参数</button>
+          </div>
         </form>
       </div>
     </div>
@@ -2771,7 +2813,7 @@
     <footer>
       <div class="version-badge">
         <span class="version-icon">🚀</span>
-        <span class="version-text">版本 2.4.0</span>
+        <span class="version-text">版本 2.5.0</span>
         <span class="version-date">2026.05</span>
       </div>
       <p class="footer-note">仅供参考 · 实际价格以最终报价为准</p>
@@ -2922,6 +2964,88 @@
       { length: 115, minWidth: 38 },
       { length: 122, minWidth: 42 }
     ];
+
+    // ===== 印刷费参数配置 =====
+    // 快递袋印刷费参数 - 非满版按元/米计算，满版按元/㎡计算
+    const KUAIDI_PRINT_FEES = {
+      pian: {
+        normal: {
+          unit: '米',
+          '≤70': [0, 0.04, 0.05, 0.06, 0.07, 0.08, 0.30, 0.30],
+          '>70': [0, 0.045, 0.06, 0.07, 0.08, 0.09, 0.30, 0.30]
+        },
+        full: {
+          unit: '㎡',
+          price: 0.30
+        }
+      },
+      tong: {
+        normal: {
+          unit: '米',
+          '≤70': [0, 0.04, 0.05, 0.06, 0.07, 0.08, 0.30, 0.30],
+          '>70': [0, 0.045, 0.06, 0.07, 0.08, 0.09, 0.30, 0.30]
+        },
+        full: {
+          unit: '㎡',
+          price: 0.30
+        }
+      }
+    };
+
+    // 气泡袋印刷费参数 - 全部按元/㎡计算
+    const QIPAO_PRINT_FEES = {
+      normal: {
+        unit: '㎡',
+        prices: [0, 0.10, 0.15, 0.25, 0.30, 0.35, 0.45, 0.50]
+      },
+      full: {
+        unit: '㎡',
+        prices: {
+          1: 0.40,
+          2: 0.40,
+          3: 0.40,
+          4: 0.50,
+          5: 0.50,
+          6: 0.50,
+          7: 0.50
+        }
+      }
+    };
+
+    // 连卷袋印刷费参数 - 非满版按元/米计算，满版按元/㎡计算
+    const LIANJUAN_PRINT_FEES = {
+      normal: {
+        unit: '米',
+        '≤70': [0, 0.04, 0.05, 0.06, 0.07, 0.08, 0.30, 0.30],
+        '>70': [0, 0.045, 0.06, 0.07, 0.08, 0.09, 0.30, 0.30]
+      },
+      full: {
+        unit: '㎡',
+        price: 0.30
+      }
+    };
+
+    // ===== 版费参数配置 =====
+    const PLATE_FEES = {
+      kuaidi: {
+        pian: {
+          baseRate: 0.11,
+          lengths: PLATE_LENGTHS_PIAN
+        },
+        tong: {
+          baseRate: 0.11,
+          lengths: PLATE_LENGTHS_TONG
+        }
+      },
+      qipao: {
+        baseRate: 0.11,
+        lengths: PLATE_LENGTHS_PIAN
+      },
+      lianjuan: {
+        baseRate: 0.11,
+        lengths: PLATE_LENGTHS_PIAN
+      }
+    };
 
     // ===== 标签切换 =====
     const tabs = document.querySelectorAll('.tab');
@@ -3092,11 +3216,11 @@
     }
 
     const realtimeInputs = [
-      'kd-width', 'kd-length', 'kd-seal', 'kd-thickness', 'kd-material', 'kd-region', 'kd-address',
+      'kd-width', 'kd-length', 'kd-seal', 'kd-thickness', 'kd-material', 'kd-region', 'kd-custom-price', 'kd-address',
       'kd-print', 'kd-print-type', 'kd-colors', 'kd-plate-type', 'kd-quantity', 'kd-vat',
-      'qp-width', 'qp-length', 'qp-seal', 'qp-weight', 'qp-region', 'qp-address',
+      'qp-width', 'qp-length', 'qp-seal', 'qp-weight', 'qp-region', 'qp-custom-price', 'qp-address',
       'qp-print', 'qp-print-type', 'qp-colors', 'qp-quantity', 'qp-vat',
-      'lj-width', 'lj-length', 'lj-thickness', 'lj-material', 'lj-region', 'lj-address',
+      'lj-width', 'lj-length', 'lj-thickness', 'lj-material', 'lj-region', 'lj-custom-price', 'lj-address',
       'lj-print', 'lj-colors', 'lj-shouti', 'lj-quantity', 'lj-vat'
     ];
 
@@ -3124,6 +3248,7 @@
         const material = document.getElementById('kd-material').value;
         const customMaterial = document.getElementById('kd-custom-material').value.trim();
         const region = parseInt(document.getElementById('kd-region').value);
+        const customPrice = parseFloat(document.getElementById('kd-custom-price').value) || null;
         const needPrint = document.getElementById('kd-print').checked;
         const printType = document.getElementById('kd-print-type').value;
         const colorsValue = document.getElementById('kd-colors').value;
@@ -3202,17 +3327,27 @@
         // 注意：数量与吨位价完全独立，仅用于显示和计算总金额，不影响单价
         const displayQty = quantity || moq;
 
-        // 同时显示吨位价上和吨位价下的单价，报价单用吨位价上
-        const prices = KUAIDI_PRICES[material][priceType][region];
+        // 吨位价：优先使用自定义吨位价，否则使用地区默认吨位价
         const regionName = region === 1 ? '一区' : '二区';
-        const priceUpper = prices[0];  // 吨位价上
-        const priceLower = prices[1];  // 吨位价下
+        let priceUpper, priceLower;
+        
+        if (customPrice !== null && !isNaN(customPrice)) {
+          // 使用自定义吨位价
+          priceUpper = customPrice;
+          priceLower = customPrice * 0.95; // 吨位价下按上价的95%计算
+        } else {
+          // 使用地区默认吨位价
+          const prices = KUAIDI_PRICES[material][priceType][region];
+          priceUpper = prices[0];
+          priceLower = prices[1];
+        }
+        
         const pricePerUnitUpper = weight * priceUpper / 1000000;
         const pricePerUnitLower = weight * priceLower / 1000000;
         
         steps.push({
           title: '吨位价对照表',
-          formula: `材质：${KUAIDI_PRICES[material].name}，地区：${regionName}${needPrint ? '（印刷）' : '（不印刷）'}`,
+          formula: customPrice !== null ? `使用自定义吨位价：${customPrice} 元/吨` : `材质：${KUAIDI_PRICES[material].name}，地区：${regionName}${needPrint ? '（印刷）' : '（不印刷）'}`,
           result: `【吨位价上】${priceUpper} 元/吨 → 单价 = ${weight.toFixed(1)} × ${priceUpper} ÷ 1000000 = <strong>¥${pricePerUnitUpper.toFixed(3)}/个</strong>\n【吨位价下】${priceLower} 元/吨 → 单价 = ${weight.toFixed(1)} × ${priceLower} ÷ 1000000 = <strong>¥${pricePerUnitLower.toFixed(3)}/个</strong>`
         });
 
@@ -3347,7 +3482,7 @@
               ? [0, 0.04, 0.05, 0.06, 0.07, 0.08, 0.30, 0.30]
               : [0, 0.045, 0.06, 0.07, 0.08, 0.09, 0.30, 0.30];
             const colorCountForPrint = plateType === 'pian' ? parseInt(colorsValue) : colorNum;
-            const basePrintFee = (l + seal) * meterPrice[colorCountForPrint] / 100;
+            const basePrintFee = w * meterPrice[colorCountForPrint] / 100;
             const totalPrintFee = basePrintFee * qtyForPrint;
             const minPrintFee = startPricePerColor * colorNum;
             
@@ -3356,14 +3491,14 @@
               steps.push({
                 title: '印刷费（小面积，按' + qtyNoteForPrint + '计算）',
                 formula: `宽度${w <= 70 ? '≤70' : '>70'}cm，${colorText} = ¥${meterPrice[colorCountForPrint]}/米`,
-                result: `印刷费 = (${l} + ${seal}) × ${meterPrice[colorCountForPrint]} ÷ 100 = ¥${basePrintFee.toFixed(3)}/个\n总印刷费 = ¥${totalPrintFee.toFixed(2)} < 起步价 ¥${minPrintFee}\n实际印刷费 = ${minPrintFee} ÷ ${qtyForPrint.toLocaleString()} = <strong>¥${printFee.toFixed(3)}/个</strong>`
+                result: `印刷费 = ${w} × ${meterPrice[colorCountForPrint]} ÷ 100 = ¥${basePrintFee.toFixed(3)}/个\n总印刷费 = ¥${totalPrintFee.toFixed(2)} < 起步价 ¥${minPrintFee}\n实际印刷费 = ${minPrintFee} ÷ ${qtyForPrint.toLocaleString()} = <strong>¥${printFee.toFixed(3)}/个</strong>`
               });
             } else {
               printFee = basePrintFee;
               steps.push({
                 title: '印刷费（小面积）',
                 formula: `宽度${w <= 70 ? '≤70' : '>70'}cm，${colorText} = ¥${meterPrice[colorCountForPrint]}/米`,
-                result: `印刷费 = (${l} + ${seal}) × ${meterPrice[colorCountForPrint]} ÷ 100 = <strong>¥${printFee.toFixed(3)}/个</strong>`
+                result: `印刷费 = ${w} × ${meterPrice[colorCountForPrint]} ÷ 100 = <strong>¥${printFee.toFixed(3)}/个</strong>`
               });
             }
           }
@@ -3404,6 +3539,7 @@
         const weightPerM2 = parseFloat(document.getElementById('qp-weight').value);
         const customMaterial = document.getElementById('qp-custom-material').value.trim();
         const region = parseInt(document.getElementById('qp-region').value);
+        const customPrice = parseFloat(document.getElementById('qp-custom-price').value) || null;
         const needPrint = document.getElementById('qp-print').checked;
         const printType = document.getElementById('qp-print-type').value;
         const colors = parseInt(document.getElementById('qp-colors').value);
@@ -3449,26 +3585,35 @@
       // 注意：数量与吨位价完全独立，仅用于显示和计算总金额，不影响单价
       const displayQty = quantity || moq;
 
-      // 同时显示吨位价上和吨位价下的单价，报价单用吨位价上
+      // 吨位价：优先使用自定义吨位价，否则使用地区默认吨位价
       const weightClass = weightPerM2 <= 110 ? '低克重(≤110g/㎡)' : '高克重(>110g/㎡)';
       const singleWeightClass = weight <= 12 ? '轻(≤12g)' : '重(>12g)';
-      
-      const QIPAO_PRICES = {
-        1: { low: { light: [25000, 24000], heavy: [23100, 22100] }, high: { light: [24700, 23700], heavy: [22800, 21800] } },
-        2: { low: { light: [26800, 25800], heavy: [24900, 23900] }, high: { light: [26500, 25500], heavy: [24600, 23600] } },
-        3: { low: { light: [27500, 26500], heavy: [25600, 24600] }, high: { light: [27300, 26300], heavy: [25300, 24300] } }
-      };
-
       const regionName = region === 1 ? '一区' : (region === 2 ? '二区' : '三区');
-      const priceSet = QIPAO_PRICES[region][weightPerM2 <= 110 ? 'low' : 'high'][weight <= 12 ? 'light' : 'heavy'];
-      const priceUpper = priceSet[0];  // 吨位价上
-      const priceLower = priceSet[1];  // 吨位价下
+      
+      let priceUpper, priceLower;
+      
+      if (customPrice !== null && !isNaN(customPrice)) {
+        // 使用自定义吨位价
+        priceUpper = customPrice;
+        priceLower = customPrice * 0.95;
+      } else {
+        // 使用地区默认吨位价
+        const QIPAO_PRICES = {
+          1: { low: { light: [25000, 24000], heavy: [23100, 22100] }, high: { light: [24700, 23700], heavy: [22800, 21800] } },
+          2: { low: { light: [26800, 25800], heavy: [24900, 23900] }, high: { light: [26500, 25500], heavy: [24600, 23600] } },
+          3: { low: { light: [27500, 26500], heavy: [25600, 24600] }, high: { light: [27300, 26300], heavy: [25300, 24300] } }
+        };
+        const priceSet = QIPAO_PRICES[region][weightPerM2 <= 110 ? 'low' : 'high'][weight <= 12 ? 'light' : 'heavy'];
+        priceUpper = priceSet[0];
+        priceLower = priceSet[1];
+      }
+      
       const pricePerUnitUpper = weight * priceUpper / 1000000;
       const pricePerUnitLower = weight * priceLower / 1000000;
       
       steps.push({
         title: '吨位价对照表',
-        formula: `克重/㎡: ${weightPerM2}g → ${weightClass}，单袋: ${weight.toFixed(1)}g → ${singleWeightClass}`,
+        formula: customPrice !== null ? `使用自定义吨位价：${customPrice} 元/吨` : `克重/㎡: ${weightPerM2}g → ${weightClass}，单袋: ${weight.toFixed(1)}g → ${singleWeightClass}，地区: ${regionName}`,
         result: `【吨位价上】${priceUpper} 元/吨 → 单价 = ${weight.toFixed(2)} × ${priceUpper} ÷ 1000000 = <strong>¥${pricePerUnitUpper.toFixed(3)}/个</strong>\n【吨位价下】${priceLower} 元/吨 → 单价 = ${weight.toFixed(2)} × ${priceLower} ÷ 1000000 = <strong>¥${pricePerUnitLower.toFixed(3)}/个</strong>`
       });
 
@@ -3614,6 +3759,7 @@
         const material = document.getElementById('lj-material').value;
         const customMaterial = document.getElementById('lj-custom-material').value.trim();
         const region = parseInt(document.getElementById('lj-region').value);
+        const customPrice = parseFloat(document.getElementById('lj-custom-price').value) || null;
         const needPrint = document.getElementById('lj-print').checked;
         const colors = parseInt(document.getElementById('lj-colors').value);
         const hasShouti = document.getElementById('lj-shouti').checked;
@@ -3652,32 +3798,56 @@
       const moq = moq500; // 用500kg起订量作为基准
       const displayQty = quantity || moq;
 
-      // 同时显示吨位价上和吨位价下的单价，报价单用吨位价上
-      const prices = LIANJUAN_PRICES[material][region];
-      const priceIdxUpper = needPrint ? 0 : 2;   // 吨位价上
-      const priceIdxLower = needPrint ? 1 : 3;   // 吨位价下
-      let priceUpper = prices[priceIdxUpper];
-      let priceLower = prices[priceIdxLower];
-      const shoutiExtra = hasShouti ? 300 : 0;
-      priceUpper += shoutiExtra;
-      priceLower += shoutiExtra;
-
+      // 吨位价：优先使用自定义吨位价，否则使用地区默认吨位价
       const regionName = region === 1 ? '一区' : '二区';
+      let priceUpper, priceLower;
+      const shoutiExtra = hasShouti ? 300 : 0;
+      
+      if (customPrice !== null && !isNaN(customPrice)) {
+        // 使用自定义吨位价
+        priceUpper = customPrice + shoutiExtra;
+        priceLower = customPrice * 0.95 + shoutiExtra;
+      } else {
+        // 使用地区默认吨位价
+        const prices = LIANJUAN_PRICES[material][region];
+        const priceIdxUpper = needPrint ? 0 : 2;   // 吨位价上
+        const priceIdxLower = needPrint ? 1 : 3;   // 吨位价下
+        priceUpper = prices[priceIdxUpper] + shoutiExtra;
+        priceLower = prices[priceIdxLower] + shoutiExtra;
+      }
 
-      // 克重加价：向下取整到0.1克（例：3.17g按3.1g算）
+      // 克重加价：向下取整到0.1克（例：3.17g按3.1g算，2.77g按2.7g算，2.27g按2.2g算）
       let extraNote = null;
       let extraPrice = 0;
-      if (weight < 5 && weight >= 2) {
-        const w = Math.floor(weight * 10) / 10; // 向下取整到0.1g
-        if (w >= 4) extraPrice = 1200 - Math.floor((w - 4) / 0.1) * 100;
-        else if (w >= 3) extraPrice = 1700 - Math.floor((w - 3) / 0.1) * 50;
-        else if (w >= 2.5) extraPrice = 2700 - Math.floor((w - 2.5) / 0.1) * 200;
-        else extraPrice = 6200 - Math.floor((w - 2) / 0.1) * 700;
+      if (weight >= 2 && weight < 5) {
+        const weightRounded = Math.floor(weight * 10) / 10; // 向下取整到0.1g
+        const diff = weightRounded;
+        
+        if (diff >= 4 && diff < 5) {
+          // 4≤X＜5：4克加1200，每增加0.1克减100
+          extraPrice = 1200 - Math.floor((diff - 4) / 0.1) * 100;
+        } else if (diff >= 3 && diff < 4) {
+          // 3≤X＜4：3克加1700，每增加0.1克减50
+          extraPrice = 1700 - Math.floor((diff - 3) / 0.1) * 50;
+        } else if (diff >= 2.5 && diff < 3) {
+          // 2.5≤X＜3：2.5克加2700，每增加0.1克减200
+          extraPrice = 2700 - Math.floor((diff - 2.5) / 0.1) * 200;
+        } else if (diff >= 2 && diff < 2.5) {
+          // 2≤X＜2.5：2克加6200，每增加0.1克减700
+          extraPrice = 6200 - Math.floor((diff - 2) / 0.1) * 700;
+        }
         
         priceUpper += extraPrice;
         priceLower += extraPrice;
-        extraNote = `克重${w.toFixed(1)}g<5g，吨位价+${extraPrice}`;
-        steps.push({ title: '克重加价', formula: `克重 ${weight.toFixed(2)}g → 按 ${w.toFixed(1)}g 计算`, result: `吨位价加价 <strong>+${extraPrice}</strong> 元/吨` });
+        extraNote = `克重${weightRounded.toFixed(1)}g<5g，吨位价+${extraPrice}`;
+        steps.push({ 
+          title: '克重加价', 
+          formula: `克重 ${weight.toFixed(2)}g → 按 ${weightRounded.toFixed(1)}g 计算（向下取整到0.1g）`, 
+          result: `吨位价加价 <strong>+${extraPrice}</strong> 元/吨` 
+        });
+      } else if (weight < 2) {
+        alert('连卷袋克重必须≥2克，当前计算克重为 ' + weight.toFixed(2) + 'g');
+        return;
       }
 
       const pricePerUnitUpper = weight * priceUpper / 1000000;
@@ -3685,7 +3855,7 @@
       
       steps.push({
         title: '吨位价对照表',
-        formula: `材质：${LIANJUAN_PRICES[material].name}，地区：${regionName}${hasShouti ? '，手提+300' : ''}${extraNote ? '，' + extraNote : ''}`,
+        formula: customPrice !== null ? `使用自定义吨位价：${customPrice} 元/吨${hasShouti ? '，手提+300' : ''}${extraNote ? '，' + extraNote : ''}` : `材质：${LIANJUAN_PRICES[material].name}，地区：${regionName}${hasShouti ? '，手提+300' : ''}${extraNote ? '，' + extraNote : ''}`,
         result: `【吨位价上】${priceUpper} 元/吨 → 单价 = ${weight.toFixed(2)} × ${priceUpper} ÷ 1000000 = <strong>¥${pricePerUnitUpper.toFixed(3)}/个</strong>\n【吨位价下】${priceLower} 元/吨 → 单价 = ${weight.toFixed(2)} × ${priceLower} ÷ 1000000 = <strong>¥${pricePerUnitLower.toFixed(3)}/个</strong>`
       });
 
@@ -3805,7 +3975,7 @@
       document.getElementById('resultSection').classList.add('show');
       const titleMap = {
         '快递袋': '📦 快递袋定制报价单',
-        '气泡袋': '🫧 气泡袋定制报价单',
+        '气泡袋': '☁️ 气泡袋定制报价单',
         '连卷袋': '🎞️ 连卷袋定制报价单'
       };
       document.getElementById('quote-title').textContent = titleMap[data.type] || '📦 产品报价单';
@@ -4317,8 +4487,151 @@
       }
     }
 
+    // ===== 参数表格切换 =====
+    function toggleParamTable() {
+      const table = document.getElementById('paramTableSection');
+      if (table.style.display === 'none') {
+        table.style.display = 'block';
+        renderParamTables();
+      } else {
+        table.style.display = 'none';
+      }
+    }
+
+    // ===== 渲染参数表格 =====
+    function renderParamTables() {
+      // 获取当前用户选择的参数
+      const curType = currentType;
+      let selectedColor = 1;
+      let printType = 'normal';
+      let plateType = 'pian';
+      let width = 0;
+      
+      if (curType === 'kuaidi') {
+        selectedColor = parseInt(document.getElementById('kd-colors')?.value) || 1;
+        printType = document.getElementById('kd-print-type')?.value || 'normal';
+        plateType = document.getElementById('kd-plate-type')?.value || 'pian';
+        width = parseFloat(document.getElementById('kd-width')?.value) || 0;
+      } else if (curType === 'qipao') {
+        selectedColor = parseInt(document.getElementById('qp-colors')?.value) || 1;
+        printType = document.getElementById('qp-print-type')?.value || 'normal';
+      } else if (curType === 'lianjuan') {
+        selectedColor = parseInt(document.getElementById('lj-colors')?.value) || 1;
+        printType = document.getElementById('lj-print-type')?.value || 'normal';
+        width = parseFloat(document.getElementById('lj-width')?.value) || 0;
+      }
+      
+      const isWidthOver70 = width > 70;
+      const highlightCell = ' class="highlight-cell"';
+      const highlightRow = ' class="highlight-row"';
+      
+      // 快递袋印刷费参数表
+      let kdPrintHtml = `
+        <table class="price-lookup-table">
+          <thead>
+            <tr><th colspan="5">📦 快递袋印刷费参数</th></tr>
+            <tr><th>颜色数</th><th>非满版（元/米）≤70cm</th><th>非满版（元/米）>70cm</th><th>满版（元/㎡）</th><th>备注</th></tr>
+          </thead>
+          <tbody>`;
+      
+      for (let c = 1; c <= 7; c++) {
+        const isSelected = (curType === 'kuaidi') && (c === selectedColor);
+        const rowClass = isSelected ? highlightRow : '';
+        const isWidthCol = isWidthOver70;
+        const normalPrice = isWidthCol ? [0, 0.045, 0.06, 0.07, 0.08, 0.09, 0.3, 0.3][c] : [0, 0.04, 0.05, 0.06, 0.07, 0.08, 0.3, 0.3][c];
+        const normalClass = (isSelected && printType === 'normal') ? highlightCell : '';
+        const fullClass = (isSelected && printType === 'full') ? highlightCell : '';
+        kdPrintHtml += `<tr${rowClass}><td>${c}色</td><td${normalClass}>${normalPrice}</td><td${normalClass}>${isWidthCol ? normalPrice : [0, 0.045, 0.06, 0.07, 0.08, 0.09, 0.3, 0.3][c]}</td><td${fullClass}>0.3</td><td>${c === 1 ? '单位:米→×宽度,㎡→×面积' : ''}</td></tr>`;
+      }
+      kdPrintHtml += `</tbody></table>`;
+
+      // 气泡袋印刷费参数表
+      let qpPrintHtml = `
+        <table class="price-lookup-table">
+          <thead>
+            <tr><th colspan="4">☁️ 气泡袋印刷费参数（单位：元/㎡）</th></tr>
+            <tr><th>颜色数</th><th>非满版印刷</th><th>满版印刷</th><th>备注</th></tr>
+          </thead>
+          <tbody>`;
+      
+      const qpNormalPrices = [0, 0.10, 0.15, 0.25, 0.30, 0.35, 0.45, 0.50];
+      for (let c = 1; c <= 7; c++) {
+        const isSelected = (curType === 'qipao') && (c === selectedColor);
+        const rowClass = isSelected ? highlightRow : '';
+        const normalClass = (isSelected && printType === 'normal') ? highlightCell : '';
+        const fullClass = (isSelected && printType === 'full') ? highlightCell : '';
+        const fullPrice = c <= 3 ? 0.40 : 0.50;
+        qpPrintHtml += `<tr${rowClass}><td>${c}色</td><td${normalClass}>${qpNormalPrices[c]}</td><td${fullClass}>${fullPrice}</td><td>${c === 1 ? '全部按面积计算' : ''}</td></tr>`;
+      }
+      qpPrintHtml += `</tbody></table>`;
+
+      // 连卷袋印刷费参数表
+      let ljPrintHtml = `
+        <table class="price-lookup-table">
+          <thead>
+            <tr><th colspan="5">🎞️ 连卷袋印刷费参数</th></tr>
+            <tr><th>颜色数</th><th>非满版（元/米）≤70cm</th><th>非满版（元/米）>70cm</th><th>满版（元/㎡）</th><th>备注</th></tr>
+          </thead>
+          <tbody>`;
+      
+      for (let c = 1; c <= 7; c++) {
+        const isSelected = (curType === 'lianjuan') && (c === selectedColor);
+        const rowClass = isSelected ? highlightRow : '';
+        const isWidthCol = isWidthOver70;
+        const normalPrice = isWidthCol ? [0, 0.045, 0.06, 0.07, 0.08, 0.09, 0.3, 0.3][c] : [0, 0.04, 0.05, 0.06, 0.07, 0.08, 0.3, 0.3][c];
+        const normalClass = (isSelected && printType === 'normal') ? highlightCell : '';
+        const fullClass = (isSelected && printType === 'full') ? highlightCell : '';
+        ljPrintHtml += `<tr${rowClass}><td>${c}色</td><td${normalClass}>${normalPrice}</td><td${normalClass}>${isWidthCol ? normalPrice : [0, 0.045, 0.06, 0.07, 0.08, 0.09, 0.3, 0.3][c]}</td><td${fullClass}>0.3</td><td>${c === 1 ? '单位:米→×宽度,㎡→×面积' : ''}</td></tr>`;
+      }
+      ljPrintHtml += `</tbody></table>`;
+
+      // 版费计算参数表
+      let plateHtml = `
+        <table class="price-lookup-table">
+          <thead>
+            <tr><th colspan="4">📋 版费计算参数</th></tr>
+            <tr><th>版料类型</th><th>版长规格(cm)</th><th>最小版宽(cm)</th><th>计算公式</th></tr>
+          </thead>
+          <tbody>
+            <tr${(curType === 'kuaidi' && plateType === 'pian') ? highlightRow : ''}><td rowspan="7">片料</td><td>85</td><td>35</td><td rowspan="7">版长=长×2+封口+10<br>选大不选小<br>版周=宽+0.3(<最小版宽则×2)<br>版费=版长×版周×0.11</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'pian') ? highlightRow : ''}><td>92</td><td>35</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'pian') ? highlightRow : ''}><td>102</td><td>35</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'pian') ? highlightRow : ''}><td>112</td><td>38</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'pian') ? highlightRow : ''}><td>122</td><td>42</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'pian') ? highlightRow : ''}><td>135</td><td>42</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'pian') ? highlightRow : ''}><td>140</td><td>45</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'tong') ? highlightRow : ''}><td rowspan="10">桶料</td><td>55</td><td>30</td><td rowspan="10">版长=长+封口+10<br>选大不选小<br>版周=宽+0.3(<最小版宽则×2)<br>版费=版长×版周×0.11</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'tong') ? highlightRow : ''}><td>62</td><td>32</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'tong') ? highlightRow : ''}><td>72</td><td>32</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'tong') ? highlightRow : ''}><td>85</td><td>32</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'tong') ? highlightRow : ''}><td>92</td><td>32</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'tong') ? highlightRow : ''}><td>95</td><td>32</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'tong') ? highlightRow : ''}><td>102</td><td>35</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'tong') ? highlightRow : ''}><td>112</td><td>38</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'tong') ? highlightRow : ''}><td>115</td><td>38</td></tr>
+            <tr${(curType === 'kuaidi' && plateType === 'tong') ? highlightRow : ''}><td>122</td><td>42</td></tr>
+          </tbody>
+        </table>
+        <table class="price-lookup-table" style="margin-top:16px;">
+          <thead>
+            <tr><th colspan="3">💰 印刷费计算公式说明</th></tr>
+            <tr><th>单位类型</th><th>计算方式</th><th>适用产品</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>元/米</td><td>印刷费 = 单价 × 宽度 (cm) ÷ 100</td><td>快递袋非满版、连卷袋非满版</td></tr>
+            <tr><td>元/㎡</td><td>印刷费 = 单价 × 面积 (㎡)</td><td>快递袋满版、气泡袋全部、连卷袋满版</td></tr>
+          </tbody>
+        </table>
+      `;
+
+      document.getElementById('kdPrintParamTable').innerHTML = kdPrintHtml;
+      document.getElementById('qpPrintParamTable').innerHTML = qpPrintHtml + ljPrintHtml;
+      document.getElementById('plateParamTable').innerHTML = plateHtml;
+    }
+
     function renderPriceTables() {
-      const priceHighlight = ' style="background: #fed7aa; font-weight: 800; color: #c2410c; border: 2px solid #f97316; border-radius: 6px;"';
+      const highlightCell = ' class="highlight-cell"';
+      const highlightRow = ' class="highlight-row"';
       
       // 获取当前产品类型
       const curType = currentType;
@@ -4332,26 +4645,28 @@
       
       for (const [key, val] of Object.entries(KUAIDI_PRICES)) {
         const isSelected = (curType === 'kuaidi') && (key === currentKDMaterial);
-        kdHTML += `<tr><td style="${isSelected ? 'font-weight:700;color:#c2410c;' : ''}">${isSelected ? '👉 ' : ''}${val.name}</td>`;
+        const rowClass = isSelected ? highlightRow : '';
+        const cellClass = isSelected ? highlightCell : '';
+        kdHTML += `<tr${rowClass}><td${cellClass}>${isSelected ? '👉 ' : ''}${val.name}</td>`;
         
         if (isSelected && needPrintKD && currentKDRegion === 1) {
-          kdHTML += `<td${priceHighlight}>${val.print[1][0]}</td><td${priceHighlight}>${val.print[1][1]}</td>`;
+          kdHTML += `<td${highlightCell}>${val.print[1][0]}</td><td${highlightCell}>${val.print[1][1]}</td>`;
         } else {
           kdHTML += `<td>${val.print[1][0]}</td><td>${val.print[1][1]}</td>`;
         }
         if (isSelected && needPrintKD && currentKDRegion === 2) {
-          kdHTML += `<td${priceHighlight}>${val.print[2][0]}</td><td${priceHighlight}>${val.print[2][1]}</td>`;
+          kdHTML += `<td${highlightCell}>${val.print[2][0]}</td><td${highlightCell}>${val.print[2][1]}</td>`;
         } else {
           kdHTML += `<td>${val.print[2][0]}</td><td>${val.print[2][1]}</td>`;
         }
         
         if (isSelected && !needPrintKD && currentKDRegion === 1) {
-          kdHTML += `<td${priceHighlight}>${val.noprint[1][0]}</td><td${priceHighlight}>${val.noprint[1][1]}</td>`;
+          kdHTML += `<td${highlightCell}>${val.noprint[1][0]}</td><td${highlightCell}>${val.noprint[1][1]}</td>`;
         } else {
           kdHTML += `<td>${val.noprint[1][0]}</td><td>${val.noprint[1][1]}</td>`;
         }
         if (isSelected && !needPrintKD && currentKDRegion === 2) {
-          kdHTML += `<td${priceHighlight}>${val.noprint[2][0]}</td><td${priceHighlight}>${val.noprint[2][1]}</td></tr>`;
+          kdHTML += `<td${highlightCell}>${val.noprint[2][0]}</td><td${highlightCell}>${val.noprint[2][1]}</td></tr>`;
         } else {
           kdHTML += `<td>${val.noprint[2][0]}</td><td>${val.noprint[2][1]}</td></tr>`;
         }
@@ -4378,26 +4693,28 @@
       
       for (const [key, val] of Object.entries(LIANJUAN_PRICES)) {
         const isSelected = (curType === 'lianjuan') && (key === currentLJMaterial);
-        ljHTML += `<tr><td style="${isSelected ? 'font-weight:700;color:#c2410c;' : ''}">${isSelected ? '👉 ' : ''}${val.name}</td>`;
+        const rowClass = isSelected ? highlightRow : '';
+        const cellClass = isSelected ? highlightCell : '';
+        ljHTML += `<tr${rowClass}><td${cellClass}>${isSelected ? '👉 ' : ''}${val.name}</td>`;
         
         if (isSelected && needPrintLJ && currentLJRegion === 1) {
-          ljHTML += `<td${priceHighlight}>${val[1][0]}</td><td${priceHighlight}>${val[1][1]}</td>`;
+          ljHTML += `<td${highlightCell}>${val[1][0]}</td><td${highlightCell}>${val[1][1]}</td>`;
         } else {
           ljHTML += `<td>${val[1][0]}</td><td>${val[1][1]}</td>`;
         }
         if (isSelected && needPrintLJ && currentLJRegion === 2) {
-          ljHTML += `<td${priceHighlight}>${val[2][0]}</td><td${priceHighlight}>${val[2][1]}</td>`;
+          ljHTML += `<td${highlightCell}>${val[2][0]}</td><td${highlightCell}>${val[2][1]}</td>`;
         } else {
           ljHTML += `<td>${val[2][0]}</td><td>${val[2][1]}</td>`;
         }
         
         if (isSelected && !needPrintLJ && currentLJRegion === 1) {
-          ljHTML += `<td${priceHighlight}>${val[1][2]}</td><td${priceHighlight}>${val[1][3]}</td>`;
+          ljHTML += `<td${highlightCell}>${val[1][2]}</td><td${highlightCell}>${val[1][3]}</td>`;
         } else {
           ljHTML += `<td>${val[1][2]}</td><td>${val[1][3]}</td>`;
         }
         if (isSelected && !needPrintLJ && currentLJRegion === 2) {
-          ljHTML += `<td${priceHighlight}>${val[2][2]}</td><td${priceHighlight}>${val[2][3]}</td></tr>`;
+          ljHTML += `<td${highlightCell}>${val[2][2]}</td><td${highlightCell}>${val[2][3]}</td></tr>`;
         } else {
           ljHTML += `<td>${val[2][2]}</td><td>${val[2][3]}</td></tr>`;
         }
@@ -4443,11 +4760,23 @@
     <div class="price-table-title">📦 快递袋吨位价</div>
     <div id="kdPriceTable"></div>
     
-    <div class="price-table-title">🫧 气泡袋吨位价</div>
+    <div class="price-table-title">☁️ 气泡袋吨位价</div>
     <div id="qpPriceTable"></div>
     
     <div class="price-table-title">🎞️ 连卷袋吨位价</div>
     <div id="ljPriceTable"></div>
+  </div>
+
+  <!-- 印刷版费参数查询区域 -->
+  <div id="paramTableSection" style="display:none;">
+    <div class="price-table-title">📦 快递袋印刷费参数</div>
+    <div id="kdPrintParamTable"></div>
+    
+    <div class="price-table-title">☁️ 气泡袋印刷费参数</div>
+    <div id="qpPrintParamTable"></div>
+    
+    <div class="price-table-title">📋 版费计算参数</div>
+    <div id="plateParamTable"></div>
   </div>
 
   <script type="application/ld+json">
