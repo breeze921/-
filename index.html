@@ -1011,18 +1011,67 @@
         padding: 32px 16px;
       }
       
+      .quote-table {
+        font-size: 0.9rem;
+      }
+      
+      .quote-table tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border-bottom: 1px solid #f0f0f0;
+        background: #fff;
+      }
+      
+      .quote-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 14px !important;
+        border: none !important;
+        background: transparent !important;
+      }
+      
+      .quote-table td:first-child {
+        background: #f8f9fa !important;
+        border-radius: 8px 0 0 8px;
+      }
+      
+      .quote-table td:last-child {
+        border-radius: 0 8px 8px 0;
+      }
+      
       .quote-table .qt-label {
-        width: 30% !important;
-        font-size: 0.9rem !important;
+        font-size: 0.8rem !important;
+        color: #666 !important;
+        font-weight: 500 !important;
+        background: transparent !important;
+        width: auto !important;
+        flex: 0 0 auto;
       }
       
       .quote-table .qt-value {
-        width: 70% !important;
-        font-size: 0.95rem !important;
+        font-size: 0.9rem !important;
+        color: #333 !important;
+        font-weight: 600 !important;
+        background: transparent !important;
+        width: auto !important;
+        flex: 1;
+        justify-content: flex-end;
+        text-align: right;
       }
       
       .quote-table .qt-price.qt-value {
         font-size: 1.3rem !important;
+        color: #e53935 !important;
+      }
+      
+      .quote-table td:only-child,
+      .quote-table [colspan] {
+        grid-column: 1 / -1;
+        justify-content: center;
+        background: #fafafa !important;
+        border-radius: 8px;
+        padding: 14px !important;
       }
       
       h1 {
@@ -1284,40 +1333,78 @@
     }
 
     @media (max-width: 480px) {
+      .quote-table {
+        font-size: 0.85rem;
+      }
+      
       .quote-table tr {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid #f0f0f0;
+        background: #fff;
+      }
+      
+      .quote-table tr:last-child {
+        border-bottom: none;
       }
       
       .quote-table td {
-        display: block;
-        width: 100% !important;
-        padding: 8px 12px !important;
-        border: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 12px !important;
+        border: none !important;
+        background: transparent !important;
+      }
+      
+      .quote-table td:first-child {
+        background: #f8f9fa !important;
+        border-radius: 8px 0 0 8px;
+      }
+      
+      .quote-table td:last-child {
+        border-radius: 0 8px 8px 0;
       }
       
       .quote-table .qt-label {
-        font-size: 0.8rem !important;
-        background: #f8f9fa;
+        font-size: 0.75rem !important;
+        color: #666 !important;
+        font-weight: 500 !important;
+        background: transparent !important;
+        width: auto !important;
+        flex: 0 0 auto;
       }
       
       .quote-table .qt-value {
-        font-size: 0.9rem !important;
-        background: white;
+        font-size: 0.85rem !important;
+        color: #333 !important;
+        font-weight: 600 !important;
+        background: transparent !important;
+        width: auto !important;
+        flex: 1;
+        justify-content: flex-end;
+        text-align: right;
       }
       
       .quote-table .qt-price.qt-value {
-        font-size: 1.2rem !important;
+        font-size: 1.1rem !important;
+        color: #e53935 !important;
       }
       
-      .quote-table tr:nth-child(even) {
-        background: white;
+      .quote-table td:only-child {
+        grid-column: 1 / -1;
+        justify-content: center;
+        background: #fafafa !important;
+        border-radius: 8px;
+        padding: 12px !important;
       }
       
       .quote-table [colspan] {
         grid-column: 1 / -1;
         text-align: center;
+        background: #fafafa !important;
+        border-radius: 8px;
+        padding: 12px !important;
       }
       
       h1 {
@@ -2684,7 +2771,7 @@
     <footer>
       <div class="version-badge">
         <span class="version-icon">🚀</span>
-        <span class="version-text">版本 2.3.0</span>
+        <span class="version-text">版本 2.4.0</span>
         <span class="version-date">2026.05</span>
       </div>
       <p class="footer-note">仅供参考 · 实际价格以最终报价为准</p>
@@ -4064,11 +4151,60 @@
       }, 300);
       
       function downloadCanvasAsImage(canvas, blob) {
-        if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
+        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        
+        if (isIOS || isAndroid) {
+          const imgData = canvas.toDataURL('image/png');
           const win = window.open();
-          win.document.write(`<img src="${canvas.toDataURL('image/png')}" style="max-width: 100%;">`);
-          win.document.title = '曦光包装报价单';
-          alert('📱 请长按图片保存到相册');
+          if (win) {
+            win.document.write(`
+              <!DOCTYPE html>
+              <html>
+              <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>曦光包装报价单</title>
+                <style>
+                  * { margin: 0; padding: 0; box-sizing: border-box; }
+                  body { 
+                    display: flex; 
+                    justify-content: center; 
+                    align-items: center; 
+                    min-height: 100vh;
+                    background: #f5f5f5;
+                    padding: 20px;
+                  }
+                  img { 
+                    max-width: 100%; 
+                    height: auto; 
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                    border-radius: 8px;
+                  }
+                  p {
+                    text-align: center;
+                    margin-top: 15px;
+                    font-size: 14px;
+                    color: #666;
+                    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                  }
+                </style>
+              </head>
+              <body>
+                <div>
+                  <img src="${imgData}" alt="曦光包装报价单">
+                  <p>📱 请长按图片保存到相册</p>
+                </div>
+              </body>
+              </html>
+            `);
+            win.document.close();
+          } else {
+            const link = document.createElement('a');
+            link.download = '曦光包装报价单.png';
+            link.href = imgData;
+            link.click();
+          }
         } else {
           const link = document.createElement('a');
           link.download = '曦光包装报价单.png';
