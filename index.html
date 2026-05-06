@@ -2411,13 +2411,13 @@
               <label>尺寸 (宽×长+封口)</label>
               <div class="input-row">
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="kd-width" placeholder="宽" min="10" max="90" step="1">
+                  <input type="number" id="kd-width" placeholder="宽" min="10" max="90" step="0.1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="kd-length" placeholder="长" min="24" max="135" step="1">
+                  <input type="number" id="kd-length" placeholder="长" min="24" max="135" step="0.1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="kd-seal" placeholder="封口" value="4" min="3" max="8" step="1">
+                  <input type="number" id="kd-seal" placeholder="封口" value="4" min="3" max="8" step="0.1">
                 </div>
               </div>
               <p class="input-hint">宽度10-90cm, 长度24-135cm</p>
@@ -2546,13 +2546,13 @@
               <label>尺寸 (宽×长+封口)</label>
               <div class="input-row">
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="qp-width" placeholder="宽" min="10" max="75" step="1">
+                  <input type="number" id="qp-width" placeholder="宽" min="10" max="75" step="0.1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="qp-length" placeholder="长" min="13" max="145" step="1">
+                  <input type="number" id="qp-length" placeholder="长" min="13" max="145" step="0.1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="qp-seal" placeholder="封口" value="4" min="4" max="8" step="1">
+                  <input type="number" id="qp-seal" placeholder="封口" value="4" min="4" max="8" step="0.1">
                 </div>
               </div>
               <p class="input-hint">宽度10-75cm, 长度13-145cm（长×2+封口≤145cm）</p>
@@ -2562,7 +2562,7 @@
               <div class="form-group">
                 <label>克重/㎡</label>
                 <div class="input-with-unit" data-unit="g/㎡">
-                  <input type="number" id="qp-weight" placeholder="输入克重" value="140" min="50" max="150" step="5">
+                  <input type="number" id="qp-weight" placeholder="输入克重" value="140" min="50" max="150" step="0.1">
                 </div>
                 <p class="input-hint">如 70、80、100 等</p>
               </div>
@@ -2648,10 +2648,10 @@
               <label>尺寸 (宽×长，无封口)</label>
               <div class="input-row-2">
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="lj-width" placeholder="宽" min="14" max="90" step="1">
+                  <input type="number" id="lj-width" placeholder="宽" min="14" max="90" step="0.1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="lj-length" placeholder="长" min="18" max="200" step="1">
+                  <input type="number" id="lj-length" placeholder="长" min="18" max="200" step="0.1">
                 </div>
               </div>
               <p class="input-hint">连卷袋没有封口，只有宽×长；宽度≥14cm，长度≥18cm</p>
@@ -2813,7 +2813,7 @@
     <footer>
       <div class="version-badge">
         <span class="version-icon">🚀</span>
-        <span class="version-text">版本 2.5.0</span>
+        <span class="version-text">版本 2.6.0</span>
         <span class="version-date">2026.05</span>
       </div>
       <p class="footer-note">仅供参考 · 实际价格以最终报价为准</p>
@@ -3635,8 +3635,14 @@
       let plateFee = 0;
       let plateFormula = '';
       if (needPrint) {
-        // 气泡袋版长：长度×2+封口+10，选择最接近的大一号固定版长（85→92→102→112→122→135→140）
-        const rawPlateL = l * 2 + seal + 10;
+        // 气泡袋版长计算：
+        // 如果（长×2+封口）< 60cm 需要双开，版长 = （长×2+封口）×2 + 10
+        // 如果（长×2+封口）≥ 60cm 单开，版长 = 长×2 + 封口 + 10
+        // 选择最接近的大一号固定版长（85→92→102→112→122→135→140）
+        const totalLength = l * 2 + seal;
+        const needDoublePlate = totalLength < 60;
+        const rawPlateL = needDoublePlate ? totalLength * 2 + 10 : totalLength + 10;
+        
         let plateL = PLATE_LENGTHS_PIAN[PLATE_LENGTHS_PIAN.length - 1].length;
         let plateInfo = PLATE_LENGTHS_PIAN[PLATE_LENGTHS_PIAN.length - 1];
         for (const pl of PLATE_LENGTHS_PIAN) {
@@ -3647,16 +3653,23 @@
           }
         }
         const minWidth = plateInfo.minWidth || 35;
-        let plateZhou = w + 0.2;
-        if (plateZhou < minWidth) plateZhou = plateZhou * 2;
+        let basePlateZhou = w + 0.2;
+        let plateZhou = basePlateZhou;
+        let multiplier = 1;
+        // 如果版周小于最小版宽，需要加倍，支持多次加倍（×2、×3等）
+        while (plateZhou < minWidth) {
+          multiplier++;
+          plateZhou = basePlateZhou * multiplier;
+        }
         const singlePlateFee = Math.round(plateL * plateZhou * 0.11);
         plateFee = singlePlateFee * colors;
         plateFormula = `${singlePlateFee}元×${colors}色 = ${plateFee}元`;
 
+        const zhouInfo = multiplier > 1 ? `（${basePlateZhou.toFixed(1)} × ${multiplier}）` : '';
         steps.push({
           title: '版费计算',
-          formula: `版长 = 长×2 + 封口 + 10 = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）`,
-          result: `版周 = ${plateZhou.toFixed(1)} cm\n单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colors}色版费 = ${singlePlateFee} × ${colors} = <strong>¥${plateFee.toLocaleString()}</strong>`
+          formula: needDoublePlate ? `双开版长 = (${l}×2 + ${seal})×2 + 10 = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）` : `单开版长 = ${l}×2 + ${seal} + 10 = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）`,
+          result: `版周 = ${basePlateZhou.toFixed(1)}${zhouInfo} = ${plateZhou.toFixed(1)} cm（最小版宽${minWidth}cm）\n单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colors}色版费 = ${singlePlateFee} × ${colors} = <strong>¥${plateFee.toLocaleString()}</strong>`
         });
       }
 
@@ -4140,7 +4153,7 @@
               ¥${money.totalAmount.toFixed(1)}
             </td>
           </tr>
-          <tr><td colspan="4" style="font-size:0.85rem;color:#888;text-align:center;padding-top:8px;">不含专票，国内包邮价格（保留1位小数）</td></tr>
+          <tr><td colspan="4" style="font-size:0.85rem;color:#888;text-align:center;padding-top:8px;">${withVat ? '含13个点增值税专票价格（保留1位小数）' : '不含专票，国内包邮价格（保留1位小数）'}</td></tr>
       `;
       
       // 预计出货时效
