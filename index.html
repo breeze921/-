@@ -259,6 +259,39 @@
       transform: translateY(-1px);
     }
 
+    /* 切换按钮组样式 */
+    .toggle-group {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-secondary);
+      padding: 4px;
+      border-radius: 8px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .toggle-btn {
+      padding: 6px 16px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .toggle-btn:hover {
+      background: rgba(234, 88, 12, 0.1);
+      color: var(--accent);
+    }
+
+    .toggle-btn.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 2px 8px rgba(234, 88, 12, 0.3);
+    }
+
     .main-grid {
       display: block !important;
       width: 100% !important;
@@ -2408,28 +2441,43 @@
           <!-- 快递袋输入 -->
           <div id="kuaidi-inputs">
             <div class="form-group form-group-full">
-              <label>尺寸 (宽×长+封口)</label>
+              <div class="flex-row justify-between">
+                <label id="kd-size-label">尺寸 (宽×长+封口)</label>
+                <div class="toggle-group">
+                  <button id="kd-normal-btn" class="toggle-btn active" data-type="normal">普通款</button>
+                  <button id="kd-handle-btn" class="toggle-btn" data-type="handle">手提款</button>
+                </div>
+              </div>
               <div class="input-row">
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="kd-width" placeholder="宽" min="10" max="90" step="0.1">
+                  <input type="number" id="kd-width" placeholder="宽度" min="10" max="90" step="0.1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="kd-length" placeholder="长" min="24" max="135" step="0.1">
+                  <input type="number" id="kd-length" placeholder="长度" min="24" max="135" step="0.1">
+                </div>
+                <div class="input-with-unit" data-unit="cm" id="kd-handle-wrap" style="display: none;">
+                  <input type="number" id="kd-handle" placeholder="手提" min="4" max="10" step="0.1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
                   <input type="number" id="kd-seal" placeholder="封口" value="4" min="3" max="8" step="0.1">
                 </div>
               </div>
-              <p class="input-hint">宽度10-90cm, 长度24-135cm</p>
+              <p class="input-hint">宽度10-90cm, 长度24-135cm；手提款：手提尺寸4-10cm，长+手提≤90cm</p>
             </div>
 
             <div class="form-grid">
               <div class="form-group">
-                <label>厚度 (丝)</label>
+                <label>双层厚度 (丝)</label>
                 <div class="input-with-unit" data-unit="丝">
                   <input type="number" id="kd-thickness" placeholder="输入厚度" value="12" min="1" max="20" step="0.5">
                 </div>
-                <p class="input-hint">可直接输入数字，如 10、12、14 等</p>
+              </div>
+
+              <div class="form-group">
+                <label>数量 (个)</label>
+                <div class="input-with-unit" data-unit="个">
+                  <input type="number" id="kd-quantity" placeholder="不填则按起订量计算" min="0" step="100">
+                </div>
               </div>
 
               <div class="form-group">
@@ -2441,15 +2489,8 @@
               </div>
 
               <div class="form-group">
-                <label>自定义吨位价 <span style="color:#999;font-weight:normal">(元/吨，可选)</span></label>
-                <input type="number" id="kd-custom-price" placeholder="如：12000" min="5000" max="50000" step="100">
-                <p class="input-hint">输入后将使用此吨位价计算，优先于地区选择</p>
-              </div>
-
-              <div class="form-group">
-                <label>详细收货地址 <span style="color:#999;font-weight:normal">(优先使用)</span></label>
+                <label>详细收货地址 <span style="color:#999;font-weight:normal">(若填写显示此地址)</span></label>
                 <input type="text" id="kd-address" placeholder="请输入详细收货地址">
-                <p class="input-hint">优先使用手动输入地址</p>
               </div>
 
               <div class="form-group">
@@ -2479,47 +2520,49 @@
               </div>
 
               <div class="form-group">
-                <label>自定义材质名称 <span style="color:#999;font-weight:normal">(可选)</span></label>
+                <label>自定义材质名称 <span style="color:#999;font-weight:normal">(若填写显示此名称)</span></label>
                 <input type="text" id="kd-custom-material" placeholder="如：梦幻粉、天空蓝等">
-                <p class="input-hint">填写后报价单显示此名称</p>
               </div>
 
               <div class="form-group">
-                <label>数量 (个)</label>
-                <div class="input-with-unit" data-unit="个">
-                  <input type="number" id="kd-quantity" placeholder="不填则按起订量计算" min="0" step="100">
-                </div>
-                <p class="input-hint">可选，不填则按起订量</p>
+                <label>自定义吨位价 <span style="color:#999;font-weight:normal">(若输入按此吨位价计算)</span></label>
+                <input type="number" id="kd-custom-price" placeholder="如：15000" min="5000" max="50000" step="100">
+              </div>
+
+              <div class="form-group">
+                <label>13个点增值税发票</label>
+                <button type="button" id="kd-vat-btn" onclick="toggleVatCheckbox()" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 60px; padding: 0 18px; border: 2px solid #fed7aa; border-radius: 12px; background: linear-gradient(135deg, #fff8f5 0%, #fff 100%); width: 100%; max-width: 280px; cursor: pointer; transition: all 0.3s ease; font-family: inherit; font-size: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                  <span style="font-size: 1.5rem;">💰</span>
+                  <span style="font-weight: 600; color: #555;">专票</span>
+                  <input type="checkbox" id="kd-vat" onchange="triggerRealTimeCalc()" style="display: none;">
+                  <span id="kd-vat-status" style="font-size: 0.85rem; color: #999; margin-left: auto;">未选</span>
+                </button>
               </div>
             </div>
 
             <div class="print-fee-section">
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+              <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 20px;">
                 <div class="checkbox-item">
                   <input type="checkbox" id="kd-print" checked>
                   <label for="kd-print">需要印刷</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="kd-vat" onchange="triggerRealTimeCalc()">
-                  <label for="kd-vat">💰 13个点增值税发票</label>
                 </div>
               </div>
               
               <div id="kd-print-options">
                 <div class="form-grid">
                   <div class="form-group">
-                    <label>印刷类型</label>
-                    <select id="kd-print-type">
-                      <option value="normal">小面积印刷</option>
-                      <option value="full">满版印刷</option>
-                    </select>
-                  </div>
-
-                  <div class="form-group">
                     <label>版料类型</label>
                     <select id="kd-plate-type">
                       <option value="pian">片料</option>
                       <option value="tong">桶料</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label>印刷类型</label>
+                    <select id="kd-print-type">
+                      <option value="normal">小面积印刷</option>
+                      <option value="full">满版印刷</option>
                     </select>
                   </div>
 
@@ -2540,22 +2583,161 @@
             </div>
           </div>
 
+          <!-- 手提袋输入 -->
+          <div id="shouti-inputs" class="hidden">
+            <div class="form-group form-group-full">
+              <label>尺寸 (宽×长+手提+封口)</label>
+              <div class="input-row">
+                <div class="input-with-unit" data-unit="cm">
+                  <input type="number" id="st-width" placeholder="宽度" min="10" max="90" step="0.1">
+                </div>
+                <div class="input-with-unit" data-unit="cm">
+                  <input type="number" id="st-length" placeholder="长度" min="24" max="135" step="0.1">
+                </div>
+                <div class="input-with-unit" data-unit="cm">
+                  <input type="number" id="st-handle" placeholder="手提" value="8" min="5" max="30" step="0.1">
+                </div>
+                <div class="input-with-unit" data-unit="cm">
+                  <input type="number" id="st-seal" placeholder="封口" value="4" min="3" max="8" step="0.1">
+                </div>
+              </div>
+              <p class="input-hint">宽度10-90cm, 长度24-135cm；手提袋专用计算</p>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label>厚度 (丝)</label>
+                <div class="input-with-unit" data-unit="丝">
+                  <input type="number" id="st-thickness" placeholder="输入厚度" value="12" min="1" max="20" step="0.5">
+                </div>
+                <p class="input-hint">可直接输入数字，如 10、12、14 等</p>
+              </div>
+
+              <div class="form-group">
+                <label>收货地区</label>
+                <select id="st-region">
+                  <option value="1">一区 (江浙沪皖)</option>
+                  <option value="2">二区 (其他地区)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>自定义吨位价 <span style="color:#999;font-weight:normal">(元/吨，可选)</span></label>
+                <input type="number" id="st-custom-price" placeholder="如：12000" min="5000" max="50000" step="100">
+                <p class="input-hint">输入后将使用此吨位价计算，优先于地区选择</p>
+              </div>
+
+              <div class="form-group">
+                <label>详细收货地址 <span style="color:#999;font-weight:normal">(优先使用)</span></label>
+                <input type="text" id="st-address" placeholder="请输入详细收货地址">
+                <p class="input-hint">优先使用手动输入地址</p>
+              </div>
+
+              <div class="form-group">
+                <label>材质</label>
+                <select id="st-material">
+                  <option value="huiliao">回料-灰黑色</option>
+                  <option value="yjhuiliao">一级回料-绿色</option>
+                  <option value="banxin">半新料(印刷换外全新)</option>
+                  <option value="quanxinjs">全新加填充</option>
+                  <option value="quanxinjs_shouti">全新加填充（手提袋）</option>
+                  <option value="quanxin" selected>全新料</option>
+                  <option value="huangmocha">黄色磨砂</option>
+                  <option value="huangmocha_shouti">黄色磨砂(手提袋)</option>
+                  <option value="teyiji">特一级料(加填充外层新)</option>
+                  <option value="gz_yjjs">广州一级加填充(粉)/半新粉</option>
+                  <option value="xinliaodiya">新料低压(含彩色)</option>
+                  <option value="banxindiya">半新低压</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>自定义材质名称 <span style="color:#999;font-weight:normal">(可选)</span></label>
+                <input type="text" id="st-custom-material" placeholder="如：梦幻粉、天空蓝等">
+                <p class="input-hint">填写后报价单显示此名称</p>
+              </div>
+
+              <div class="form-group">
+                <label>数量 (个)</label>
+                <div class="input-with-unit" data-unit="个">
+                  <input type="number" id="st-quantity" placeholder="不填则按起订量计算" min="0" step="100">
+                </div>
+                <p class="input-hint">可选，不填则按起订量</p>
+              </div>
+            </div>
+
+            <div class="print-fee-section">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                <div class="checkbox-item">
+                  <input type="checkbox" id="st-print" checked>
+                  <label for="st-print">需要印刷</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" id="st-vat" onchange="triggerRealTimeCalc()">
+                  <label for="st-vat">💰 13个点增值税发票</label>
+                </div>
+              </div>
+              
+              <div id="st-print-options">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>印刷类型</label>
+                    <select id="st-print-type">
+                      <option value="normal">小面积印刷</option>
+                      <option value="full">满版印刷</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label>版料类型</label>
+                    <select id="st-plate-type">
+                      <option value="pian">片料</option>
+                      <option value="tong">桶料</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label>颜色数</label>
+                    <select id="st-colors">
+                      <option value="1">1 色</option>
+                      <option value="2" selected>2 色</option>
+                      <option value="3">3 色</option>
+                      <option value="4">4 色</option>
+                      <option value="5">5 色</option>
+                      <option value="6">6 色</option>
+                      <option value="7">7 色</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- 气泡袋输入 -->
           <div id="qipao-inputs" class="hidden">
             <div class="form-group form-group-full">
-              <label>尺寸 (宽×长+封口)</label>
+              <div class="flex-row justify-between">
+                <label id="qp-size-label">尺寸 (宽×长+封口)</label>
+                <div class="toggle-group">
+                  <button id="qp-normal-btn" class="toggle-btn active" data-type="normal">普通款</button>
+                  <button id="qp-handle-btn" class="toggle-btn" data-type="handle">手提款</button>
+                </div>
+              </div>
               <div class="input-row">
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="qp-width" placeholder="宽" min="10" max="75" step="0.1">
+                  <input type="number" id="qp-width" placeholder="宽度" min="10" max="75" step="0.1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="qp-length" placeholder="长" min="13" max="145" step="0.1">
+                  <input type="number" id="qp-length" placeholder="长度" min="13" max="145" step="0.1">
+                </div>
+                <div class="input-with-unit" data-unit="cm" id="qp-handle-wrap" style="display: none;">
+                  <input type="number" id="qp-handle" placeholder="手提" min="4" max="10" step="0.1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
                   <input type="number" id="qp-seal" placeholder="封口" value="4" min="4" max="8" step="0.1">
                 </div>
               </div>
-              <p class="input-hint">宽度10-75cm, 长度13-145cm（长×2+封口≤145cm）</p>
+              <p class="input-hint">宽度10-75cm, 长度13-145cm（长×2+封口≤145cm）；手提款：手提尺寸4-10cm</p>
             </div>
 
             <div class="form-grid">
@@ -2564,7 +2746,13 @@
                 <div class="input-with-unit" data-unit="g/㎡">
                   <input type="number" id="qp-weight" placeholder="输入克重" value="140" min="50" max="150" step="0.1">
                 </div>
-                <p class="input-hint">如 70、80、100 等</p>
+              </div>
+
+              <div class="form-group">
+                <label>数量 (个)</label>
+                <div class="input-with-unit" data-unit="个">
+                  <input type="number" id="qp-quantity" placeholder="不填则按起订量计算" min="0" step="100">
+                </div>
               </div>
 
               <div class="form-group">
@@ -2577,29 +2765,18 @@
               </div>
 
               <div class="form-group">
-                <label>自定义吨位价 <span style="color:#999;font-weight:normal">(元/吨，可选)</span></label>
-                <input type="number" id="qp-custom-price" placeholder="如：22000" min="10000" max="50000" step="100">
-                <p class="input-hint">输入后将使用此吨位价计算，优先于地区选择</p>
-              </div>
-
-              <div class="form-group">
-                <label>详细收货地址 <span style="color:#999;font-weight:normal">(优先使用)</span></label>
+                <label>详细收货地址 <span style="color:#999;font-weight:normal">(若填写显示此地址)</span></label>
                 <input type="text" id="qp-address" placeholder="请输入详细收货地址">
-                <p class="input-hint">优先使用手动输入地址</p>
               </div>
 
               <div class="form-group">
-                <label>自定义材质名称 <span style="color:#999;font-weight:normal">(可选)</span></label>
-                <input type="text" id="qp-custom-material" placeholder="如：加厚气泡膜等">
-                <p class="input-hint">填写后显示此名称</p>
+                <label>自定义材质名称 <span style="color:#999;font-weight:normal">(若填写显示此名称)</span></label>
+                <input type="text" id="qp-custom-material" placeholder="如：白色气泡袋">
               </div>
 
               <div class="form-group">
-                <label>数量 (个)</label>
-                <div class="input-with-unit" data-unit="个">
-                  <input type="number" id="qp-quantity" placeholder="不填则按起订量计算" min="0" step="100">
-                </div>
-                <p class="input-hint">可选，不填则按起订量</p>
+                <label>自定义吨位价 <span style="color:#999;font-weight:normal">(若输入按此吨位价计算)</span></label>
+                <input type="number" id="qp-custom-price" placeholder="如：22000" min="10000" max="50000" step="100">
               </div>
             </div>
 
@@ -2645,25 +2822,40 @@
           <!-- 连卷袋输入 -->
           <div id="lianjuan-inputs" class="hidden">
             <div class="form-group form-group-full">
-              <label>尺寸 (宽×长，无封口)</label>
-              <div class="input-row-2">
-                <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="lj-width" placeholder="宽" min="14" max="90" step="0.1">
-                </div>
-                <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="lj-length" placeholder="长" min="18" max="200" step="0.1">
+              <div class="flex-row justify-between">
+                <label id="lj-size-label">尺寸 (宽×长，无封口)</label>
+                <div class="toggle-group">
+                  <button id="lj-normal-btn" class="toggle-btn active" data-type="normal">普通款</button>
+                  <button id="lj-handle-btn" class="toggle-btn" data-type="handle">手提款</button>
                 </div>
               </div>
-              <p class="input-hint">连卷袋没有封口，只有宽×长；宽度≥14cm，长度≥18cm</p>
+              <div class="input-row-2">
+                <div class="input-with-unit" data-unit="cm">
+                  <input type="number" id="lj-width" placeholder="宽度" min="14" max="90" step="0.1">
+                </div>
+                <div class="input-with-unit" data-unit="cm">
+                  <input type="number" id="lj-length" placeholder="长度" min="18" max="200" step="0.1">
+                </div>
+                <div class="input-with-unit" data-unit="cm" id="lj-handle-wrap" style="display: none;">
+                  <input type="number" id="lj-handle" placeholder="手提" min="4" max="10" step="0.1">
+                </div>
+              </div>
+              <p class="input-hint">连卷袋没有封口，只有宽×长；宽度≥14cm，长度≥18cm；手提款：手提尺寸4-10cm</p>
             </div>
 
             <div class="form-grid">
               <div class="form-group">
-                <label>厚度 (丝)</label>
+                <label>双层厚度 (丝)</label>
                 <div class="input-with-unit" data-unit="丝">
                   <input type="number" id="lj-thickness" placeholder="输入厚度" value="7" min="1" max="20" step="0.5">
                 </div>
-                <p class="input-hint">如 5、7、10 等</p>
+              </div>
+
+              <div class="form-group">
+                <label>数量 (个)</label>
+                <div class="input-with-unit" data-unit="个">
+                  <input type="number" id="lj-quantity" placeholder="不填则按起订量计算" min="0" step="100">
+                </div>
               </div>
 
               <div class="form-group">
@@ -2675,15 +2867,8 @@
               </div>
 
               <div class="form-group">
-                <label>自定义吨位价 <span style="color:#999;font-weight:normal">(元/吨，可选)</span></label>
-                <input type="number" id="lj-custom-price" placeholder="如：12000" min="5000" max="50000" step="100">
-                <p class="input-hint">输入后将使用此吨位价计算，优先于地区选择</p>
-              </div>
-
-              <div class="form-group">
-                <label>详细收货地址 <span style="color:#999;font-weight:normal">(优先使用)</span></label>
+                <label>详细收货地址 <span style="color:#999;font-weight:normal">(若填写显示此地址)</span></label>
                 <input type="text" id="lj-address" placeholder="请输入详细收货地址">
-                <p class="input-hint">优先使用手动输入地址</p>
               </div>
 
               <div class="form-group">
@@ -2705,34 +2890,44 @@
               </div>
 
               <div class="form-group">
-                <label>自定义材质名称 <span style="color:#999;font-weight:normal">(可选)</span></label>
+                <label>自定义材质名称 <span style="color:#999;font-weight:normal">(若填写显示此名称)</span></label>
                 <input type="text" id="lj-custom-material" placeholder="如：梦幻粉、天空蓝等">
-                <p class="input-hint">填写后显示此名称</p>
               </div>
 
               <div class="form-group">
-                <label>数量 (个)</label>
-                <div class="input-with-unit" data-unit="个">
-                  <input type="number" id="lj-quantity" placeholder="不填则按起订量计算" min="0" step="100">
-                </div>
-                <p class="input-hint">可选，不填则按起订量</p>
+                <label>自定义吨位价 <span style="color:#999;font-weight:normal">(若输入按此吨位价计算)</span></label>
+                <input type="number" id="lj-custom-price" placeholder="如：12000" min="5000" max="50000" step="100">
+              </div>
+
+              <div class="form-group">
+                <label>13个点增值税发票</label>
+                <button type="button" id="lj-vat-btn" onclick="toggleLjVatCheckbox()" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 60px; padding: 0 18px; border: 2px solid #fed7aa; border-radius: 12px; background: linear-gradient(135deg, #fff8f5 0%, #fff 100%); width: 100%; max-width: 280px; cursor: pointer; font-family: inherit; font-size: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                  <span style="font-size: 1.5rem;">💰</span>
+                  <span style="font-weight: 600; color: #555;">专票</span>
+                  <input type="checkbox" id="lj-vat" onchange="triggerRealTimeCalc()" style="display: none;">
+                  <span id="lj-vat-status" style="font-size: 0.85rem; color: #999; margin-left: auto;">未选</span>
+                </button>
               </div>
             </div>
 
             <div class="print-fee-section">
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+              <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 20px;">
                 <div class="checkbox-item">
                   <input type="checkbox" id="lj-print" checked>
                   <label for="lj-print">需要印刷</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="lj-vat" onchange="triggerRealTimeCalc()">
-                  <label for="lj-vat">💰 13个点增值税发票</label>
                 </div>
               </div>
               
               <div id="lj-print-options">
                 <div class="form-grid">
+                  <div class="form-group">
+                    <label>版料类型</label>
+                    <select id="lj-plate-type">
+                      <option value="pian">片料</option>
+                      <option value="tong">桶料</option>
+                    </select>
+                  </div>
+
                   <div class="form-group">
                     <label>印刷类型</label>
                     <select id="lj-print-type">
@@ -2754,10 +2949,6 @@
               </div>
             </div>
 
-            <div class="checkbox-group" style="text-align: center; margin-bottom: 20px;">
-              <input type="checkbox" id="lj-shouti">
-              <label for="lj-shouti" style="margin-bottom:0">带手提 (吨位价+300)</label>
-            </div>
           </div>
 
           <button type="submit" class="calculate-btn">
@@ -3193,8 +3384,144 @@
     // 初始化颜色选项
     updateColorOptions();
 
+    // ===== 手提款切换功能 =====
+    document.getElementById('kd-normal-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      this.classList.add('active');
+      document.getElementById('kd-handle-btn').classList.remove('active');
+      document.getElementById('kd-handle-wrap').style.display = 'none';
+      document.getElementById('kd-handle').value = '';
+      document.getElementById('kd-size-label').textContent = '尺寸 (宽×长+封口)';
+      triggerRealTimeCalc();
+    });
+
+    document.getElementById('kd-handle-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      this.classList.add('active');
+      document.getElementById('kd-normal-btn').classList.remove('active');
+      document.getElementById('kd-handle-wrap').style.display = 'flex';
+      document.getElementById('kd-size-label').textContent = '尺寸 (宽×长+手提+封口)';
+      triggerRealTimeCalc();
+    });
+
+    // ===== 气泡袋手提款切换功能 =====
+    document.getElementById('qp-normal-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      this.classList.add('active');
+      document.getElementById('qp-handle-btn').classList.remove('active');
+      document.getElementById('qp-handle-wrap').style.display = 'none';
+      document.getElementById('qp-handle').value = '';
+      document.getElementById('qp-size-label').textContent = '尺寸 (宽×长+封口)';
+      triggerRealTimeCalc();
+    });
+
+    document.getElementById('qp-handle-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      this.classList.add('active');
+      document.getElementById('qp-normal-btn').classList.remove('active');
+      document.getElementById('qp-handle-wrap').style.display = 'flex';
+      document.getElementById('qp-size-label').textContent = '尺寸 (宽×长+手提+封口)';
+      triggerRealTimeCalc();
+    });
+
+    // ===== 连卷袋手提款切换功能 =====
+    document.getElementById('lj-normal-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      this.classList.add('active');
+      document.getElementById('lj-handle-btn').classList.remove('active');
+      document.getElementById('lj-handle-wrap').style.display = 'none';
+      document.getElementById('lj-handle').value = '';
+      document.getElementById('lj-size-label').textContent = '尺寸 (宽×长，无封口)';
+      triggerRealTimeCalc();
+    });
+
+    document.getElementById('lj-handle-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      this.classList.add('active');
+      document.getElementById('lj-normal-btn').classList.remove('active');
+      document.getElementById('lj-handle-wrap').style.display = 'flex';
+      document.getElementById('lj-size-label').textContent = '尺寸 (宽×长+手提，无封口)';
+      triggerRealTimeCalc();
+    });
+
     // ===== 实时计算验证机制 =====
     let calcTimeout = null;
+    
+    function toggleVatCheckbox() {
+      const checkbox = document.getElementById('kd-vat');
+      const button = document.getElementById('kd-vat-btn');
+      const status = document.getElementById('kd-vat-status');
+      checkbox.checked = !checkbox.checked;
+      
+      if (checkbox.checked) {
+        button.style.background = 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)';
+        button.style.borderColor = '#ea580c';
+        button.style.boxShadow = '0 4px 15px rgba(234, 88, 12, 0.3)';
+        button.querySelector('span:nth-child(2)').style.color = '#fff';
+        status.textContent = '已选';
+        status.style.color = '#fff';
+      } else {
+        button.style.background = 'linear-gradient(135deg, #fff8f5 0%, #fff 100%)';
+        button.style.borderColor = '#fed7aa';
+        button.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
+        button.querySelector('span:nth-child(2)').style.color = '#555';
+        status.textContent = '未选';
+        status.style.color = '#999';
+      }
+      
+      checkbox.dispatchEvent(new Event('change'));
+    }
+    
+    function toggleKdPrintButton() {
+      const checkbox = document.getElementById('kd-print');
+      const button = document.getElementById('kd-print-btn');
+      const status = document.getElementById('kd-print-status');
+      const options = document.getElementById('kd-print-options');
+      checkbox.checked = !checkbox.checked;
+      
+      if (checkbox.checked) {
+        button.style.background = 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)';
+        button.style.borderColor = '#ea580c';
+        button.querySelector('span:nth-child(2)').style.color = '#fff';
+        status.textContent = '已选';
+        status.style.color = 'rgba(255,255,255,0.9)';
+        options.classList.remove('hidden');
+      } else {
+        button.style.background = '#fff';
+        button.style.borderColor = '#ddd';
+        button.querySelector('span:nth-child(2)').style.color = '#666';
+        status.textContent = '未选';
+        status.style.color = '#999';
+        options.classList.add('hidden');
+      }
+      
+      checkbox.dispatchEvent(new Event('change'));
+    }
+    
+    function toggleLjVatCheckbox() {
+      const checkbox = document.getElementById('lj-vat');
+      const button = document.getElementById('lj-vat-btn');
+      const status = document.getElementById('lj-vat-status');
+      checkbox.checked = !checkbox.checked;
+      
+      if (checkbox.checked) {
+        button.style.background = 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)';
+        button.style.borderColor = '#ea580c';
+        button.style.boxShadow = '0 4px 15px rgba(234, 88, 12, 0.3)';
+        button.querySelector('span:nth-child(2)').style.color = '#fff';
+        status.textContent = '已选';
+        status.style.color = '#fff';
+      } else {
+        button.style.background = 'linear-gradient(135deg, #fff8f5 0%, #fff 100%)';
+        button.style.borderColor = '#fed7aa';
+        button.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
+        button.querySelector('span:nth-child(2)').style.color = '#555';
+        status.textContent = '未选';
+        status.style.color = '#999';
+      }
+      
+      checkbox.dispatchEvent(new Event('change'));
+    }
     
     function triggerRealTimeCalc() {
       if (calcTimeout) clearTimeout(calcTimeout);
@@ -3218,6 +3545,8 @@
     const realtimeInputs = [
       'kd-width', 'kd-length', 'kd-seal', 'kd-thickness', 'kd-material', 'kd-region', 'kd-custom-price', 'kd-address',
       'kd-print', 'kd-print-type', 'kd-colors', 'kd-plate-type', 'kd-quantity', 'kd-vat',
+      'st-width', 'st-length', 'st-handle', 'st-seal', 'st-thickness', 'st-material', 'st-region', 'st-custom-price', 'st-address',
+      'st-print', 'st-print-type', 'st-colors', 'st-plate-type', 'st-quantity', 'st-vat',
       'qp-width', 'qp-length', 'qp-seal', 'qp-weight', 'qp-region', 'qp-custom-price', 'qp-address',
       'qp-print', 'qp-print-type', 'qp-colors', 'qp-quantity', 'qp-vat',
       'lj-width', 'lj-length', 'lj-thickness', 'lj-material', 'lj-region', 'lj-custom-price', 'lj-address',
@@ -3243,6 +3572,7 @@
         }
         const w = parseFloat(wEl.value);
         const l = parseFloat(lEl.value);
+        const handle = parseFloat(document.getElementById('kd-handle').value) || 0;
         const seal = parseFloat(document.getElementById('kd-seal').value) || 4;
         const thick = parseFloat(document.getElementById('kd-thickness').value);
         const material = document.getElementById('kd-material').value;
@@ -3306,13 +3636,15 @@
 
         const steps = [];
 
-        // 克重计算（向上取整保留1位小数）
-        const weightRaw = (w * (l + seal / 2) * 0.95 * thick) * 0.001;
+        // 克重计算（向上取整保留1位小数），手提长度合并计入总长度
+        const totalLength = l + handle;
+        const weightRaw = (w * (totalLength + seal / 2) * 0.95 * thick) * 0.001;
         const weight = Math.ceil(weightRaw * 10) / 10;
+        const lengthDisplay = handle > 0 ? `${l}+${handle}` : `${l}`;
         steps.push({
           title: '克重计算',
-          formula: `克重 = (宽 × (长 + 封口÷2) × 0.95 × 厚度) × 0.001`,
-          result: `= (${w} × (${l} + ${seal}÷2) × 0.95 × ${thick}) × 0.001 = ${weightRaw.toFixed(2)}g → 向上取整 = <strong>${weight.toFixed(1)} g</strong>`
+          formula: `克重 = (宽 × (长${handle > 0 ? '+手提' : ''} + 封口÷2) × 0.95 × 厚度) × 0.001`,
+          result: `= (${w} × (${lengthDisplay} + ${seal}÷2) × 0.95 × ${thick}) × 0.001 = ${weightRaw.toFixed(2)}g → 向上取整 = <strong>${weight.toFixed(1)} g</strong>`
         });
 
         // 起订量
@@ -3353,6 +3685,19 @@
 
         // 报价单用吨位价上进行计算
         let basePrice = pricePerUnitUpper;
+
+        // 手提款加价：手提款吨位价+300元/吨
+        if (handle > 0) {
+          const handlePriceIncrease = 300;
+          priceUpper += handlePriceIncrease;
+          const handlePricePerUnit = weight * handlePriceIncrease / 1000000;
+          basePrice = pricePerUnitUpper + handlePricePerUnit;
+          steps.push({
+            title: '手提款加价',
+            formula: `手提款吨位价 = 普通吨位价 + 300元/吨`,
+            result: `手提款加价：${handlePriceIncrease}元/吨 → 单价增加 ¥${handlePricePerUnit.toFixed(4)}/个\n<strong>手提款单价 = ¥${basePrice.toFixed(3)}/个</strong>`
+          });
+        }
         
         // ===== 损耗计算 =====
         let lossRate = 0;
@@ -3410,7 +3755,7 @@
         let plateFee = 0;
         let plateFormula = '';
         if (needPrint) {
-          let rawPlateL = plateType === 'pian' ? l * 2 + seal + 10 : l + seal + 10;
+          let rawPlateL = plateType === 'pian' ? totalLength * 2 + seal + 10 : totalLength + seal + 10;
           const plateLengths = plateType === 'pian' ? PLATE_LENGTHS_PIAN : PLATE_LENGTHS_TONG;
           let plateL = plateLengths[0].length;
           for (const pl of plateLengths) {
@@ -3442,7 +3787,7 @@
         let printFee = 0;
         if (needPrint) {
           // 片料版长：长度×2+封口+10，选择最接近的大一号固定版长（85→92→102→112→122→135→140）
-          const rawPlateL = plateType === 'pian' ? l * 2 + seal + 10 : l + seal + 10;
+          const rawPlateL = plateType === 'pian' ? totalLength * 2 + seal + 10 : totalLength + seal + 10;
           const plateLengths = plateType === 'pian' ? PLATE_LENGTHS_PIAN : PLATE_LENGTHS_TONG;
           let plateL = plateLengths[plateLengths.length - 1].length;
           for (const pl of plateLengths) {
@@ -3456,8 +3801,8 @@
           if (printType === 'full') {
             // 片料面积：=(长度×2+封口)×宽度，单位换算成㎡
             const area = plateType === 'pian' 
-              ? (l * 2 + seal) * w * 0.0001 
-              : w * (l + seal) * 0.0001;
+              ? (totalLength * 2 + seal) * w * 0.0001 
+              : w * (totalLength + seal) * 0.0001;
             const basePrintFee = area * 0.30;
             const totalPrintFee = basePrintFee * qtyForPrint;
             const minPrintFee = startPricePerColor * colorNum;
@@ -3508,7 +3853,7 @@
           type: '快递袋',
           steps: steps,
           quote: {
-            size: `${w}×${l}+${seal}`,
+            size: handle > 0 ? `<span style="font-size:0.75rem;color:#888;display:block;margin-bottom:2px;">（宽×长+手提+封口）</span>${w}×${l}+${handle}+${seal}` : `${w}×${l}+${seal}`,
             material: customMaterial || KUAIDI_PRICES[material].name,
             weight: `${thick}丝`,
             region: regionName,
@@ -3530,11 +3875,256 @@
       }
     }
 
+    // ===== 手提袋计算 =====
+    function calcShouti() {
+      try {
+        const wEl = document.getElementById('st-width');
+        const lEl = document.getElementById('st-length');
+        if (!wEl || !lEl) {
+          alert('表单元素未找到！');
+          return;
+        }
+        const w = parseFloat(wEl.value);
+        const l = parseFloat(lEl.value);
+        const handle = parseFloat(document.getElementById('st-handle').value) || 8;
+        const seal = parseFloat(document.getElementById('st-seal').value) || 4;
+        const thick = parseFloat(document.getElementById('st-thickness').value);
+        const material = document.getElementById('st-material').value;
+        const customMaterial = document.getElementById('st-custom-material').value.trim();
+        const region = parseInt(document.getElementById('st-region').value);
+        const customPrice = parseFloat(document.getElementById('st-custom-price').value) || null;
+        const needPrint = document.getElementById('st-print').checked;
+        const printType = document.getElementById('st-print-type').value;
+        const colorsValue = document.getElementById('st-colors').value;
+        const plateType = document.getElementById('st-plate-type').value;
+        const quantityEl = document.getElementById('st-quantity');
+        const quantityInput = quantityEl && quantityEl.value.trim();
+        const quantity = quantityInput ? parseFloat(quantityInput) : null;
+        if (quantity !== null && isNaN(quantity)) quantity = null;
+        
+        let colorNum = 1;
+        let colorText = '1色';
+        if (plateType === 'pian') {
+          colorNum = parseInt(colorsValue) || 1;
+          colorText = `${colorNum}色`;
+        } else {
+          colorText = colorsValue || '1色';
+          if (colorsValue && colorsValue.includes('正') && colorsValue.includes('反')) {
+            const match = colorsValue.match(/(\d+)正(\d+)反/);
+            if (match) {
+              colorNum = parseInt(match[1]) + parseInt(match[2]);
+            }
+          }
+        }
+
+        const steps = [];
+
+        const totalLength = l + handle;
+        const weightRaw = (w * (totalLength + seal / 2) * 0.95 * thick) * 0.001;
+        const weight = Math.ceil(weightRaw * 10) / 10;
+        const lengthDisplay = `${l}+${handle}`;
+        steps.push({
+          title: '克重计算',
+          formula: `克重 = (宽 × (长+手提 + 封口÷2) × 0.95 × 厚度) × 0.001`,
+          result: `= (${w} × (${lengthDisplay} + ${seal}÷2) × 0.95 × ${thick}) × 0.001 = ${weightRaw.toFixed(2)}g → 向上取整 = <strong>${weight.toFixed(1)} g</strong>`
+        });
+
+        const moq = Math.ceil(150000 / weight / 100) * 100;
+        steps.push({
+          title: '起订量计算',
+          formula: `起订量 = 150000g ÷ 单袋克重，向上取整到百位数`,
+          result: `= 150000 ÷ ${weight.toFixed(1)} = ${(150000 / weight).toFixed(0)} → 向上取整 = <strong>${moq.toLocaleString()} 个</strong>`
+        });
+
+        const regionName = region === 1 ? '一区 (江浙沪皖)' : '二区 (其他地区)';
+        
+        let priceUpper = customPrice;
+        let priceLower = customPrice;
+        if (customPrice === null) {
+          const prices = needPrint 
+            ? KUAIDI_PRICES[material].print[region - 1]
+            : KUAIDI_PRICES[material].noprint[region - 1];
+          priceUpper = prices[0];
+          priceLower = prices[1];
+        }
+        
+        const pricePerUnitUpper = weight * priceUpper / 1000000;
+        const pricePerUnitLower = weight * priceLower / 1000000;
+        
+        steps.push({
+          title: '吨位价对照表',
+          formula: customPrice !== null ? `使用自定义吨位价：${customPrice} 元/吨` : `材质：${KUAIDI_PRICES[material].name}，地区：${regionName}${needPrint ? '（印刷）' : '（不印刷）'}`,
+          result: `【吨位价上】${priceUpper} 元/吨 → 单价 = ${weight.toFixed(1)} × ${priceUpper} ÷ 1000000 = <strong>¥${pricePerUnitUpper.toFixed(3)}/个</strong>\n【吨位价下】${priceLower} 元/吨 → 单价 = ${weight.toFixed(1)} × ${priceLower} ÷ 1000000 = <strong>¥${pricePerUnitLower.toFixed(3)}/个</strong>`
+        });
+
+        let basePrice = pricePerUnitUpper;
+        
+        let lossRate = 0;
+        let lossDescription = [];
+        let weightLossKg = 0;
+        
+        const orderWeight = (quantity || moq) * weight / 1000;
+        if (orderWeight < 80) {
+          weightLossKg = 30;
+          lossDescription.push(`不满80kg，按30kg计算损耗`);
+        } else if (orderWeight < 140) {
+          weightLossKg = 15;
+          lossDescription.push(`80kg≤重量<140kg，按15kg计算损耗`);
+        }
+        
+        let sizeLossRate = 0;
+        if (l < 35 || l >= 90 || w < 15 || w >= 80) {
+          sizeLossRate = 0.08;
+          lossDescription.push(`特殊尺寸（长：${l}cm，宽：${w}cm），加8%尺寸损耗`);
+        }
+        
+        let totalPrice = basePrice;
+        if (weightLossKg > 0 || sizeLossRate > 0) {
+          const lossCostPerBag = (weightLossKg * priceUpper) / (quantity || moq) / 1000;
+          totalPrice = (basePrice + lossCostPerBag) * (1 + sizeLossRate);
+          
+          steps.push({
+            title: '损耗费用计算',
+            formula: lossDescription.join('；'),
+            result: `基础单价：¥${basePrice.toFixed(3)}/个\n重量损耗成本：¥${lossCostPerBag.toFixed(3)}/个\n尺寸损耗率：${(sizeLossRate * 100).toFixed(0)}%\n<strong>最终单价 = ¥${totalPrice.toFixed(3)}/个</strong>`
+          });
+        } else {
+          lossDescription.push('常规尺寸+满足起订量，无额外损耗');
+          steps.push({
+            title: '损耗费用计算',
+            formula: `常规尺寸：长度35-90cm，宽度15-80cm；重量≥140kg`,
+            result: `<strong>无额外损耗</strong>，单价 = ¥${totalPrice.toFixed(3)}/个`
+          });
+        }
+        
+        const pricePerUnit = totalPrice;
+
+        steps.push({
+          title: '数量取值规则说明',
+          formula: `用户输入数量优先，无输入则使用起订量`,
+          result: `${quantity ? `用户输入数量: <strong>${quantity.toLocaleString()} 个</strong>（${orderWeight.toFixed(1)}kg）` : `用户未输入数量，使用起订量: <strong>${moq.toLocaleString()} 个</strong>（${(moq * weight / 1000).toFixed(1)}kg）`}`
+        });
+
+        let plateFee = 0;
+        let plateFormula = '';
+        if (needPrint) {
+          let rawPlateL = plateType === 'pian' ? totalLength * 2 + seal + 10 : totalLength + seal + 10;
+          const plateLengths = plateType === 'pian' ? PLATE_LENGTHS_PIAN : PLATE_LENGTHS_TONG;
+          let plateL = plateLengths[0].length;
+          for (const pl of plateLengths) {
+            if (rawPlateL <= pl.length) {
+              plateL = pl.length;
+              break;
+            }
+            plateL = pl.length;
+          }
+          const minWidth = plateType === 'pian' ? 35 : 30;
+          let plateZhou = w + 0.2;
+          if (plateZhou < minWidth) plateZhou = plateZhou * 2;
+          const singlePlateFee = Math.round(plateL * plateZhou * 0.11);
+          plateFee = singlePlateFee * colorNum;
+          plateFormula = `${singlePlateFee}元×${colorNum}色 = ${plateFee}元`;
+
+          steps.push({
+            title: '版费计算',
+            formula: `${plateType === 'pian' ? '片料版长' : '桶料版长'} = ${plateType === 'pian' ? '(长+手提)×2 + 封口 + 10' : '长+手提 + 封口 + 10'} = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）`,
+            result: `版周 = ${plateZhou.toFixed(1)} cm\n单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colorNum}色版费 = ${singlePlateFee} × ${colorNum} = <strong>¥${plateFee.toLocaleString()}</strong>`
+          });
+        }
+
+        const qtyForPrint = quantity && quantity > 0 ? quantity : moq;
+        const qtyNoteForPrint = quantity && quantity > 0 ? '用户输入数量' : '起订量';
+        
+        let printFee = 0;
+        if (needPrint) {
+          const rawPlateL = plateType === 'pian' ? totalLength * 2 + seal + 10 : totalLength + seal + 10;
+          const plateLengths = plateType === 'pian' ? PLATE_LENGTHS_PIAN : PLATE_LENGTHS_TONG;
+          let plateL = plateLengths[plateLengths.length - 1].length;
+          for (const pl of plateLengths) {
+            if (rawPlateL <= pl.length) {
+              plateL = pl.length;
+              break;
+            }
+          }
+          const startPricePerColor = plateL >= 85 ? 250 : 200;
+          
+          if (printType === 'full') {
+            const area = plateType === 'pian' 
+              ? (totalLength * 2 + seal) * w * 0.0001 
+              : w * (totalLength + seal) * 0.0001;
+            const basePrintFee = area * 0.30;
+            const totalPrintFee = basePrintFee * qtyForPrint;
+            const minPrintFee = startPricePerColor * colorNum;
+            
+            if (totalPrintFee < minPrintFee) {
+              printFee = minPrintFee / qtyForPrint;
+              steps.push({
+                title: '印刷费（满版，按' + qtyNoteForPrint + '计算）',
+                formula: `${plateType === 'pian' ? '片料面积' : '桶料面积'} = ${plateType === 'pian' ? '(长+手提)×2+封口×宽' : '宽×(长+手提+封口)'} × 0.0001`,
+                result: `= ${plateType === 'pian' ? `(${totalLength}×2+${seal})×${w}` : `${w}×(${totalLength}+${seal})`} × 0.0001 = ${area.toFixed(3)} ㎡\n印刷费 = ${area.toFixed(3)} × 0.30 = ¥${basePrintFee.toFixed(3)}/个\n总印刷费 = ¥${totalPrintFee.toFixed(2)} < 起步价 ¥${minPrintFee}\n实际印刷费 = ${minPrintFee} ÷ ${qtyForPrint.toLocaleString()} = <strong>¥${printFee.toFixed(3)}/个</strong>`
+              });
+            } else {
+              printFee = basePrintFee;
+              steps.push({
+                title: '印刷费（满版）',
+                formula: `${plateType === 'pian' ? '片料面积' : '桶料面积'} = ${plateType === 'pian' ? '(长+手提)×2+封口×宽' : '宽×(长+手提+封口)'} × 0.0001`,
+                result: `= ${plateType === 'pian' ? `(${totalLength}×2+${seal})×${w}` : `${w}×(${totalLength}+${seal})`} × 0.0001 = ${area.toFixed(3)} ㎡\n印刷费 = ${area.toFixed(3)} × 0.30 = <strong>¥${printFee.toFixed(3)}/个</strong>`
+              });
+            }
+          } else {
+            const printCoefficient = w <= 70 ? KUAIDI_PRINT_NORMAL[colorNum - 1] : KUAIDI_PRINT_WIDE[colorNum - 1];
+            const basePrintFee = w * printCoefficient / 100;
+            const totalPrintFee = basePrintFee * qtyForPrint;
+            const minPrintFee = startPricePerColor * colorNum;
+            
+            if (totalPrintFee < minPrintFee) {
+              printFee = minPrintFee / qtyForPrint;
+              steps.push({
+                title: '印刷费（小面积，按' + qtyNoteForPrint + '计算）',
+                formula: `宽度${w <= 70 ? '≤70cm' : '>70cm'}，${colorText} = ¥${printCoefficient}/米\n印刷费 = 宽度 × 单价 ÷ 100`,
+                result: `= ${w} × ${printCoefficient} ÷ 100 = ¥${basePrintFee.toFixed(3)}/个\n总印刷费 = ¥${totalPrintFee.toFixed(2)} < 起步价 ¥${minPrintFee}\n实际印刷费 = ${minPrintFee} ÷ ${qtyForPrint.toLocaleString()} = <strong>¥${printFee.toFixed(3)}/个</strong>`
+              });
+            } else {
+              printFee = basePrintFee;
+              steps.push({
+                title: '印刷费（小面积）',
+                formula: `宽度${w <= 70 ? '≤70cm' : '>70cm'}，${colorText} = ¥${printCoefficient}/米\n印刷费 = 宽度 × 单价 ÷ 100`,
+                result: `= ${w} × ${printCoefficient} ÷ 100 = <strong>¥${printFee.toFixed(3)}/个</strong>`
+              });
+            }
+          }
+        }
+
+        showResult({
+          type: '手提袋',
+          steps: steps,
+          quote: {
+            size: `${w}×${l}+${handle}+${seal}`,
+            material: customMaterial || KUAIDI_PRICES[material].name,
+            weight: `${thick}丝`,
+            region: regionName,
+            print: needPrint ? `${colorText}${printType === 'full' ? '满版' : '小面积印刷'}（${plateType === 'pian' ? '片料' : '桶料'}）` : '不印刷',
+            quantity: quantity || moq,
+            unitPrice: pricePerUnit + printFee,
+            plateFee: plateFee,
+            deposit: ((pricePerUnit + printFee) * (quantity || moq) * 0.5 + plateFee),
+            total: ((pricePerUnit + printFee) * (quantity || moq) + plateFee),
+            withVat: document.getElementById('st-vat').checked,
+            address: document.getElementById('st-address').value.trim() || regionName
+          }
+        });
+      } catch (err) {
+        alert('手提袋计算出错：' + err.message);
+        console.error(err);
+      }
+    }
+
     // ===== 气泡袋计算 =====
     function calcQipao() {
       try {
         const w = parseFloat(document.getElementById('qp-width').value);
         const l = parseFloat(document.getElementById('qp-length').value);
+        const handle = parseFloat(document.getElementById('qp-handle').value) || 0;
         const seal = parseFloat(document.getElementById('qp-seal').value) || 4;
         const weightPerM2 = parseFloat(document.getElementById('qp-weight').value);
         const customMaterial = document.getElementById('qp-custom-material').value.trim();
@@ -3556,19 +4146,21 @@
 
       const steps = [];
 
-      // 面积和重量
-      const area = (l * 2 + seal) * w * 0.0001;
-      const weight = (l * 2 + seal) * w * weightPerM2 * 0.0001;
+      // 面积和重量（手提长度合并计入）
+      const totalLength = l + handle;
+      const area = (totalLength * 2 + seal) * w * 0.0001;
+      const weight = (totalLength * 2 + seal) * w * weightPerM2 * 0.0001;
+      const lengthDisplay = handle > 0 ? `${l}+${handle}` : `${l}`;
       steps.push({
         title: '面积计算（气泡袋长度×2）',
-        formula: `面积 = (长×2 + 封口) × 宽 × 0.0001`,
-        result: `= (${l}×2 + ${seal}) × ${w} × 0.0001 = <strong>${area.toFixed(4)} ㎡</strong>`
+        formula: `面积 = (长${handle > 0 ? '+手提' : ''}×2 + 封口) × 宽 × 0.0001`,
+        result: `= (${lengthDisplay}×2 + ${seal}) × ${w} × 0.0001 = <strong>${area.toFixed(4)} ㎡</strong>`
       });
 
       steps.push({
         title: '重量计算',
-        formula: `重量 = (长×2 + 封口) × 宽 × 克重/㎡ × 0.0001`,
-        result: `= (${l}×2 + ${seal}) × ${w} × ${weightPerM2} × 0.0001 = <strong>${weight.toFixed(2)} g</strong>`
+        formula: `重量 = (长${handle > 0 ? '+手提' : ''}×2 + 封口) × 宽 × 克重/㎡ × 0.0001`,
+        result: `= (${lengthDisplay}×2 + ${seal}) × ${w} × ${weightPerM2} × 0.0001 = <strong>${weight.toFixed(2)} g</strong>`
       });
 
       // 起订量 - 按3000米计算
@@ -3606,6 +4198,36 @@
         const priceSet = QIPAO_PRICES[region][weightPerM2 <= 110 ? 'low' : 'high'][weight <= 12 ? 'light' : 'heavy'];
         priceUpper = priceSet[0];
         priceLower = priceSet[1];
+      }
+      
+      // 损耗调整：数量×宽度 < 1000米，吨位价加300元
+      const totalMeters = displayQty * w / 100; // 数量×宽度(米)
+      let lossAdjustment = 0;
+      let lossReasons = [];
+      
+      if (totalMeters < 1000) {
+        lossAdjustment += 300;
+        lossReasons.push(`数量×宽度 = ${displayQty} × ${w}cm = ${totalMeters.toFixed(1)}米 < 1000米，吨位价+300元`);
+      }
+      
+      // 损耗调整：单袋克重 < 12g，吨位价加1500元
+      if (weight < 12) {
+        lossAdjustment += 1500;
+        lossReasons.push(`单袋克重 = ${weight.toFixed(2)}g < 12g，吨位价+1500元`);
+      }
+      
+      // 应用损耗调整
+      if (lossAdjustment > 0) {
+        priceUpper += lossAdjustment;
+        priceLower += lossAdjustment;
+      }
+      
+      if (lossReasons.length > 0) {
+        steps.push({
+          title: '损耗调整',
+          formula: lossReasons.join('\n'),
+          result: `吨位价合计增加 <strong>+${lossAdjustment} 元/吨</strong>`
+        });
       }
       
       const pricePerUnitUpper = weight * priceUpper / 1000000;
@@ -3736,7 +4358,7 @@
         type: '气泡袋',
         steps: steps,
         quote: {
-          size: `${w}×${l}+${seal}`,
+          size: handle > 0 ? `<span style="font-size:0.75rem;color:#888;display:block;margin-bottom:2px;">（宽×长+手提+封口）</span>${w}×${l}+${handle}+${seal}` : `${w}×${l}+${seal}`,
           material: customMaterial || `共挤膜 ${weightPerM2}g/㎡`,
           weight: `${weightPerM2}g/㎡`,
           region: regionName,
@@ -3768,14 +4390,15 @@
       try {
         const w = parseFloat(document.getElementById('lj-width').value);
         const l = parseFloat(document.getElementById('lj-length').value);
+        const handle = parseFloat(document.getElementById('lj-handle').value) || 0;
         const thick = parseFloat(document.getElementById('lj-thickness').value);
         const material = document.getElementById('lj-material').value;
         const customMaterial = document.getElementById('lj-custom-material').value.trim();
         const region = parseInt(document.getElementById('lj-region').value);
         const customPrice = parseFloat(document.getElementById('lj-custom-price').value) || null;
         const needPrint = document.getElementById('lj-print').checked;
+        const plateType = document.getElementById('lj-plate-type').value;
         const colors = parseInt(document.getElementById('lj-colors').value);
-        const hasShouti = document.getElementById('lj-shouti').checked;
         const qtyEl = document.getElementById('lj-quantity');
         const qtyInput = qtyEl && qtyEl.value.trim();
         const quantity = qtyInput ? parseFloat(qtyInput) : null;
@@ -3789,12 +4412,14 @@
 
       const steps = [];
 
-      // 克重（无封口）
-      const weight = (w * l * 0.95 * thick) * 0.001;
+      // 克重（无封口，手提长度合并计入）
+      const totalLength = l + handle;
+      const weight = (w * totalLength * 0.95 * thick) * 0.001;
+      const lengthDisplay = handle > 0 ? `${l}+${handle}` : `${l}`;
       steps.push({
         title: '克重计算（连卷袋无封口）',
-        formula: `克重 = (宽 × 长 × 0.95 × 厚度) × 0.001`,
-        result: `= (${w} × ${l} × 0.95 × ${thick}) × 0.001 = <strong>${weight.toFixed(2)} g</strong>`
+        formula: `克重 = (宽 × 长${handle > 0 ? '+手提' : ''} × 0.95 × 厚度) × 0.001`,
+        result: `= (${w} × ${lengthDisplay} × 0.95 × ${thick}) × 0.001 = <strong>${weight.toFixed(2)} g</strong>`
       });
 
       // 起订量
@@ -3814,7 +4439,7 @@
       // 吨位价：优先使用自定义吨位价，否则使用地区默认吨位价
       const regionName = region === 1 ? '一区' : '二区';
       let priceUpper, priceLower;
-      const shoutiExtra = hasShouti ? 300 : 0;
+      const shoutiExtra = handle > 0 ? 200 : 0;
       
       if (customPrice !== null && !isNaN(customPrice)) {
         // 使用自定义吨位价
@@ -3868,12 +4493,25 @@
       
       steps.push({
         title: '吨位价对照表',
-        formula: customPrice !== null ? `使用自定义吨位价：${customPrice} 元/吨${hasShouti ? '，手提+300' : ''}${extraNote ? '，' + extraNote : ''}` : `材质：${LIANJUAN_PRICES[material].name}，地区：${regionName}${hasShouti ? '，手提+300' : ''}${extraNote ? '，' + extraNote : ''}`,
+        formula: customPrice !== null ? `使用自定义吨位价：${customPrice} 元/吨${handle > 0 ? '，手提+200' : ''}${extraNote ? '，' + extraNote : ''}` : `材质：${LIANJUAN_PRICES[material].name}，地区：${regionName}${handle > 0 ? '，手提+200' : ''}${extraNote ? '，' + extraNote : ''}`,
         result: `【吨位价上】${priceUpper} 元/吨 → 单价 = ${weight.toFixed(2)} × ${priceUpper} ÷ 1000000 = <strong>¥${pricePerUnitUpper.toFixed(3)}/个</strong>\n【吨位价下】${priceLower} 元/吨 → 单价 = ${weight.toFixed(2)} × ${priceLower} ÷ 1000000 = <strong>¥${pricePerUnitLower.toFixed(3)}/个</strong>`
       });
 
       // 报价单用吨位价上进行计算
-      const pricePerUnit = pricePerUnitUpper;
+      let pricePerUnit = pricePerUnitUpper;
+
+      // 手提款加价：连卷袋手提款吨位价+200元/吨
+      if (handle > 0) {
+        const handlePriceIncrease = 200;
+        const handlePricePerUnit = weight * handlePriceIncrease / 1000000;
+        pricePerUnit = pricePerUnitUpper + handlePricePerUnit;
+        steps.push({
+          title: '手提款加价',
+          formula: `手提款吨位价 = 普通吨位价 + 200元/吨`,
+          result: `手提款加价：${handlePriceIncrease}元/吨 → 单价增加 ¥${handlePricePerUnit.toFixed(4)}/个\n<strong>手提款单价 = ¥${pricePerUnit.toFixed(3)}/个</strong>`
+        });
+      }
+
       steps.push({
         title: '报价单计算单价',
         formula: `使用吨位价上计算（大订单可议吨位价下）`,
@@ -3901,7 +4539,7 @@
 
         steps.push({
           title: '版费计算',
-          formula: `版长 = 长 + 10 = ${rawPlateL} → 标准版长 ${plateL}`,
+          formula: `版长 = 长 + 10 = ${rawPlateL} → 标准版长 ${plateL}，版料类型：${plateType === 'pian' ? '片料' : '桶料'}`,
           result: `${colors}色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 × ${colors} = <strong>¥${plateFee.toLocaleString()}</strong>`
         });
       }
@@ -3910,11 +4548,11 @@
         type: '连卷袋',
         steps: steps,
         quote: {
-          size: `${w}×${l}${hasShouti ? '（手提）' : ''}`,
-          material: customMaterial || LIANJUAN_PRICES[material].name + (hasShouti ? '（手提）' : ''),
+          size: handle > 0 ? `<span style="font-size:0.75rem;color:#888;display:block;margin-bottom:2px;">（宽×长+手提）</span>${w}×${l}+${handle}` : `${w}×${l}`,
+          material: customMaterial || LIANJUAN_PRICES[material].name + (handle > 0 ? '（手提）' : ''),
           weight: `${thick}丝`,
           region: regionName,
-          print: needPrint ? `${colors}色小面积印刷` : '不印刷',
+          print: needPrint ? `${colors}色小面积印刷（${plateType === 'pian' ? '片料' : '桶料'}）` : '不印刷',
           moq: moq500,
           moq1000: moq1000,
           quantity: quantity || null,
@@ -4463,6 +5101,7 @@
       setTimeout(() => {
         try {
           if (currentType === 'kuaidi') calcKuaidi();
+          else if (currentType === 'shouti') calcShouti();
           else if (currentType === 'qipao') calcQipao();
           else if (currentType === 'lianjuan') calcLianjuan();
           
