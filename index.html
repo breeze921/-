@@ -778,10 +778,94 @@
       font-weight: 500;
     }
 
+    .update-log {
+      margin-top: 20px;
+      background: #fefce8;
+      border-radius: 12px;
+      border: 1px solid #fef9c3;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      overflow: hidden;
+    }
+
+    .update-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #854d0e;
+    }
+
+    .update-icon {
+      font-size: 1rem;
+    }
+
+    .update-arrow {
+      font-size: 0.7rem;
+      transition: transform 0.3s ease;
+    }
+
+    .update-arrow.expanded {
+      transform: rotate(180deg);
+    }
+
+    .update-content {
+      padding: 0 20px 16px;
+    }
+
+    .update-list {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 0.85rem;
+      color: #a16207;
+      line-height: 1.7;
+    }
+
+    .update-list li {
+      margin-bottom: 4px;
+    }
+
+    .update-list li:last-child {
+      margin-bottom: 0;
+    }
+
     .contact-info {
       margin-top: 8px;
       color: var(--accent);
       font-weight: 500;
+    }
+    
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(4px);
+    }
+    
+    .modal-content {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     }
 
     /* 结果区域样式 - 全宽度展示，充足空间 */
@@ -3205,6 +3289,7 @@
               <div id="copyQuoteArea" style="display: none; margin-top: 16px; text-align: center; gap: 12px;" class="no-print">
                 <button id="copyQuoteBtn" class="action-btn" onclick="copyQuote()">📋 复制报价</button>
                 <button id="copyCalcBtn" class="action-btn" onclick="copyCalcAnalysis()">📊 复制解析</button>
+                <button class="action-btn" onclick="showHistoryModal()">📜 历史记录</button>
               </div>
               
               <div id="custom-contact" style="display: none; margin-top: 16px;" class="no-print">
@@ -3230,8 +3315,24 @@
     <footer>
       <div class="version-badge">
         <span class="version-icon">🚀</span>
-        <span class="version-text">版本 2.7.3</span>
+        <span class="version-text">版本 2.7.4</span>
         <span class="version-date">2026.05</span>
+      </div>
+      <div class="update-log">
+        <button class="update-toggle" onclick="toggleUpdateLog()">
+          <span class="update-icon">📋</span>
+          <span class="update-title">更新日志</span>
+          <span class="update-arrow">▼</span>
+        </button>
+        <div id="updateContent" class="update-content" style="display: none;">
+          <ul class="update-list">
+            <li>新增历史报价记录功能（保存最近10条）</li>
+            <li>优化损耗计算逻辑（宽×长×0.95×厚度×数量）</li>
+            <li>优化克重取值（四舍五入到2位小数）</li>
+            <li>优化弹幕效果（降低速度、居中显示）</li>
+            <li>修复多项功能异常</li>
+          </ul>
+        </div>
       </div>
       <p class="footer-note">仅供参考 · 实际价格以最终报价为准</p>
     </footer>
@@ -3966,11 +4067,11 @@
 
         // 小尺寸小克重加价：4≤X<5g，4克加1200，每增加0.1克减100；3≤X<4g，3克加1700，每增加0.1克减50
         // 2.5≤X<3g，2.5克加2700，每增加0.1克减200；2≤X<2.5g，2克加6200，每增加0.1克减700；2g以下做不了
-        // 向取整到0.1克（例：3.17g按3.1g算，2.77g按2.7g算，2.27g按2.2g算）
+        // 四舍五入到2位小数（例：3.175g按3.18g算，2.776g按2.78g算，2.274g按2.27g算）
         let extraNote = null;
         let extraPrice = 0;
         if (weight >= 2 && weight < 5) {
-          const weightRounded = Math.floor(weight * 10) / 10;
+          const weightRounded = Math.round(weight * 100) / 100;
           const diff = weightRounded;
 
           if (diff >= 4 && diff < 5) {
@@ -3999,39 +4100,52 @@
         }
 
         // ===== 损耗计算 =====
-        let lossRate = 0;
         let lossDescription = [];
-        let weightLossKg = 0;
+        let lossKg = 0;
+        let actualMaterial = 0;
+        
+        const qty = quantity || moq;
         
         // 1. 起订量损耗：150kg起订
-        const orderWeight = (quantity || moq) * weight / 1000;
+        const orderWeight = qty * weight / 1000;
         if (orderWeight < 80) {
-          weightLossKg = 30;
+          lossKg = 30;
           lossDescription.push(`不满80kg，按30kg计算损耗`);
         } else if (orderWeight < 140) {
-          weightLossKg = 15;
+          lossKg = 15;
           lossDescription.push(`80kg≤重量<140kg，按15kg计算损耗`);
         }
         
-        // 2. 特殊尺寸损耗：长度<35cm或≥90cm，宽度<15cm或≥80cm，加5-10%损耗
+        // 2. 特殊尺寸损耗：长度<35cm或≥90cm，宽度<15cm或≥80cm，加5%损耗
         let sizeLossRate = 0;
         if (l < 35 || l >= 90 || w < 15 || w >= 80) {
-          sizeLossRate = 0.08;  // 取中间值8%作为标准损耗率
-          lossDescription.push(`特殊尺寸（长：${l}cm，宽：${w}cm），加8%尺寸损耗`);
+          sizeLossRate = 0.05;  // 5%尺寸损耗
+          lossDescription.push(`特殊尺寸（长：${l}cm，宽：${w}cm），加5%尺寸损耗`);
         }
+        
+        // 3. 计算实际材料重量：宽×长×0.95(损耗系数)×厚度×数量
+        actualMaterial = w * l * 0.95 * thick * qty / 1000;
         
         // 计算重量损耗对应的单价影响
         let totalPrice = basePrice;
-        if (weightLossKg > 0 || sizeLossRate > 0) {
-          // 重量损耗：按吨位价计算损耗成本，分摊到每个袋子
-          const lossCostPerBag = (weightLossKg * priceUpper) / (quantity || moq) / 1000;
-          // 尺寸损耗：直接按比例增加单价
-          totalPrice = (basePrice + lossCostPerBag) * (1 + sizeLossRate);
+        if (lossKg > 0 || sizeLossRate > 0) {
+          // 总材料重量 = 实际材料 + 损耗 + 尺寸损耗
+          const sizeLossWeight = actualMaterial * sizeLossRate;
+          const totalMaterial = actualMaterial + lossKg + sizeLossWeight;
+          
+          // 每袋重量 = 总材料 / 数量
+          const perBagWeightKg = totalMaterial / qty;
+          // 每袋成本 = 每袋重量(kg) × 吨位价
+          const perBagCost = perBagWeightKg * priceUpper;
+          // 除以0.95（5个点损耗）
+          const finalCost = perBagCost / 0.95;
+          
+          totalPrice = finalCost;
           
           steps.push({
             title: '损耗费用计算',
-            formula: lossDescription.join('；'),
-            result: `基础单价：¥${basePrice.toFixed(3)}/个\n重量损耗成本：¥${lossCostPerBag.toFixed(3)}/个\n尺寸损耗率：${(sizeLossRate * 100).toFixed(0)}%\n<strong>最终单价 = ¥${totalPrice.toFixed(3)}/个</strong>`
+            formula: `实际材料：${w}×${l}×0.95×${thick}×${qty.toLocaleString()}=${actualMaterial.toFixed(1)}kg；损耗${lossKg}kg；尺寸损耗${sizeLossWeight.toFixed(1)}kg`,
+            result: `总材料：${totalMaterial.toFixed(1)}kg；每袋：${(perBagWeightKg*1000).toFixed(1)}g\n吨位价：¥${priceUpper}；每袋成本：¥${perBagCost.toFixed(4)}\n<strong>最终单价 = ¥${totalPrice.toFixed(4)}/个</strong>`
           });
         } else {
           lossDescription.push('常规尺寸+满足起订量，无额外损耗');
@@ -4310,34 +4424,44 @@
 
         let basePrice = pricePerUnitUpper;
         
-        let lossRate = 0;
         let lossDescription = [];
-        let weightLossKg = 0;
+        let lossKg = 0;
+        let actualMaterial = 0;
         
-        const orderWeight = (quantity || moq) * weight / 1000;
+        const qty = quantity || moq;
+        
+        const orderWeight = qty * weight / 1000;
         if (orderWeight < 80) {
-          weightLossKg = 30;
+          lossKg = 30;
           lossDescription.push(`不满80kg，按30kg计算损耗`);
         } else if (orderWeight < 140) {
-          weightLossKg = 15;
+          lossKg = 15;
           lossDescription.push(`80kg≤重量<140kg，按15kg计算损耗`);
         }
         
         let sizeLossRate = 0;
         if (l < 35 || l >= 90 || w < 15 || w >= 80) {
-          sizeLossRate = 0.08;
-          lossDescription.push(`特殊尺寸（长：${l}cm，宽：${w}cm），加8%尺寸损耗`);
+          sizeLossRate = 0.05;
+          lossDescription.push(`特殊尺寸（长：${l}cm，宽：${w}cm），加5%尺寸损耗`);
         }
         
+        actualMaterial = w * l * 0.95 * weightPerM2 * qty / 1000;
+        
         let totalPrice = basePrice;
-        if (weightLossKg > 0 || sizeLossRate > 0) {
-          const lossCostPerBag = (weightLossKg * priceUpper) / (quantity || moq) / 1000;
-          totalPrice = (basePrice + lossCostPerBag) * (1 + sizeLossRate);
+        if (lossKg > 0 || sizeLossRate > 0) {
+          const sizeLossWeight = actualMaterial * sizeLossRate;
+          const totalMaterial = actualMaterial + lossKg + sizeLossWeight;
+          
+          const perBagWeightKg = totalMaterial / qty;
+          const perBagCost = perBagWeightKg * priceUpper;
+          const finalCost = perBagCost / 0.95;
+          
+          totalPrice = finalCost;
           
           steps.push({
             title: '损耗费用计算',
-            formula: lossDescription.join('；'),
-            result: `基础单价：¥${basePrice.toFixed(3)}/个\n重量损耗成本：¥${lossCostPerBag.toFixed(3)}/个\n尺寸损耗率：${(sizeLossRate * 100).toFixed(0)}%\n<strong>最终单价 = ¥${totalPrice.toFixed(3)}/个</strong>`
+            formula: `实际材料：${w}×${l}×0.95×${weightPerM2}×${qty.toLocaleString()}=${actualMaterial.toFixed(1)}kg；损耗${lossKg}kg；尺寸损耗${sizeLossWeight.toFixed(1)}kg`,
+            result: `总材料：${totalMaterial.toFixed(1)}kg；每袋：${(perBagWeightKg*1000).toFixed(1)}g\n吨位价：¥${priceUpper}；每袋成本：¥${perBagCost.toFixed(4)}\n<strong>最终单价 = ¥${totalPrice.toFixed(4)}/个</strong>`
           });
         } else {
           lossDescription.push('常规尺寸+满足起订量，无额外损耗');
@@ -4564,11 +4688,11 @@
 
       // 小尺寸小克重加价：4≤X<5g，4克加1200，每增加0.1克减100；3≤X<4g，3克加1700，每增加0.1克减50
       // 2.5≤X<3g，2.5克加2700，每增加0.1克减200；2≤X<2.5g，2克加6200，每增加0.1克减700；2g以下做不了
-      // 向下取整到0.1克（例：3.17g按3.1g算，2.77g按2.7g算，2.27g按2.2g算）
+      // 四舍五入到2位小数（例：3.175g按3.18g算，2.776g按2.78g算，2.274g按2.27g算）
       let extraNote = null;
       let extraPrice = 0;
       if (weight >= 2 && weight < 5) {
-        const weightRounded = Math.floor(weight * 10) / 10;
+        const weightRounded = Math.round(weight * 100) / 100;
         const diff = weightRounded;
 
         if (diff >= 4 && diff < 5) {
@@ -4620,6 +4744,56 @@
         formula: `使用吨位价上计算（大订单可议吨位价下）`,
         result: `<strong>¥${pricePerUnit.toFixed(3)}/个</strong>`
       });
+
+      // ===== 连卷袋损耗计算 =====
+      const ljQty = quantity || moq;
+      const ljOrderWeight = ljQty * thick / 1000;
+      let ljLossKg = 0;
+      let ljLossDescription = [];
+      
+      if (ljOrderWeight < 80) {
+        ljLossKg = 30;
+        ljLossDescription.push(`不满80kg，按30kg计算损耗`);
+      } else if (ljOrderWeight < 140) {
+        ljLossKg = 15;
+        ljLossDescription.push(`80kg≤重量<140kg，按15kg计算损耗`);
+      }
+      
+      let ljSizeLossRate = 0;
+      if (l < 35 || l >= 90 || w < 15 || w >= 80) {
+        ljSizeLossRate = 0.05;
+        ljLossDescription.push(`特殊尺寸（长：${l}cm，宽：${w}cm），加5%尺寸损耗`);
+      }
+      
+      // 计算实际材料重量：宽×长×0.95(损耗系数)×厚度(丝)×数量
+      const ljActualMaterial = w * l * 0.95 * thick * ljQty / 1000;
+      
+      if (ljLossKg > 0 || ljSizeLossRate > 0) {
+        const ljSizeLossWeight = ljActualMaterial * ljSizeLossRate;
+        const ljTotalMaterial = ljActualMaterial + ljLossKg + ljSizeLossWeight;
+        
+        // 每袋重量 = 总材料 / 数量
+        const ljPerBagWeightKg = ljTotalMaterial / ljQty;
+        // 每袋成本 = 每袋重量(kg) × 吨位价
+        const ljPerBagCost = ljPerBagWeightKg * priceUpper;
+        // 除以0.95（5个点损耗）
+        const ljFinalCost = ljPerBagCost / 0.95;
+        
+        pricePerUnit = ljFinalCost;
+        
+        steps.push({
+          title: '损耗费用计算',
+          formula: `实际材料：${w}×${l}×0.95×${thick}×${ljQty.toLocaleString()}=${ljActualMaterial.toFixed(1)}kg；损耗${ljLossKg}kg；尺寸损耗${ljSizeLossWeight.toFixed(1)}kg`,
+          result: `总材料：${ljTotalMaterial.toFixed(1)}kg；每袋：${(ljPerBagWeightKg*1000).toFixed(1)}g\n吨位价：¥${priceUpper}；每袋成本：¥${ljPerBagCost.toFixed(4)}\n<strong>最终单价 = ¥${pricePerUnit.toFixed(4)}/个</strong>`
+        });
+      } else {
+        ljLossDescription.push('常规尺寸+满足起订量，无额外损耗');
+        steps.push({
+          title: '损耗费用计算',
+          formula: `常规尺寸：长度35-90cm，宽度15-80cm；重量≥140kg`,
+          result: `<strong>无额外损耗</strong>，单价 = ¥${pricePerUnit.toFixed(3)}/个`
+        });
+      }
 
       steps.push({
         title: '数量取值规则说明',
@@ -4829,11 +5003,11 @@
         priceLower = prices[priceIdxLower] + shoutiExtra;
       }
 
-      // 克重加价：向下取整到0.1克（例：3.17g按3.1g算，2.77g按2.7g算，2.27g按2.2g算）
+      // 克重加价：四舍五入到2位小数（例：3.175g按3.18g算，2.776g按2.78g算，2.274g按2.27g算）
       let extraNote = null;
       let extraPrice = 0;
       if (weight >= 2 && weight < 5) {
-        const weightRounded = Math.floor(weight * 10) / 10; // 向下取整到0.1g
+        const weightRounded = Math.round(weight * 100) / 100; // 四舍五入到2位小数
         const diff = weightRounded;
         
         if (diff >= 4 && diff < 5) {
@@ -5084,6 +5258,12 @@
       
       const money = calculateMoney(q.pricePerUnit, printFee, q.quantity, q.moq, plateFee, withVat);
       
+      // 设置总价用于历史记录
+      q.totalPrice = money.totalAmount;
+      
+      // 保存历史记录
+      saveToHistory(data);
+      
       // 优先使用用户手动输入的详细地址
       q.displayRegion = customAddress || q.region;
 
@@ -5298,6 +5478,191 @@
       document.getElementById('custom-contact').style.display = 'block';
     }
     
+    // ===== 历史记录管理 =====
+    const MAX_HISTORY = 10;
+    
+    function getHistory() {
+      try {
+        const history = localStorage.getItem('quoteHistory');
+        return history ? JSON.parse(history) : [];
+      } catch (e) {
+        console.error('读取历史记录失败:', e);
+        return [];
+      }
+    }
+    
+    function saveToHistory(data) {
+      try {
+        let history = getHistory();
+        
+        const record = {
+          id: Date.now(),
+          timestamp: new Date().toISOString(),
+          type: data.type,
+          quote: data.quote,
+          steps: data.steps || [],
+          inputParams: data.inputParams || {}
+        };
+        
+        history.unshift(record);
+        
+        if (history.length > MAX_HISTORY) {
+          history = history.slice(0, MAX_HISTORY);
+        }
+        
+        localStorage.setItem('quoteHistory', JSON.stringify(history));
+      } catch (e) {
+        console.error('保存历史记录失败:', e);
+      }
+    }
+    
+    function clearHistory() {
+      try {
+        localStorage.removeItem('quoteHistory');
+      } catch (e) {
+        console.error('清除历史记录失败:', e);
+      }
+    }
+    
+    function showHistoryModal() {
+      const history = getHistory();
+      
+      let modal = document.getElementById('historyModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'historyModal';
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+          <div class="modal-content" style="max-width: 90vw; max-height: 80vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <h3 style="margin: 0;">📋 历史报价记录</h3>
+              <div style="display: flex; gap: 12px;">
+                <button onclick="clearHistory(); showHistoryModal();" style="padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer;">🗑️ 清空</button>
+                <button onclick="closeHistoryModal()" style="padding: 8px 16px; background: #666; color: white; border: none; border-radius: 8px; cursor: pointer;">关闭</button>
+              </div>
+            </div>
+            <div id="historyList"></div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+        
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeHistoryModal();
+        });
+      }
+      
+      renderHistoryList(history);
+      modal.style.display = 'flex';
+    }
+    
+    function closeHistoryModal() {
+      const modal = document.getElementById('historyModal');
+      if (modal) {
+        modal.style.display = 'none';
+      }
+    }
+    
+    function renderHistoryList(history) {
+      const listContainer = document.getElementById('historyList');
+      if (!listContainer) return;
+      
+      if (history.length === 0) {
+        listContainer.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">暂无历史记录</p>';
+        return;
+      }
+      
+      const html = history.map((record, index) => {
+        const date = new Date(record.timestamp);
+        const dateStr = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2,'0')}-${date.getDate().toString().padStart(2,'0')} ${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
+        const typeIcon = record.type === '快递袋' ? '📦' : record.type === '气泡袋' ? '☁️' : '🎞️';
+        const totalPrice = record.quote && record.quote.totalPrice ? record.quote.totalPrice : 0;
+        
+        return `
+          <div style="border: 1px solid #fed7aa; border-radius: 12px; padding: 16px; margin-bottom: 12px; background: #fff;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <div>
+                <span style="font-weight: bold;">${typeIcon} ${record.type}</span>
+                <span style="color: #999; font-size: 0.85rem; margin-left: 12px;">${dateStr}</span>
+              </div>
+              <div style="color: #ea580c; font-weight: bold; font-size: 1.2rem;">¥${Number(totalPrice).toFixed(1)}</div>
+            </div>
+            <div style="color: #666; font-size: 0.85rem; margin-bottom: 8px;">
+              ${getHistorySummary(record)}
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button onclick="viewHistoryQuote(${index})" style="flex: 1; padding: 8px; background: #ea580c; color: white; border: none; border-radius: 8px; cursor: pointer;">查看报价单</button>
+              <button onclick="viewHistoryCalc(${index})" style="flex: 1; padding: 8px; background: #666; color: white; border: none; border-radius: 8px; cursor: pointer;">查看解析</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      listContainer.innerHTML = html;
+    }
+    
+    function getHistorySummary(record) {
+      if (!record.quote) return '';
+      const q = record.quote;
+      const parts = [];
+      if (q.size && typeof q.size === 'string') {
+        const sizeMatch = q.size.match(/(\d+\.?\d*)×(\d+\.?\d*)/);
+        if (sizeMatch) {
+          parts.push(`${sizeMatch[1]}×${sizeMatch[2]}`);
+        }
+      }
+      if (q.weight) parts.push(q.weight);
+      if (q.quantity) parts.push(`${q.quantity}个`);
+      return parts.join(' | ') || '无详细信息';
+    }
+    
+    function viewHistoryQuote(index) {
+      const history = getHistory();
+      if (index < 0 || index >= history.length) return;
+      
+      const record = history[index];
+      if (!record.quote) return;
+      
+      closeHistoryModal();
+      
+      showResult({ type: record.type, quote: record.quote, steps: record.steps || [] });
+    }
+    
+    function viewHistoryCalc(index) {
+      const history = getHistory();
+      if (index < 0 || index >= history.length) return;
+      
+      const record = history[index];
+      if (!record.steps || record.steps.length === 0) {
+        alert('该记录没有计算解析数据');
+        return;
+      }
+      
+      closeHistoryModal();
+      showResult({ type: record.type, quote: record.quote, steps: record.steps || [] });
+      
+      document.getElementById('resultSection').classList.add('show');
+      
+      const calcStepsDiv = document.getElementById('calc-steps');
+      if (calcStepsDiv) {
+        calcStepsDiv.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    
+    function toggleUpdateLog() {
+      const content = document.getElementById('updateContent');
+      const arrow = document.querySelector('.update-arrow');
+      
+      if (content && arrow) {
+        if (content.style.display === 'none') {
+          content.style.display = 'block';
+          arrow.classList.add('expanded');
+        } else {
+          content.style.display = 'none';
+          arrow.classList.remove('expanded');
+        }
+      }
+    }
+    
     function updateContactInfo() {
       const customPhone = document.getElementById('custom-phone').value.trim();
       const customWechat = document.getElementById('custom-wechat').value.trim();
@@ -5358,6 +5723,22 @@
         tempHeader.style.background = 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)';
         tempHeader.style.position = 'relative';
         tempHeader.style.zIndex = '1';
+      }
+      
+      const tempFooter = tempContainer.querySelector('.quote-footer');
+      if (tempFooter) {
+        const now = new Date();
+        const year = now.getFullYear().toString().slice(-2);
+        const month = now.getMonth() + 1;
+        const day = now.getDate();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const timestamp = document.createElement('p');
+        timestamp.style.marginTop = '8px';
+        timestamp.style.fontSize = '0.85rem';
+        timestamp.style.color = '#78716c';
+        timestamp.textContent = `📅 本次报价于 ${year}年${month}月${day}日 ${hours}:${minutes} 生成`;
+        tempFooter.appendChild(timestamp);
       }
       
       const updateBtn = (text) => {
