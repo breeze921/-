@@ -2205,6 +2205,111 @@
       border-color: #f97316;
     }
     
+    .form-group .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    
+    .form-group .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 10px 16px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+    }
+    
+    .form-group .checkbox-item:hover {
+      background: #f1f5f9;
+      border-color: #f97316;
+    }
+    
+    .form-group .checkbox-item:has(input:checked) {
+      background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
+      border-color: #ea580c;
+    }
+    
+    .form-group .checkbox-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #ea580c;
+    }
+    
+    .special-buttons {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 8px;
+      margin-top: 10px;
+      justify-content: flex-start;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+    
+    .special-btn {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 14px;
+      border: 2px solid #fed7aa;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #fff8f5 0%, #fff 100%);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      font-size: 12px;
+      color: #555;
+      font-weight: 500;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    
+    .special-btn:hover {
+      border-color: #f97316;
+      background: linear-gradient(135deg, #fff7ed 0%, #fffbf7 100%);
+    }
+    
+    .special-btn.active {
+      background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+      border-color: #ea580c;
+      color: white;
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+    }
+    
+    .special-status {
+      display: none;
+      font-size: 11px;
+      opacity: 0.85;
+      margin-left: auto;
+    }
+    
+    .special-btn.active .special-status {
+      display: inline;
+    }
+    
+    .print-btn {
+      width: 100%;
+      max-width: 280px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      position: relative;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .print-btn .special-status {
+      position: absolute;
+      right: 16px;
+    }
+    
     .checkbox-item input[type="checkbox"] {
       width: 26px;
       height: 26px;
@@ -2459,7 +2564,7 @@
                   <input type="number" id="kd-handle" placeholder="手提" min="4" max="10" step="0.1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="kd-seal" placeholder="封口" value="4" min="3" max="8" step="0.1">
+                  <input type="number" id="kd-seal" placeholder="封口" value="4" min="0" max="10" step="0.1">
                 </div>
               </div>
               <p class="input-hint">宽度10-90cm, 长度24-135cm；手提款：手提尺寸4-10cm，长+手提≤90cm</p>
@@ -2531,21 +2636,64 @@
 
               <div class="form-group">
                 <label>13个点增值税发票</label>
-                <button type="button" id="kd-vat-btn" onclick="toggleVatCheckbox()" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 60px; padding: 0 18px; border: 2px solid #fed7aa; border-radius: 12px; background: linear-gradient(135deg, #fff8f5 0%, #fff 100%); width: 100%; max-width: 280px; cursor: pointer; transition: all 0.3s ease; font-family: inherit; font-size: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                <button type="button" id="kd-vat-btn" onclick="toggleVatCheckbox()" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 60px; padding: 0 18px; border: 2px solid #fed7aa; border-radius: 12px; background: linear-gradient(135deg, #fff8f5 0%, #fff 100%); width: 100%; max-width: 280px; cursor: pointer; transition: all 0.3s ease; font-family: inherit; font-size: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05); position: relative;">
                   <span style="font-size: 1.5rem;">💰</span>
                   <span style="font-weight: 600; color: #555;">专票</span>
                   <input type="checkbox" id="kd-vat" onchange="triggerRealTimeCalc()" style="display: none;">
-                  <span id="kd-vat-status" style="font-size: 0.85rem; color: #999; margin-left: auto;">未选</span>
+                  <span id="kd-vat-status" style="font-size: 0.85rem; color: #999; position: absolute; right: 18px;"></span>
                 </button>
+              </div>
+
+              <div class="form-group form-group-full">
+                <label>特殊要求</label>
+                <div class="special-buttons">
+                  <button type="button" class="special-btn" data-target="kd-special-opp" onclick="toggleSpecialBtn(this)">
+                    <input type="checkbox" id="kd-special-opp" value="opp+纸箱" style="display: none;">
+                    <span>opp+纸箱</span>
+                    <span class="special-status">已选</span>
+                  </button>
+                  <button type="button" class="special-btn" data-target="kd-special-kunzhuang" onclick="toggleSpecialBtn(this)">
+                    <input type="checkbox" id="kd-special-kunzhuang" value="捆装+纸箱" style="display: none;">
+                    <span>捆装+纸箱</span>
+                    <span class="special-status">已选</span>
+                  </button>
+                  <button type="button" class="special-btn" data-target="kd-special-buangan" onclick="toggleSpecialBtn(this)">
+                    <input type="checkbox" id="kd-special-buangan" value="贴不干胶" style="display: none;">
+                    <span>贴不干胶</span>
+                    <span class="special-status">已选</span>
+                  </button>
+                  <button type="button" class="special-btn" data-target="kd-special-tuopan" onclick="toggleSpecialBtn(this)">
+                    <input type="checkbox" id="kd-special-tuopan" value="打托盘" style="display: none;">
+                    <span>打托盘</span>
+                    <span class="special-status">已选</span>
+                  </button>
+                  <button type="button" class="special-btn" data-target="kd-special-shuangjiao" onclick="toggleSpecialBtn(this)">
+                    <input type="checkbox" id="kd-special-shuangjiao" value="双胶条" style="display: none;">
+                    <span>双胶条</span>
+                    <span class="special-status">已选</span>
+                  </button>
+                  <button type="button" class="special-btn" data-target="kd-special-chadi" onclick="toggleSpecialBtn(this)">
+                    <input type="checkbox" id="kd-special-chadi" value="插底袋" style="display: none;">
+                    <span>插底袋</span>
+                    <span class="special-status">已选</span>
+                  </button>
+                  <button type="button" class="special-btn" data-target="kd-special-yinse" onclick="toggleSpecialBtn(this)">
+                    <input type="checkbox" id="kd-special-yinse" value="银色离型膜" style="display: none;">
+                    <span>银色离型膜</span>
+                    <span class="special-status">已选</span>
+                  </button>
+                </div>
               </div>
             </div>
 
             <div class="print-fee-section">
               <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 20px;">
-                <div class="checkbox-item">
-                  <input type="checkbox" id="kd-print" checked>
-                  <label for="kd-print">需要印刷</label>
-                </div>
+                <button type="button" class="special-btn print-btn" id="kd-print-btn" onclick="togglePrintButton(this, 'kd-print', 'kd-print-options')">
+                  <input type="checkbox" id="kd-print" checked style="display: none;">
+                  <span>🖨️</span>
+                  <span>需要印刷</span>
+                  <span class="special-status">已选</span>
+                </button>
               </div>
               
               <div id="kd-print-options">
@@ -2598,7 +2746,7 @@
                   <input type="number" id="st-handle" placeholder="手提" value="8" min="5" max="30" step="0.1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="st-seal" placeholder="封口" value="4" min="3" max="8" step="0.1">
+                  <input type="number" id="st-seal" placeholder="封口" value="4" min="0" max="10" step="0.1">
                 </div>
               </div>
               <p class="input-hint">宽度10-90cm, 长度24-135cm；手提袋专用计算</p>
@@ -2734,7 +2882,7 @@
                   <input type="number" id="qp-handle" placeholder="手提" min="4" max="10" step="0.1">
                 </div>
                 <div class="input-with-unit" data-unit="cm">
-                  <input type="number" id="qp-seal" placeholder="封口" value="4" min="4" max="8" step="0.1">
+                  <input type="number" id="qp-seal" placeholder="封口" value="4" min="0" max="10" step="0.1">
                 </div>
               </div>
               <p class="input-hint">宽度10-75cm, 长度13-145cm（长×2+封口≤145cm）；手提款：手提尺寸4-10cm</p>
@@ -2775,21 +2923,29 @@
               </div>
 
               <div class="form-group">
+                <label>13个点增值税发票</label>
+                <button type="button" id="qp-vat-btn" onclick="toggleVatCheckbox('qp')" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 60px; padding: 0 18px; border: 2px solid #fed7aa; border-radius: 12px; background: linear-gradient(135deg, #fff8f5 0%, #fff 100%); width: 100%; max-width: 280px; cursor: pointer; transition: all 0.3s ease; font-family: inherit; font-size: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05); position: relative;">
+                  <span style="font-size: 1.5rem;">💰</span>
+                  <span style="font-weight: 600; color: #555;">专票</span>
+                  <input type="checkbox" id="qp-vat" onchange="triggerRealTimeCalc()" style="display: none;">
+                  <span id="qp-vat-status" style="font-size: 0.85rem; color: #999; position: absolute; right: 18px;"></span>
+                </button>
+              </div>
+
+              <div class="form-group">
                 <label>自定义吨位价 <span style="color:#999;font-weight:normal">(若输入按此吨位价计算)</span></label>
                 <input type="number" id="qp-custom-price" placeholder="如：22000" min="10000" max="50000" step="100">
               </div>
             </div>
 
             <div class="print-fee-section">
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
-                <div class="checkbox-item">
-                  <input type="checkbox" id="qp-print">
-                  <label for="qp-print">需要印刷</label>
-                </div>
-                <div class="checkbox-item">
-                  <input type="checkbox" id="qp-vat" onchange="triggerRealTimeCalc()">
-                  <label for="qp-vat">💰 13个点增值税发票</label>
-                </div>
+              <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 20px;">
+                <button type="button" class="special-btn print-btn" id="qp-print-btn" onclick="togglePrintButton(this, 'qp-print', 'qp-print-options')">
+                  <input type="checkbox" id="qp-print" style="display: none;">
+                  <span>🖨️</span>
+                  <span>需要印刷</span>
+                  <span class="special-status">已选</span>
+                </button>
               </div>
               
               <div id="qp-print-options" class="hidden">
@@ -2812,6 +2968,14 @@
                       <option value="5">5 色</option>
                       <option value="6">6 色</option>
                       <option value="7">7 色</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label>版料类型</label>
+                    <select id="qp-plate-type">
+                      <option value="pian">片料</option>
+                      <option value="tong">桶料</option>
                     </select>
                   </div>
                 </div>
@@ -2901,21 +3065,23 @@
 
               <div class="form-group">
                 <label>13个点增值税发票</label>
-                <button type="button" id="lj-vat-btn" onclick="toggleLjVatCheckbox()" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 60px; padding: 0 18px; border: 2px solid #fed7aa; border-radius: 12px; background: linear-gradient(135deg, #fff8f5 0%, #fff 100%); width: 100%; max-width: 280px; cursor: pointer; font-family: inherit; font-size: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                <button type="button" id="lj-vat-btn" onclick="toggleLjVatCheckbox()" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 60px; padding: 0 18px; border: 2px solid #fed7aa; border-radius: 12px; background: linear-gradient(135deg, #fff8f5 0%, #fff 100%); width: 100%; max-width: 280px; cursor: pointer; font-family: inherit; font-size: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.05); position: relative;">
                   <span style="font-size: 1.5rem;">💰</span>
                   <span style="font-weight: 600; color: #555;">专票</span>
                   <input type="checkbox" id="lj-vat" onchange="triggerRealTimeCalc()" style="display: none;">
-                  <span id="lj-vat-status" style="font-size: 0.85rem; color: #999; margin-left: auto;">未选</span>
+                  <span id="lj-vat-status" style="font-size: 0.85rem; color: #999; position: absolute; right: 18px;"></span>
                 </button>
               </div>
             </div>
 
             <div class="print-fee-section">
               <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 20px;">
-                <div class="checkbox-item">
-                  <input type="checkbox" id="lj-print" checked>
-                  <label for="lj-print">需要印刷</label>
-                </div>
+                <button type="button" class="special-btn print-btn" id="lj-print-btn" onclick="togglePrintButton(this, 'lj-print', 'lj-print-options')">
+                  <input type="checkbox" id="lj-print" checked style="display: none;">
+                  <span>🖨️</span>
+                  <span>需要印刷</span>
+                  <span class="special-status">已选</span>
+                </button>
               </div>
               
               <div id="lj-print-options">
@@ -2956,19 +3122,11 @@
               <div class="spinner"></div>
               <span class="btn-text">📊 计算报价</span>
             </button>
-            <button class="price-table-btn no-print" onclick="togglePriceTable()">📊 查看吨位价表</button>
             <button class="price-table-btn no-print" onclick="toggleParamTable()">📋 查看印刷版费参数</button>
+            <button class="price-table-btn no-print" onclick="togglePriceTable()">📊 查看吨位价表</button>
           </div>
         </form>
       </div>
-    </div>
-
-    <!-- 操作按钮区域（计算后显示） -->
-    <div id="actionButtonsArea" style="display: none;" class="action-buttons-bar no-print">
-      <button class="action-btn primary" onclick="window.print()">🖨️ 打印报价单</button>
-      <button id="copyQuoteBtn" class="action-btn" onclick="copyQuote()">📋 复制报价</button>
-      <button class="action-btn" onclick="downloadQuote()">💾 保存PDF</button>
-      <button class="action-btn" onclick="resetForm()">🔄 重新计算</button>
     </div>
 
     <!-- 结果区域 - 全宽度展示，有足够空间 -->
@@ -2987,9 +3145,24 @@
             </div>
             <div class="quote-body" id="quote-body"></div>
             <div class="quote-footer">
-              <p>📞 电话：<span class="contact">15669575856</span></p>
-              <p>💬 微信：<span class="contact">hdbz02</span></p>
+              <p>📞 电话：<span id="quote-phone" class="contact">15669575856</span></p>
+              <p>💬 微信：<span id="quote-wechat" class="contact">hdbz02</span></p>
               <p style="margin-top: 8px; font-size: 0.8rem;">仅供参考 · 实际价格以最终报价为准</p>
+              <div id="copyQuoteArea" style="display: none; margin-top: 16px; text-align: center; gap: 12px;" class="no-print">
+                <button id="copyQuoteBtn" class="action-btn" onclick="copyQuote()">📋 复制报价</button>
+                <button id="copyCalcBtn" class="action-btn" onclick="copyCalcAnalysis()">📊 复制解析</button>
+              </div>
+              
+              <div id="custom-contact" style="display: none; margin-top: 16px;" class="no-print">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                  <div>
+                    <input type="text" id="custom-phone" placeholder="自定义电话" oninput="updateContactInfo()" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem;">
+                  </div>
+                  <div>
+                    <input type="text" id="custom-wechat" placeholder="自定义微信" oninput="updateContactInfo()" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem;">
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -3003,7 +3176,7 @@
     <footer>
       <div class="version-badge">
         <span class="version-icon">🚀</span>
-        <span class="version-text">版本 2.7.1</span>
+        <span class="version-text">版本 2.7.2</span>
         <span class="version-date">2026.05</span>
       </div>
       <p class="footer-note">仅供参考 · 实际价格以最终报价为准</p>
@@ -3260,39 +3433,28 @@
       });
     });
 
-    // ===== 印刷复选框切换 - 增强视觉反馈 =====
-    function togglePrintCheckbox(checkboxId, optionsId) {
+    // ===== 印刷按钮初始化 =====
+    function initPrintButton(checkboxId, buttonId, optionsId) {
       const checkbox = document.getElementById(checkboxId);
-      const checkboxGroup = checkbox.parentElement;
+      const button = document.getElementById(buttonId);
       const options = document.getElementById(optionsId);
       
-      // 初始化选中状态
-      if (checkbox.checked) {
-        checkboxGroup.classList.add('active');
-        options.classList.remove('hidden');
-      } else {
-        checkboxGroup.classList.remove('active');
-        options.classList.add('hidden');
-      }
-      
-      checkbox.addEventListener('change', (e) => {
-        checkboxGroup.classList.toggle('active', e.target.checked);
-        options.classList.toggle('hidden', !e.target.checked);
-      });
-      
-      // 点击整个区域也能触发勾选
-      checkboxGroup.addEventListener('click', (e) => {
-        if (e.target !== checkbox) {
-          checkbox.checked = !checkbox.checked;
-          checkbox.dispatchEvent(new Event('change'));
+      if (checkbox && button && options) {
+        // 初始化选中状态
+        if (checkbox.checked) {
+          button.classList.add('active');
+          options.classList.remove('hidden');
+        } else {
+          button.classList.remove('active');
+          options.classList.add('hidden');
         }
-      });
+      }
     }
     
-    // 初始化所有印刷复选框
-    togglePrintCheckbox('kd-print', 'kd-print-options');
-    togglePrintCheckbox('qp-print', 'qp-print-options');
-    togglePrintCheckbox('lj-print', 'lj-print-options');
+    // 初始化印刷按钮
+    initPrintButton('kd-print', 'kd-print-btn', 'kd-print-options');
+    initPrintButton('qp-print', 'qp-print-btn', 'qp-print-options');
+    initPrintButton('lj-print', 'lj-print-btn', 'lj-print-options');
 
     // 初始化手提复选框样式
     function initCheckboxStyle(checkboxId) {
@@ -3447,10 +3609,12 @@
     // ===== 实时计算验证机制 =====
     let calcTimeout = null;
     
-    function toggleVatCheckbox() {
-      const checkbox = document.getElementById('kd-vat');
-      const button = document.getElementById('kd-vat-btn');
-      const status = document.getElementById('kd-vat-status');
+    function toggleVatCheckbox(prefix = 'kd') {
+      const checkbox = document.getElementById(`${prefix}-vat`);
+      const button = document.getElementById(`${prefix}-vat-btn`);
+      const status = document.getElementById(`${prefix}-vat-status`);
+      if (!checkbox || !button || !status) return;
+      
       checkbox.checked = !checkbox.checked;
       
       if (checkbox.checked) {
@@ -3465,37 +3629,42 @@
         button.style.borderColor = '#fed7aa';
         button.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
         button.querySelector('span:nth-child(2)').style.color = '#555';
-        status.textContent = '未选';
+        status.textContent = '';
         status.style.color = '#999';
       }
       
       checkbox.dispatchEvent(new Event('change'));
     }
     
-    function toggleKdPrintButton() {
-      const checkbox = document.getElementById('kd-print');
-      const button = document.getElementById('kd-print-btn');
-      const status = document.getElementById('kd-print-status');
-      const options = document.getElementById('kd-print-options');
+    function toggleSpecialBtn(button) {
+      const checkbox = button.querySelector('input[type="checkbox"]');
       checkbox.checked = !checkbox.checked;
       
       if (checkbox.checked) {
-        button.style.background = 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)';
-        button.style.borderColor = '#ea580c';
-        button.querySelector('span:nth-child(2)').style.color = '#fff';
-        status.textContent = '已选';
-        status.style.color = 'rgba(255,255,255,0.9)';
+        button.classList.add('active');
+      } else {
+        button.classList.remove('active');
+      }
+      
+      checkbox.dispatchEvent(new Event('change'));
+      triggerRealTimeCalc();
+    }
+    
+    function togglePrintButton(button, checkboxId, optionsId) {
+      const checkbox = document.getElementById(checkboxId);
+      const options = document.getElementById(optionsId);
+      checkbox.checked = !checkbox.checked;
+      
+      if (checkbox.checked) {
+        button.classList.add('active');
         options.classList.remove('hidden');
       } else {
-        button.style.background = '#fff';
-        button.style.borderColor = '#ddd';
-        button.querySelector('span:nth-child(2)').style.color = '#666';
-        status.textContent = '未选';
-        status.style.color = '#999';
+        button.classList.remove('active');
         options.classList.add('hidden');
       }
       
       checkbox.dispatchEvent(new Event('change'));
+      triggerRealTimeCalc();
     }
     
     function toggleLjVatCheckbox() {
@@ -3516,7 +3685,7 @@
         button.style.borderColor = '#fed7aa';
         button.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
         button.querySelector('span:nth-child(2)').style.color = '#555';
-        status.textContent = '未选';
+        status.textContent = '';
         status.style.color = '#999';
       }
       
@@ -3545,6 +3714,7 @@
     const realtimeInputs = [
       'kd-width', 'kd-length', 'kd-seal', 'kd-thickness', 'kd-material', 'kd-region', 'kd-custom-price', 'kd-address',
       'kd-print', 'kd-print-type', 'kd-colors', 'kd-plate-type', 'kd-quantity', 'kd-vat',
+      'kd-special-opp', 'kd-special-kunzhuang', 'kd-special-buangan', 'kd-special-tuopan', 'kd-special-shuangjiao', 'kd-special-chadi', 'kd-special-yinse',
       'st-width', 'st-length', 'st-handle', 'st-seal', 'st-thickness', 'st-material', 'st-region', 'st-custom-price', 'st-address',
       'st-print', 'st-print-type', 'st-colors', 'st-plate-type', 'st-quantity', 'st-vat',
       'qp-width', 'qp-length', 'qp-seal', 'qp-weight', 'qp-region', 'qp-custom-price', 'qp-address',
@@ -3573,7 +3743,7 @@
         const w = parseFloat(wEl.value);
         const l = parseFloat(lEl.value);
         const handle = parseFloat(document.getElementById('kd-handle').value) || 0;
-        const seal = parseFloat(document.getElementById('kd-seal').value) || 4;
+        const seal = parseFloat(document.getElementById('kd-seal').value) ?? 4;
         const thick = parseFloat(document.getElementById('kd-thickness').value);
         const material = document.getElementById('kd-material').value;
         const customMaterial = document.getElementById('kd-custom-material').value.trim();
@@ -3698,7 +3868,41 @@
             result: `手提款加价：${handlePriceIncrease}元/吨 → 单价增加 ¥${handlePricePerUnit.toFixed(4)}/个\n<strong>手提款单价 = ¥${basePrice.toFixed(3)}/个</strong>`
           });
         }
-        
+
+        // 小尺寸小克重加价：4≤X<5g，4克加1200，每增加0.1克减100；3≤X<4g，3克加1700，每增加0.1克减50
+        // 2.5≤X<3g，2.5克加2700，每增加0.1克减200；2≤X<2.5g，2克加6200，每增加0.1克减700；2g以下做不了
+        // 向取整到0.1克（例：3.17g按3.1g算，2.77g按2.7g算，2.27g按2.2g算）
+        let extraNote = null;
+        let extraPrice = 0;
+        if (weight >= 2 && weight < 5) {
+          const weightRounded = Math.floor(weight * 10) / 10;
+          const diff = weightRounded;
+
+          if (diff >= 4 && diff < 5) {
+            extraPrice = 1200 - Math.floor((diff - 4) / 0.1) * 100;
+          } else if (diff >= 3 && diff < 4) {
+            extraPrice = 1700 - Math.floor((diff - 3) / 0.1) * 50;
+          } else if (diff >= 2.5 && diff < 3) {
+            extraPrice = 2700 - Math.floor((diff - 2.5) / 0.1) * 200;
+          } else if (diff >= 2 && diff < 2.5) {
+            extraPrice = 6200 - Math.floor((diff - 2) / 0.1) * 700;
+          }
+
+          if (extraPrice > 0) {
+            priceUpper += extraPrice;
+            basePrice = weight * priceUpper / 1000000;
+            extraNote = `克重${weightRounded.toFixed(1)}g<5g，吨位价+${extraPrice}`;
+            steps.push({
+              title: '克重加价（小尺寸损耗）',
+              formula: `克重 ${weight.toFixed(2)}g → 按 ${weightRounded.toFixed(1)}g 计算（向下取整到0.1g）`,
+              result: `吨位价加价 <strong>+${extraPrice}</strong> 元/吨\n<strong>加价后单价 = ¥${basePrice.toFixed(3)}/个</strong>`
+            });
+          }
+        } else if (weight < 2) {
+          alert('克重太低超生产范围');
+          return;
+        }
+
         // ===== 损耗计算 =====
         let lossRate = 0;
         let lossDescription = [];
@@ -3743,7 +3947,50 @@
           });
         }
         
-        const pricePerUnit = totalPrice;
+        let pricePerUnit = totalPrice;
+
+        // ===== 特殊要求加价 =====
+        const specialOptions = [
+          { id: 'kd-special-opp', name: 'opp+纸箱', type: 'ton', value: 1200 },
+          { id: 'kd-special-kunzhuang', name: '捆装+纸箱', type: 'ton', value: 500 },
+          { id: 'kd-special-buangan', name: '贴不干胶', type: 'unit', value: 0.1 },
+          { id: 'kd-special-tuopan', name: '打托盘', type: 'total', value: 100 },
+          { id: 'kd-special-shuangjiao', name: '双胶条', type: 'ton', value: 1000 },
+          { id: 'kd-special-chadi', name: '插底袋', type: 'ton', value: 500 },
+          { id: 'kd-special-yinse', name: '银色离型膜', type: 'ton', value: 200 }
+        ];
+        
+        let specialPrice = 0;
+        let specialNote = [];
+        let totalExtraFee = 0;
+        
+        for (const option of specialOptions) {
+          const checkbox = document.getElementById(option.id);
+          if (checkbox && checkbox.checked) {
+            if (option.type === 'ton') {
+              // 吨位价加价
+              const extraPerUnit = weight * option.value / 1000000;
+              pricePerUnit += extraPerUnit;
+              specialNote.push(`${option.name}：吨位价+${option.value}元/吨，单价+¥${extraPerUnit.toFixed(4)}/个`);
+            } else if (option.type === 'unit') {
+              // 按个加价
+              pricePerUnit += option.value;
+              specialNote.push(`${option.name}：+¥${option.value}/个`);
+            } else if (option.type === 'total') {
+              // 总价加价
+              totalExtraFee += option.value;
+              specialNote.push(`${option.name}：总价+¥${option.value}`);
+            }
+          }
+        }
+        
+        if (specialNote.length > 0) {
+          steps.push({
+            title: '特殊要求加价',
+            formula: specialNote.join('；'),
+            result: `<strong>特殊要求加价后单价 = ¥${pricePerUnit.toFixed(3)}/个</strong>${totalExtraFee > 0 ? `\n额外费用：¥${totalExtraFee}` : ''}`
+          });
+        }
 
         steps.push({
           title: '数量取值规则说明',
@@ -3874,7 +4121,8 @@
             plateFormula: needPrint ? plateFormula : null,
             printFee: printFee,
             bagType: 'kuaidi',
-            needPrint: needPrint
+            needPrint: needPrint,
+            extraFee: totalExtraFee > 0 ? totalExtraFee : null
           }
         });
       } catch (err) {
@@ -3895,7 +4143,7 @@
         const w = parseFloat(wEl.value);
         const l = parseFloat(lEl.value);
         const handle = parseFloat(document.getElementById('st-handle').value) || 8;
-        const seal = parseFloat(document.getElementById('st-seal').value) || 4;
+        const seal = parseFloat(document.getElementById('st-seal').value) ?? 4;
         const thick = parseFloat(document.getElementById('st-thickness').value);
         const material = document.getElementById('st-material').value;
         const customMaterial = document.getElementById('st-custom-material').value.trim();
@@ -4133,7 +4381,7 @@
         const w = parseFloat(document.getElementById('qp-width').value);
         const l = parseFloat(document.getElementById('qp-length').value);
         const handle = parseFloat(document.getElementById('qp-handle').value) || 0;
-        const seal = parseFloat(document.getElementById('qp-seal').value) || 4;
+        const seal = parseFloat(document.getElementById('qp-seal').value) ?? 4;
         const weightPerM2 = parseFloat(document.getElementById('qp-weight').value);
         const customMaterial = document.getElementById('qp-custom-material').value.trim();
         const region = parseInt(document.getElementById('qp-region').value);
@@ -4141,6 +4389,7 @@
         const needPrint = document.getElementById('qp-print').checked;
         const printType = document.getElementById('qp-print-type').value;
         const colors = parseInt(document.getElementById('qp-colors').value);
+        const plateType = document.getElementById('qp-plate-type').value;
         const qtyEl = document.getElementById('qp-quantity');
         const qtyInput = qtyEl && qtyEl.value.trim();
         const quantity = qtyInput ? parseFloat(qtyInput) : null;
@@ -4212,24 +4461,46 @@
       const totalMeters = displayQty * w / 100; // 数量×宽度(米)
       let lossAdjustment = 0;
       let lossReasons = [];
-      
+
       if (totalMeters < 1000) {
         lossAdjustment += 300;
         lossReasons.push(`数量×宽度 = ${displayQty} × ${w}cm = ${totalMeters.toFixed(1)}米 < 1000米，吨位价+300元`);
       }
-      
-      // 损耗调整：单袋克重 < 12g，吨位价加1500元
-      if (weight < 12) {
-        lossAdjustment += 1500;
-        lossReasons.push(`单袋克重 = ${weight.toFixed(2)}g < 12g，吨位价+1500元`);
+
+      // 小尺寸小克重加价：4≤X<5g，4克加1200，每增加0.1克减100；3≤X<4g，3克加1700，每增加0.1克减50
+      // 2.5≤X<3g，2.5克加2700，每增加0.1克减200；2≤X<2.5g，2克加6200，每增加0.1克减700；2g以下做不了
+      // 向下取整到0.1克（例：3.17g按3.1g算，2.77g按2.7g算，2.27g按2.2g算）
+      let extraNote = null;
+      let extraPrice = 0;
+      if (weight >= 2 && weight < 5) {
+        const weightRounded = Math.floor(weight * 10) / 10;
+        const diff = weightRounded;
+
+        if (diff >= 4 && diff < 5) {
+          extraPrice = 1200 - Math.floor((diff - 4) / 0.1) * 100;
+        } else if (diff >= 3 && diff < 4) {
+          extraPrice = 1700 - Math.floor((diff - 3) / 0.1) * 50;
+        } else if (diff >= 2.5 && diff < 3) {
+          extraPrice = 2700 - Math.floor((diff - 2.5) / 0.1) * 200;
+        } else if (diff >= 2 && diff < 2.5) {
+          extraPrice = 6200 - Math.floor((diff - 2) / 0.1) * 700;
+        }
+
+        if (extraPrice > 0) {
+          lossAdjustment += extraPrice;
+          lossReasons.push(`克重${weightRounded.toFixed(1)}g<5g，吨位价+${extraPrice}`);
+        }
+      } else if (weight < 2) {
+        alert('克重太低超生产范围');
+        return;
       }
-      
+
       // 应用损耗调整
       if (lossAdjustment > 0) {
         priceUpper += lossAdjustment;
         priceLower += lossAdjustment;
       }
-      
+
       if (lossReasons.length > 0) {
         steps.push({
           title: '损耗调整',
@@ -4268,14 +4539,15 @@
         // 气泡袋版长计算：
         // 如果（长×2+封口）< 60cm 需要双开，版长 = （长×2+封口）×2 + 10
         // 如果（长×2+封口）≥ 60cm 单开，版长 = 长×2 + 封口 + 10
-        // 选择最接近的大一号固定版长（85→92→102→112→122→135→140）
+        // 选择最接近的大一号固定版长
         const totalLength = l * 2 + seal;
         const needDoublePlate = totalLength < 60;
         const rawPlateL = needDoublePlate ? totalLength * 2 + 10 : totalLength + 10;
         
-        let plateL = PLATE_LENGTHS_PIAN[PLATE_LENGTHS_PIAN.length - 1].length;
-        let plateInfo = PLATE_LENGTHS_PIAN[PLATE_LENGTHS_PIAN.length - 1];
-        for (const pl of PLATE_LENGTHS_PIAN) {
+        const plateLengths = plateType === 'pian' ? PLATE_LENGTHS_PIAN : PLATE_LENGTHS_TONG;
+        let plateL = plateLengths[plateLengths.length - 1].length;
+        let plateInfo = plateLengths[plateLengths.length - 1];
+        for (const pl of plateLengths) {
           if (rawPlateL <= pl.length) {
             plateL = pl.length;
             plateInfo = pl;
@@ -4298,7 +4570,7 @@
         const zhouInfo = multiplier > 1 ? `（${basePlateZhou.toFixed(1)} × ${multiplier}）` : '';
         steps.push({
           title: '版费计算',
-          formula: needDoublePlate ? `双开版长 = (${l}×2 + ${seal})×2 + 10 = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）` : `单开版长 = ${l}×2 + ${seal} + 10 = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）`,
+          formula: `${plateType === 'pian' ? '片料' : '桶料'}版长：` + (needDoublePlate ? `双开版长 = (${l}×2 + ${seal})×2 + 10 = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）` : `单开版长 = ${l}×2 + ${seal} + 10 = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）`),
           result: `版周 = ${basePlateZhou.toFixed(1)}${zhouInfo} = ${plateZhou.toFixed(1)} cm（最小版宽${minWidth}cm）\n单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colors}色版费 = ${singlePlateFee} × ${colors} = ${singlePlateFee * colors < 200 ? '<strong>¥200</strong>（最低200元）' : `<strong>¥${plateFee.toLocaleString()}</strong>`}`
         });
       }
@@ -4370,7 +4642,7 @@
           material: customMaterial || `共挤膜 ${weightPerM2}g/㎡`,
           weight: `${weightPerM2}g/㎡`,
           region: regionName,
-          print: needPrint ? `${colors}色${printType === 'full' ? '满版' : '小面积印刷'}` : '不印刷',
+          print: needPrint ? `${colors}色${printType === 'full' ? '满版' : '小面积印刷'}（${plateType === 'pian' ? '片料' : '桶料'}）` : '不印刷',
           moq: moq,
           quantity: quantity || null,
           displayQty: displayQty,
@@ -4492,7 +4764,7 @@
           result: `吨位价加价 <strong>+${extraPrice}</strong> 元/吨` 
         });
       } else if (weight < 2) {
-        alert('连卷袋克重必须≥2克，当前计算克重为 ' + weight.toFixed(2) + 'g');
+        alert('克重太低超生产范围');
         return;
       }
 
@@ -4921,12 +5193,29 @@
 
     function hideResult() {
       document.getElementById('resultSection').classList.remove('show');
-      document.getElementById('actionButtonsArea').style.display = 'none';
+      document.getElementById('copyQuoteArea').style.display = 'none';
+      document.getElementById('custom-contact').style.display = 'none';
     }
 
     // ===== 操作按钮功能 =====
     function showActionButtons() {
-      document.getElementById('actionButtonsArea').style.display = 'flex';
+      document.getElementById('copyQuoteArea').style.display = 'block';
+      document.getElementById('custom-contact').style.display = 'block';
+    }
+    
+    function updateContactInfo() {
+      const customPhone = document.getElementById('custom-phone').value.trim();
+      const customWechat = document.getElementById('custom-wechat').value.trim();
+      
+      const phoneElement = document.getElementById('quote-phone');
+      const wechatElement = document.getElementById('quote-wechat');
+      
+      if (phoneElement) {
+        phoneElement.textContent = customPhone || '15669575856';
+      }
+      if (wechatElement) {
+        wechatElement.textContent = customWechat || 'hdbz02';
+      }
     }
 
     function copyQuote() {
@@ -5037,6 +5326,69 @@
           alert('复制失败，请使用截图功能保存报价单');
           updateBtn(originalText);
         });
+      }, 300);
+    }
+    
+    function copyCalcAnalysis() {
+      const calcCard = document.querySelector('.calc-process-card');
+      const btn = document.getElementById('copyCalcBtn');
+      const originalText = btn?.innerHTML || '📊 复制计算解析';
+      
+      if (!calcCard) {
+        alert('未找到计算解析，请先计算');
+        return;
+      }
+      
+      const updateBtn = (text) => {
+        if (btn) {
+          btn.innerHTML = text;
+        }
+      };
+      
+      updateBtn('⏳ 正在生成图片...');
+      btn.disabled = true;
+      
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      setTimeout(() => {
+        html2canvas(calcCard, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#fff'
+        }).then(canvas => {
+          canvas.toBlob((blob) => {
+            try {
+              if (isMobile) {
+                downloadCanvasAsImage(canvas, 'calc-analysis');
+                updateBtn('✅ 图片已保存');
+              } else {
+                const item = new ClipboardItem({ 'image/png': blob });
+                navigator.clipboard.write([item]).then(() => {
+                  updateBtn('✅ 图片已复制');
+                }).catch(err => {
+                  console.error('复制失败:', err);
+                  downloadCanvasAsImage(canvas, 'calc-analysis');
+                  updateBtn('✅ 图片已保存');
+                });
+              }
+            } catch (e) {
+              console.error('Clipboard error:', e);
+              downloadCanvasAsImage(canvas, 'calc-analysis');
+              updateBtn('✅ 图片已保存');
+            }
+          }, 'image/png', 1.0);
+        }).catch(err => {
+          console.error('生成图片失败:', err);
+          alert('复制失败，请使用截图功能保存计算解析');
+          updateBtn(originalText);
+          btn.disabled = false;
+        });
+        
+        setTimeout(() => {
+          updateBtn(originalText);
+          btn.disabled = false;
+        }, 2000);
       }, 300);
     }
     
