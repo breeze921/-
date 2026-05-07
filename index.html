@@ -4552,6 +4552,50 @@
         });
       }
 
+      // 印刷费（用户输入数量优先，无输入用起订量）
+      const qtyForPrint = quantity && quantity > 0 ? quantity : moq;
+      const qtyNoteForPrint = quantity && quantity > 0 ? '用户输入数量' : '起订量';
+      
+      let printFee = 0;
+      if (needPrint) {
+        const rawPlateL = plateType === 'pian' ? totalLength * 2 + 10 : totalLength + 10;
+        const plateLengths = plateType === 'pian' ? PLATE_LENGTHS_PIAN : PLATE_LENGTHS_TONG;
+        let plateL = plateLengths[plateLengths.length - 1].length;
+        for (const pl of plateLengths) {
+          if (rawPlateL <= pl.length) {
+            plateL = pl.length;
+            break;
+          }
+        }
+        const startPricePerColor = plateL >= 85 ? 250 : 200;
+        const colorNum = colors;
+        const colorText = `${colorNum}色`;
+        
+        const meterPrice = w <= 70 
+          ? [0, 0.04, 0.05, 0.06, 0.07, 0.08, 0.30, 0.30]
+          : [0, 0.045, 0.06, 0.07, 0.08, 0.09, 0.30, 0.30];
+        const colorCountForPrint = plateType === 'pian' ? colors : colorNum;
+        const basePrintFee = w * meterPrice[colorCountForPrint] / 100;
+        const totalPrintFee = basePrintFee * qtyForPrint;
+        const minPrintFee = startPricePerColor * colorNum;
+        
+        if (totalPrintFee < minPrintFee) {
+          printFee = minPrintFee / qtyForPrint;
+          steps.push({
+            title: '印刷费（小面积，按' + qtyNoteForPrint + '计算）',
+            formula: `宽度${w <= 70 ? '≤70' : '>70'}cm，${colorText} = ¥${meterPrice[colorCountForPrint]}/米`,
+            result: `印刷费 = ${w} × ${meterPrice[colorCountForPrint]} ÷ 100 = ¥${basePrintFee.toFixed(3)}/个\n总印刷费 = ¥${totalPrintFee.toFixed(2)} < 起步价 ¥${minPrintFee}\n实际印刷费 = ${minPrintFee} ÷ ${qtyForPrint.toLocaleString()} = <strong>¥${printFee.toFixed(3)}/个</strong>`
+          });
+        } else {
+          printFee = basePrintFee;
+          steps.push({
+            title: '印刷费（小面积）',
+            formula: `宽度${w <= 70 ? '≤70' : '>70'}cm，${colorText} = ¥${meterPrice[colorCountForPrint]}/米`,
+            result: `印刷费 = ${w} × ${meterPrice[colorCountForPrint]} ÷ 100 = <strong>¥${printFee.toFixed(3)}/个</strong>`
+          });
+        }
+      }
+
       showResult({
         type: '连卷袋',
         steps: steps,
@@ -4568,7 +4612,7 @@
           pricePerUnit: pricePerUnit,
           plate: needPrint ? plateFee : null,
           plateFormula: needPrint ? plateFormula : null,
-          printFee: 0, // 连卷袋印刷费暂不计入单价
+          printFee: printFee,
           bagType: 'lianjuan',
           needPrint: needPrint
         },
