@@ -2426,7 +2426,7 @@
     </header>
 
     <div class="tabs">
-      <div class="tab active" data-type="kuaidi"><span>📦 快递袋</span></div>
+      <div class="tab" data-type="kuaidi"><span>📦 快递袋</span></div>
       <div class="tab" data-type="qipao"><span>☁️ 气泡袋</span></div>
       <div class="tab" data-type="lianjuan"><span>🎞️ 连卷袋</span></div>
     </div>
@@ -2951,12 +2951,11 @@
 
           </div>
 
-          <button type="submit" class="calculate-btn">
-            <div class="spinner"></div>
-            <span class="btn-text">📊 计算报价</span>
-          </button>
-          
-          <div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap;">
+          <div id="kd-action-area" style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap;">
+            <button type="submit" class="calculate-btn">
+              <div class="spinner"></div>
+              <span class="btn-text">📊 计算报价</span>
+            </button>
             <button class="price-table-btn no-print" onclick="togglePriceTable()">📊 查看吨位价表</button>
             <button class="price-table-btn no-print" onclick="toggleParamTable()">📋 查看印刷版费参数</button>
           </div>
@@ -3004,7 +3003,7 @@
     <footer>
       <div class="version-badge">
         <span class="version-icon">🚀</span>
-        <span class="version-text">版本 2.6.0</span>
+        <span class="version-text">版本 2.7.0</span>
         <span class="version-date">2026.05</span>
       </div>
       <p class="footer-note">仅供参考 · 实际价格以最终报价为准</p>
@@ -3243,6 +3242,7 @@
     const kuaidiInputs = document.getElementById('kuaidi-inputs');
     const qipaoInputs = document.getElementById('qipao-inputs');
     const lianjuanInputs = document.getElementById('lianjuan-inputs');
+    const kdActionArea = document.getElementById('kd-action-area');
 
     let currentType = 'kuaidi';
 
@@ -3767,7 +3767,15 @@
           }
 
           const minWidth = plateLengths.find(pl => pl.length === plateL)?.minWidth || 35;
-          let plateZhou = w >= minWidth ? w + 0.3 : w * 2 + 0.6;
+          let basePlateZhou = w + 0.3;
+          let plateZhou = basePlateZhou;
+          let multiplier = 1;
+          // 如果版周小于最小版宽，需要加倍，支持多次加倍（×2、×3等）
+          while (plateZhou < minWidth) {
+            multiplier++;
+            plateZhou = basePlateZhou * multiplier;
+          }
+          const zhouInfo = multiplier > 1 ? `（${basePlateZhou.toFixed(1)} × ${multiplier}）` : '';
 
           const singlePlateFee = Math.round(plateL * plateZhou * 0.11);
           plateFee = singlePlateFee * colorNum;
@@ -3776,7 +3784,7 @@
           steps.push({
             title: '版费计算',
             formula: `版长 = ${plateType === 'pian' ? '长×2 + 封口 + 10' : '长 + 封口 + 10'} → 标准版长 ${plateL} cm`,
-            result: `版周 = ${plateZhou.toFixed(1)} cm\n单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colorText}版费 = ${singlePlateFee} × ${colorNum} = <strong>¥${plateFee.toLocaleString()}</strong>`
+            result: `版周 = ${basePlateZhou.toFixed(1)}${zhouInfo} = ${plateZhou.toFixed(1)} cm（最小版宽${minWidth}cm）\n单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colorText}版费 = ${singlePlateFee} × ${colorNum} = <strong>¥${plateFee.toLocaleString()}</strong>`
           });
         }
 
@@ -4882,6 +4890,39 @@
       
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       
+      // 电脑端优先复制文本到剪贴板
+      if (!isMobile) {
+        const fullQuote = quoteCard.innerText;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(fullQuote).then(() => {
+            btn.innerHTML = '✅ 文本已复制';
+            setTimeout(() => {
+              btn.innerHTML = originalText;
+            }, 2000);
+          }).catch(() => {
+            // 复制文本失败，尝试复制图片
+            copyQuoteImage();
+          });
+          return;
+        }
+      }
+      
+      // 手机端或备用方案：复制图片
+      copyQuoteImage();
+    }
+    
+    function copyQuoteImage() {
+      const quoteCard = document.querySelector('.quote-template-card');
+      const btn = event.target.closest('button');
+      const originalText = btn.innerHTML;
+      
+      if (!quoteCard) {
+        alert('未找到报价单，请先计算');
+        return;
+      }
+      
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
       btn.innerHTML = '⏳ 正在生成图片...';
       btn.disabled = true;
       
@@ -4967,13 +5008,16 @@
           if (document.body.contains(tempContainer)) {
             document.body.removeChild(tempContainer);
           }
-          fallbackCopyText();
+          alert('复制失败，请使用截图功能保存报价单');
+          btn.innerHTML = originalText;
+          btn.disabled = false;
         });
       }, 300);
-      
-      function downloadCanvasAsImage(canvas, blob) {
-        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-        const isAndroid = /Android/i.test(navigator.userAgent);
+    }
+    
+    function downloadCanvasAsImage(canvas, blob) {
+      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const isAndroid = /Android/i.test(navigator.userAgent);
         
         if (isIOS || isAndroid) {
           const imgData = canvas.toDataURL('image/png');
@@ -5035,26 +5079,6 @@
         }
       }
       
-      function fallbackCopyText() {
-        const fullQuote = quoteCard.innerText;
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(fullQuote).then(() => {
-            btn.innerHTML = '✅ 文本已复制';
-            setTimeout(() => {
-              btn.innerHTML = originalText;
-              btn.disabled = false;
-            }, 2000);
-          }).catch(() => {
-            alert('复制失败，请截图或保存图片');
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-          });
-        } else {
-          alert('请使用手机截图功能保存报价单');
-          btn.innerHTML = originalText;
-          btn.disabled = false;
-        }
-      }
     }
 
     function downloadQuote() {
@@ -5374,6 +5398,8 @@
       ljHTML += '</tbody></table>';
       document.getElementById('ljPriceTable').innerHTML = ljHTML;
     }
+
+    initLogoUpload();
   </script>
 
   <!-- 操作按钮区域（计算后显示） -->
