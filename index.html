@@ -2241,6 +2241,42 @@
       accent-color: #ea580c;
     }
     
+    /* 弹幕样式 */
+    .danmaku-container {
+      position: relative;
+      width: 100%;
+      height: 40px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fff7ed 0%, #fff 100%);
+      border-radius: 8px;
+      border: 1px solid #fed7aa;
+    }
+    
+    .danmaku-item {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      white-space: nowrap;
+      font-size: 14px;
+      font-weight: 500;
+      color: #ea580c;
+      animation: danmaku-scroll 15s linear forwards;
+      padding: 4px 12px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 20px;
+      box-shadow: 0 2px 8px rgba(234, 88, 12, 0.15);
+    }
+    
+    @keyframes danmaku-scroll {
+      0% {
+        left: 100%;
+      }
+      100% {
+        left: -200%;
+      }
+    }
+    
     .special-buttons {
       display: flex;
       flex-wrap: nowrap;
@@ -2529,6 +2565,8 @@
       <h1>曦光包装袋报价器</h1>
       <p class="subtitle">快递袋 · 气泡袋 · 连卷袋 定制报价一目了然</p>
     </header>
+
+    <div id="danmaku-container" class="danmaku-container"></div>
 
     <div class="tabs">
       <div class="tab" data-type="kuaidi"><span>📦 快递袋</span></div>
@@ -3176,7 +3214,7 @@
     <footer>
       <div class="version-badge">
         <span class="version-icon">🚀</span>
-        <span class="version-text">版本 2.7.2</span>
+        <span class="version-text">版本 2.7.3</span>
         <span class="version-date">2026.05</span>
       </div>
       <p class="footer-note">仅供参考 · 实际价格以最终报价为准</p>
@@ -3478,6 +3516,47 @@
     }
     
     initCheckboxStyle('lj-shouti');
+
+    // ===== 弹幕效果 =====
+    const danmakuMessages = [
+      '⚡ 报价一秒出，不用再等啦！',
+      '❤️ 报价神器，爱了爱了~',
+      '💯 价格透明，心里有底！',
+      '🌟 谁用谁知道，真的香～',
+      '🤯 再也不用算到脑袋冒烟~',
+      '😎 算价一时爽，一直算一直爽~',
+      '🏆 我宣布这是算价天花板~',
+      '🎉 算价超简单，快来试试吧！',
+      '📈 实时报价，精准高效！',
+      '💪 专业算价，值得信赖！',
+      '🧠 真是天才发明！'
+    ];
+
+    function createDanmaku() {
+      const container = document.getElementById('danmaku-container');
+      if (!container) return;
+      
+      const message = danmakuMessages[Math.floor(Math.random() * danmakuMessages.length)];
+      const item = document.createElement('div');
+      item.className = 'danmaku-item';
+      item.textContent = message;
+      
+      item.style.animationDuration = (14 + Math.random() * 4) + 's';
+      item.style.animationDelay = Math.random() * 2 + 's';
+      
+      container.appendChild(item);
+      
+      item.addEventListener('animationend', () => {
+        item.remove();
+      });
+    }
+
+    function startDanmaku() {
+      createDanmaku();
+      setInterval(createDanmaku, 2500);
+    }
+
+    startDanmaku();
 
     // ===== 禁用数字输入框滚轮 =====
     document.querySelectorAll('input[type="number"]').forEach(input => {
