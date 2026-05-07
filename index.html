@@ -3778,13 +3778,13 @@
           const zhouInfo = multiplier > 1 ? `（${basePlateZhou.toFixed(1)} × ${multiplier}）` : '';
 
           const singlePlateFee = Math.round(plateL * plateZhou * 0.11);
-          plateFee = singlePlateFee * colorNum;
-          plateFormula = `${singlePlateFee}元×${colorText} = ${plateFee}元`;
+          plateFee = Math.max(singlePlateFee * colorNum, 200);
+          plateFormula = `${singlePlateFee}元×${colorText} = ${singlePlateFee * colorNum}元${plateFee > singlePlateFee * colorNum ? '（最低200元）' : ''}`;
 
           steps.push({
             title: '版费计算',
             formula: `版长 = ${plateType === 'pian' ? '长×2 + 封口 + 10' : '长 + 封口 + 10'} → 标准版长 ${plateL} cm`,
-            result: `版周 = ${basePlateZhou.toFixed(1)}${zhouInfo} = ${plateZhou.toFixed(1)} cm（最小版宽${minWidth}cm）\n单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colorText}版费 = ${singlePlateFee} × ${colorNum} = <strong>¥${plateFee.toLocaleString()}</strong>`
+            result: `版周 = ${basePlateZhou.toFixed(1)}${zhouInfo} = ${plateZhou.toFixed(1)} cm（最小版宽${minWidth}cm）\n单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colorText}版费 = ${singlePlateFee} × ${colorNum} = ${singlePlateFee * colorNum < 200 ? '<strong>¥200</strong>（最低200元）' : `<strong>¥${plateFee.toLocaleString()}</strong>`}`
           });
         }
 
@@ -4030,13 +4030,13 @@
           let plateZhou = w + 0.2;
           if (plateZhou < minWidth) plateZhou = plateZhou * 2;
           const singlePlateFee = Math.round(plateL * plateZhou * 0.11);
-          plateFee = singlePlateFee * colorNum;
-          plateFormula = `${singlePlateFee}元×${colorNum}色 = ${plateFee}元`;
+          plateFee = Math.max(singlePlateFee * colorNum, 200);
+          plateFormula = `${singlePlateFee}元×${colorNum}色 = ${singlePlateFee * colorNum}元${plateFee > singlePlateFee * colorNum ? '（最低200元）' : ''}`;
 
           steps.push({
             title: '版费计算',
             formula: `${plateType === 'pian' ? '片料版长' : '桶料版长'} = ${plateType === 'pian' ? '(长+手提)×2 + 封口 + 10' : '长+手提 + 封口 + 10'} = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）`,
-            result: `版周 = ${plateZhou.toFixed(1)} cm\n单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colorNum}色版费 = ${singlePlateFee} × ${colorNum} = <strong>¥${plateFee.toLocaleString()}</strong>`
+            result: `版周 = ${plateZhou.toFixed(1)} cm\n单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colorNum}色版费 = ${singlePlateFee} × ${colorNum} = ${singlePlateFee * colorNum < 200 ? '<strong>¥200</strong>（最低200元）' : `<strong>¥${plateFee.toLocaleString()}</strong>`}`
           });
         }
 
@@ -4292,14 +4292,14 @@
           plateZhou = basePlateZhou * multiplier;
         }
         const singlePlateFee = Math.round(plateL * plateZhou * 0.11);
-        plateFee = singlePlateFee * colors;
-        plateFormula = `${singlePlateFee}元×${colors}色 = ${plateFee}元`;
+        plateFee = Math.max(singlePlateFee * colors, 200);
+        plateFormula = `${singlePlateFee}元×${colors}色 = ${singlePlateFee * colors}元${plateFee > singlePlateFee * colors ? '（最低200元）' : ''}`;
 
         const zhouInfo = multiplier > 1 ? `（${basePlateZhou.toFixed(1)} × ${multiplier}）` : '';
         steps.push({
           title: '版费计算',
           formula: needDoublePlate ? `双开版长 = (${l}×2 + ${seal})×2 + 10 = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）` : `单开版长 = ${l}×2 + ${seal} + 10 = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）`,
-          result: `版周 = ${basePlateZhou.toFixed(1)}${zhouInfo} = ${plateZhou.toFixed(1)} cm（最小版宽${minWidth}cm）\n单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colors}色版费 = ${singlePlateFee} × ${colors} = <strong>¥${plateFee.toLocaleString()}</strong>`
+          result: `版周 = ${basePlateZhou.toFixed(1)}${zhouInfo} = ${plateZhou.toFixed(1)} cm（最小版宽${minWidth}cm）\n单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colors}色版费 = ${singlePlateFee} × ${colors} = ${singlePlateFee * colors < 200 ? '<strong>¥200</strong>（最低200元）' : `<strong>¥${plateFee.toLocaleString()}</strong>`}`
         });
       }
 
@@ -4537,18 +4537,25 @@
       let plateFormula = '';
       if (needPrint) {
         const rawPlateL = l + 10;
-        const plateL = rawPlateL <= 62 ? 62 : (rawPlateL <= 72 ? 72 : (rawPlateL <= 85 ? 85 : 102));
-        const minWidth = plateL === 62 ? 32 : (plateL === 72 ? 32 : 35);
+        const plateLengths = plateType === 'pian' ? PLATE_LENGTHS_PIAN : PLATE_LENGTHS_TONG;
+        let plateL = plateLengths[plateLengths.length - 1].length;
+        for (const pl of plateLengths) {
+          if (rawPlateL <= pl.length) {
+            plateL = pl.length;
+            break;
+          }
+        }
+        const minWidth = plateLengths.find(pl => pl.length === plateL)?.minWidth || 35;
         let plateZhou = w + 0.3;
         if (plateZhou < minWidth) plateZhou = plateZhou * 2;
         const singlePlateFee = Math.round(plateL * plateZhou * 0.11);
-        plateFee = singlePlateFee * colors;
-        plateFormula = `${singlePlateFee}元×${colors}色 = ${plateFee}元`;
+        plateFee = Math.max(singlePlateFee * colors, 200);
+        plateFormula = `${singlePlateFee}元×${colors}色 = ${singlePlateFee * colors}元${plateFee > singlePlateFee * colors ? '（最低200元）' : ''}`;
 
         steps.push({
           title: '版费计算',
           formula: `版长 = 长 + 10 = ${rawPlateL} → 标准版长 ${plateL}，版料类型：${plateType === 'pian' ? '片料' : '桶料'}`,
-          result: `${colors}色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 × ${colors} = <strong>¥${plateFee.toLocaleString()}</strong>`
+          result: `版周 = ${plateZhou.toFixed(1)} cm\n单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colors}色版费 = ${singlePlateFee} × ${colors} = ${singlePlateFee * colors < 200 ? '<strong>¥200</strong>（最低200元）' : `<strong>¥${plateFee.toLocaleString()}</strong>`}`
         });
       }
 
