@@ -2966,7 +2966,7 @@
     <!-- 操作按钮区域（计算后显示） -->
     <div id="actionButtonsArea" style="display: none;" class="action-buttons-bar no-print">
       <button class="action-btn primary" onclick="window.print()">🖨️ 打印报价单</button>
-      <button class="action-btn" onclick="copyQuote()">📋 复制报价</button>
+      <button id="copyQuoteBtn" class="action-btn" onclick="copyQuote()">📋 复制报价</button>
       <button class="action-btn" onclick="downloadQuote()">💾 保存PDF</button>
       <button class="action-btn" onclick="resetForm()">🔄 重新计算</button>
     </div>
@@ -3003,7 +3003,7 @@
     <footer>
       <div class="version-badge">
         <span class="version-icon">🚀</span>
-        <span class="version-text">版本 2.7.0</span>
+        <span class="version-text">版本 2.7.1</span>
         <span class="version-date">2026.05</span>
       </div>
       <p class="footer-note">仅供参考 · 实际价格以最终报价为准</p>
@@ -4923,48 +4923,18 @@
     }
 
     function copyQuote() {
-      const quoteCard = document.querySelector('.quote-template-card');
-      const btn = document.querySelector('.action-btn') || event?.target?.closest('button');
-      const originalText = btn?.innerHTML || '📋 复制报价';
-      
-      if (!quoteCard) {
-        alert('未找到报价单，请先计算');
-        return;
-      }
-      
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      
-      const updateCopyBtn = (text) => {
-        if (btn) {
-          btn.innerHTML = text;
-        }
-      };
-      
-      // 电脑端优先复制文本到剪贴板
-      if (!isMobile) {
-        const fullQuote = quoteCard.innerText;
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(fullQuote).then(() => {
-            updateCopyBtn('✅ 文本已复制');
-            setTimeout(() => {
-              updateCopyBtn(originalText);
-            }, 2000);
-          }).catch(() => {
-            // 复制文本失败，尝试复制图片
-            copyQuoteImage();
-          });
-          return;
-        }
-      }
-      
-      // 手机端或备用方案：复制图片
+      console.log('copyQuote called, starting image copy');
       copyQuoteImage();
     }
     
     function copyQuoteImage() {
+      console.log('copyQuoteImage called');
       const quoteCard = document.querySelector('.quote-template-card');
-      const btn = document.querySelector('.action-btn') || event?.target?.closest('button');
+      const btn = document.getElementById('copyQuoteBtn');
       const originalText = btn?.innerHTML || '📋 复制报价';
+      
+      console.log('quoteCard found:', !!quoteCard);
+      console.log('btn found:', !!btn);
       
       if (!quoteCard) {
         alert('未找到报价单，请先计算');
@@ -4972,6 +4942,7 @@
       }
       
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      console.log('isMobile:', isMobile);
       
       if (btn) {
         btn.innerHTML = '⏳ 正在生成图片...';
@@ -5023,16 +4994,21 @@
             }
           }
         }).then(canvas => {
+          console.log('html2canvas success, canvas created');
           document.body.removeChild(tempContainer);
           
           canvas.toBlob(blob => {
+            console.log('Blob created:', !!blob);
             try {
               if (isMobile) {
+                console.log('Mobile device, downloading image');
                 downloadCanvasAsImage(canvas, blob);
                 updateBtn('✅ 图片已保存');
               } else {
+                console.log('Desktop device, copying image to clipboard');
                 const item = new ClipboardItem({ 'image/png': blob });
                 navigator.clipboard.write([item]).then(() => {
+                  console.log('Image copied to clipboard successfully');
                   updateBtn('✅ 图片已复制');
                 }).catch(err => {
                   console.error('复制失败:', err);
