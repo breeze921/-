@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
@@ -2410,6 +2410,16 @@
       box-shadow: 0 2px 8px rgba(234, 88, 12, 0.15);
     }
     
+    .danmaku-item.welcome {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+      color: #92400e;
+      font-weight: 700;
+      font-size: 15px;
+      border: 2px solid #f59e0b;
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+      padding: 6px 16px;
+    }
+    
     @keyframes danmaku-scroll {
       0% {
         left: 100%;
@@ -2695,12 +2705,277 @@
     .price-lookup-table .highlight-row .highlight-cell {
       background: #fed7aa !important;
     }
+    
+    /* 登录按钮样式 */
+    .header-top {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      padding: 10px 20px;
+      box-sizing: border-box;
+      z-index: 100;
+    }
+
+    #auth-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .auth-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 20px;
+      background: var(--accent-gradient);
+      color: white;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-accent);
+    }
+
+    .auth-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(234, 88, 12, 0.3);
+    }
+
+    .logout-btn {
+      background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .profile-btn {
+      background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    }
+
+    .admin-btn {
+      background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    #welcomeText {
+      font-size: 0.9rem;
+      color: var(--fg);
+    }
+
+    /* 模态框样式 */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-box {
+      background: white;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 400px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.3);
+      animation: scaleIn 0.3s ease;
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      background: var(--accent-gradient);
+      color: white;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg);
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .form-item {
+      margin-bottom: 16px;
+    }
+
+    .form-item label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--fg);
+      font-size: 0.9rem;
+    }
+
+    .form-item input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .form-item input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px 24px;
+      background: var(--accent-gradient);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 8px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(234, 88, 12, 0.3);
+    }
+
+    .submit-btn.secondary {
+      background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+
+    .submit-btn.secondary:hover {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .error-msg {
+      color: #ef4444;
+      font-size: 0.85rem;
+      margin-top: 12px;
+      text-align: center;
+      min-height: 20px;
+    }
+
+    .success-msg {
+      color: #10b981;
+      font-size: 0.85rem;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    /* 礼花样式 */
+    #confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      overflow: hidden;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 1;
+      animation: confettiFall 2s ease-in forwards;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        top: -10%;
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+      50% {
+        opacity: 0.8;
+      }
+      100% {
+        top: 50%;
+        opacity: 0;
+        transform: translateX(var(--drift)) scale(0.3);
+      }
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
   <div class="container">
     <header>
+      <div class="header-top">
+        <div id="auth-section">
+          <button id="loginBtn" class="auth-btn" onclick="openLoginModal()">🔐 登录</button>
+          <div id="userInfo" class="user-info" style="display: none;">
+            <span id="welcomeText">👋 你好，<b id="userName"></b></span>
+            <button id="adminBtn" class="auth-btn admin-btn" style="display: none;" onclick="openAdminModal()">⚙️ 管理</button>
+            <button class="auth-btn profile-btn" onclick="openProfileModal()">⚙️</button>
+            <button class="auth-btn logout-btn" onclick="handleLogout()">🚪</button>
+          </div>
+        </div>
+      </div>
       <div class="logo">
         <div class="logo-icon">🌅</div>
       </div>
@@ -3351,8 +3626,8 @@
     <footer>
       <div class="version-badge">
         <span class="version-icon">🚀</span>
-        <span class="version-text">版本 2.7.5</span>
-        <span class="version-date">2026.05</span>
+        <span class="version-text">版本 2.8.0</span>
+        <span class="version-date">2025.07</span>
       </div>
       <div class="update-log">
         <button class="update-toggle" onclick="toggleUpdateLog()">
@@ -3362,11 +3637,12 @@
         </button>
         <div id="updateContent" class="update-content" style="display: none;">
           <ul class="update-list">
-            <li>气泡袋仅保留片料计算，移除桶料选项</li>
-            <li>气泡袋印刷类型改为"片料-小面积"和"片料-满版"</li>
-            <li>新增历史报价记录功能（保存最近10条）</li>
-            <li>优化损耗计算逻辑（宽×长×0.95×厚度×数量）</li>
-            <li>优化克重取值（四舍五入到2位小数）</li>
+            <li>✨ 新增用户登录系统</li>
+            <li>🔐 超级管理员后台（用户管理、密码重置）</li>
+            <li>📊 计算统计功能（计算次数、复制次数）</li>
+            <li>🎉 新增登录礼花效果</li>
+            <li>💬 金色欢迎弹幕循环播放</li>
+            <li>⚙️ 个人设置（修改昵称、密码）</li>
           </ul>
         </div>
       </div>
@@ -3721,6 +3997,31 @@
       '💪 专业算价，值得信赖！',
       '🧠 真是天才发明！'
     ];
+    
+    // 金色欢迎弹幕
+    const welcomeDanmaku = [
+      '💖 欢迎您，{name}！祝您使用愉快！',
+      '👋 您好，{name}！很高兴见到您！'
+    ];
+    
+    let currentWelcomeName = '';
+    let danmakuInterval = null;
+    let isLoggedIn = false;
+    let welcomeIndex = 0;
+    
+    // 登录欢迎语
+    const welcomeMessages = [
+      '👋 您好，{name}！欢迎使用曦光报价器！',
+      '🎉 欢迎回来，{name}！祝您使用愉快~',
+      '✨ {name}，很高兴再次见到您！',
+      '🌟 欢迎 {name} 使用曦光报价器！',
+      '💖 {name}，祝您算价的都赚大钱！',
+      '🚀 欢迎 {name}！报价快人一步~',
+      '🎊 {name}，祝您使用愉快！',
+      '👋 {name}，曦光包装袋报价器恭候您！',
+      '💫 {name}，感谢您使用曦光报价器！',
+      '🎉 {name}回来了！让我们开始算价吧~'
+    ];
 
     function createDanmaku() {
       const container = document.getElementById('danmaku-container');
@@ -3740,11 +4041,448 @@
         item.remove();
       });
     }
+    
+    function showDanmaku(message, isWelcome = false) {
+      const container = document.getElementById('danmaku-container');
+      if (!container) return;
+      
+      const item = document.createElement('div');
+      item.className = 'danmaku-item' + (isWelcome ? ' welcome' : '');
+      item.textContent = message;
+      item.style.animationDuration = '14s';
+      item.style.animationDelay = '0s';
+      
+      container.appendChild(item);
+      
+      item.addEventListener('animationend', () => {
+        item.remove();
+      });
+    }
 
     function startDanmaku() {
       createDanmaku();
-      setInterval(createDanmaku, 2500);
+      if (danmakuInterval) clearInterval(danmakuInterval);
+      danmakuInterval = setInterval(() => {
+        if (isLoggedIn && currentWelcomeName) {
+          const rand = Math.random();
+          if (rand < 0.25) {
+            const welcomeMsg = welcomeDanmaku[welcomeIndex % welcomeDanmaku.length];
+            showDanmaku(welcomeMsg.replace('{name}', currentWelcomeName), true);
+            welcomeIndex++;
+          } else {
+            createDanmaku();
+          }
+        } else {
+          createDanmaku();
+        }
+      }, 2500);
     }
+
+    // ===== 用户认证相关 =====
+    let currentUser = null;
+    
+    function getToken() {
+      return localStorage.getItem('token');
+    }
+    
+    function setToken(token) {
+      localStorage.setItem('token', token);
+    }
+    
+    function removeToken() {
+      localStorage.removeItem('token');
+    }
+    
+    function setUser(user) {
+      currentUser = user;
+      localStorage.setItem('user', JSON.stringify(user));
+    }
+    
+    function getUser() {
+      if (!currentUser) {
+        const stored = localStorage.getItem('user');
+        if (stored) {
+          try {
+            currentUser = JSON.parse(stored);
+          } catch (e) {
+            console.error('Failed to parse user:', e);
+          }
+        }
+      }
+      return currentUser;
+    }
+    
+    function updateAuthButtons() {
+      const user = getUser();
+      if (user) {
+        document.getElementById('loginBtn').style.display = 'none';
+        document.getElementById('userInfo').style.display = 'flex';
+        document.getElementById('userName').textContent = user.name;
+        if (user.role === 'admin') {
+          document.getElementById('adminBtn').style.display = 'inline-block';
+        } else {
+          document.getElementById('adminBtn').style.display = 'none';
+        }
+      } else {
+        document.getElementById('loginBtn').style.display = 'inline-block';
+        document.getElementById('userInfo').style.display = 'none';
+      }
+    }
+    
+    function openLoginModal() {
+      document.getElementById('loginModal').classList.add('show');
+    }
+    
+    function closeLoginModal() {
+      document.getElementById('loginModal').classList.remove('show');
+      document.getElementById('loginError').textContent = '';
+      document.getElementById('loginForm').reset();
+    }
+    
+    function openProfileModal() {
+      const user = getUser();
+      if (user) {
+        document.getElementById('showUserName').textContent = user.name;
+        document.getElementById('showUserPhone').textContent = user.phone;
+        document.getElementById('profileModal').classList.add('show');
+      }
+    }
+    
+    function closeProfileModal() {
+      document.getElementById('profileModal').classList.remove('show');
+      document.getElementById('profileError').textContent = '';
+      document.getElementById('profileSuccess').textContent = '';
+      document.getElementById('profileForm').reset();
+    }
+    
+    async function handleLogin(e) {
+      e.preventDefault();
+      const phone = document.getElementById('loginPhone').value;
+      const password = document.getElementById('loginPassword').value;
+      
+      try {
+        const response = await fetch('http://localhost:3000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          setToken(data.token);
+          setUser(data.user);
+          updateAuthButtons();
+          closeLoginModal();
+          createConfetti();
+          currentWelcomeName = data.user.name;
+          isLoggedIn = true;
+          welcomeIndex = 0;
+          
+          const welcomeMessages = [
+            '👋 您好，' + data.user.name + '！欢迎使用曦光报价器！',
+            '🎉 欢迎回来，' + data.user.name + '！祝您使用愉快~',
+            '✨ ' + data.user.name + '，很高兴再次见到您！',
+            '🌟 欢迎 ' + data.user.name + ' 使用曦光报价器！',
+            '💖 ' + data.user.name + '，祝您算价的都赚大钱！',
+            '🚀 欢迎 ' + data.user.name + '！报价快人一步~',
+            '🎊 ' + data.user.name + '，祝您使用愉快！',
+            '👋 ' + data.user.name + '，曦光包装袋报价器恭候您！',
+            '💫 ' + data.user.name + '，感谢您使用曦光报价器！',
+            '🎉 ' + data.user.name + '回来了！让我们开始算价吧~'
+          ];
+          const randomWelcome = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+          const welcomeAlert = alert(randomWelcome);
+          showDanmaku(welcomeDanmaku[0].replace('{name}', data.user.name), true);
+          setTimeout(() => {
+            showDanmaku(welcomeDanmaku[1].replace('{name}', data.user.name), true);
+          }, 3000);
+        } else {
+          document.getElementById('loginError').textContent = data.error || '登录失败';
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        document.getElementById('loginError').textContent = '网络连接失败，请稍后重试';
+      }
+    }
+    
+    function handleLogout() {
+      try {
+        removeToken();
+        currentUser = null;
+        localStorage.removeItem('user');
+        isLoggedIn = false;
+        currentWelcomeName = '';
+        updateAuthButtons();
+      } catch (e) {
+        console.error('Logout error:', e);
+      }
+    }
+    
+    async function handleProfileUpdate(e) {
+      e.preventDefault();
+      const newName = document.getElementById('newName').value;
+      const oldPassword = document.getElementById('oldPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      
+      if (!newName && !oldPassword && !newPassword) {
+        document.getElementById('profileError').textContent = '请至少填写一项修改内容';
+        return;
+      }
+      
+      try {
+        const response = await fetch('http://localhost:3000/api/auth/me', {
+          method: 'PUT',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({ newName, oldPassword, newPassword })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          setUser(data.user);
+          document.getElementById('showUserName').textContent = data.user.name;
+          document.getElementById('profileError').textContent = '';
+          document.getElementById('profileSuccess').textContent = '✓ 修改成功';
+          setTimeout(() => {
+            closeProfileModal();
+          }, 1500);
+        } else {
+          document.getElementById('profileError').textContent = data.error || '修改失败';
+        }
+      } catch (error) {
+        console.error('Profile update error:', error);
+        document.getElementById('profileError').textContent = '网络连接失败';
+      }
+    }
+    
+    function copyWechat() {
+      navigator.clipboard.writeText('hdbz02').then(() => {
+        alert('微信已复制到剪贴板');
+      }).catch(() => {
+        alert('微信：hdbz02');
+      });
+    }
+    
+    // ===== 统计更新 =====
+    async function updateStats(statType) {
+      const user = getUser();
+      if (!user) return;
+      
+      try {
+        await fetch(`http://localhost:3000/api/auth/stats/${user.id}/${statType}`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+      } catch (error) {
+        console.error('Update stats error:', error);
+      }
+    }
+    
+    // ===== 管理员后台 =====
+    function openAdminModal() {
+      document.getElementById('adminModal').classList.add('show');
+      loadUserList();
+    }
+    
+    function closeAdminModal() {
+      document.getElementById('adminModal').classList.remove('show');
+      document.getElementById('addUserMsg').textContent = '';
+      document.getElementById('addUserForm').reset();
+    }
+    
+    async function handleAddUser(e) {
+      e.preventDefault();
+      const name = document.getElementById('addUserName').value;
+      const phone = document.getElementById('addUserPhone').value;
+      const password = document.getElementById('addUserPassword').value;
+      
+      try {
+        const response = await fetch('http://localhost:3000/api/auth/users', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({ name, phone, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          const msgEl = document.getElementById('addUserMsg');
+          msgEl.textContent = '✓ 用户添加成功';
+          msgEl.style.cssText = 'color: #10b981; font-size: 0.9rem; text-align: center; margin-top: 12px; font-weight: 600;';
+          document.getElementById('addUserForm').reset();
+          loadUserList();
+          setTimeout(() => {
+            msgEl.textContent = '';
+          }, 2000);
+        } else {
+          document.getElementById('addUserMsg').textContent = data.error || '添加失败';
+          document.getElementById('addUserMsg').style.cssText = 'color: #ef4444; font-size: 0.85rem; text-align: center; margin-top: 12px;';
+        }
+      } catch (error) {
+        console.error('Add user error:', error);
+        document.getElementById('addUserMsg').textContent = '网络连接失败';
+      }
+    }
+    
+    function resetAddUserForm() {
+      document.getElementById('addUserForm').reset();
+      document.getElementById('addUserMsg').textContent = '';
+    }
+    
+    async function loadUserList() {
+      try {
+        const response = await fetch('http://localhost:3000/api/auth/users', {
+          headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          const tbody = document.getElementById('userTableBody');
+          tbody.innerHTML = data.users.map(user => `
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+              <td style="padding: 10px;">${user.name}</td>
+              <td style="padding: 10px;">${user.phone}</td>
+              <td style="padding: 10px;">${user.role === 'admin' ? '管理员' : '普通用户'}</td>
+              <td style="padding: 10px; text-align: center;">${user.stats?.calculateCount || 0}</td>
+              <td style="padding: 10px; text-align: center;">${user.stats?.copyCount || 0}</td>
+              <td style="padding: 10px; text-align: center;">${user.stats?.onlineDuration || 0}分钟</td>
+              <td style="padding: 10px; text-align: center;">
+                <button onclick="showResetPassword('${user.id}', '${user.name}')" style="background: #f97316; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; margin-right: 4px;">重置</button>
+                <button onclick="handleDeleteUser('${user.id}')" style="background: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">删除</button>
+              </td>
+            </tr>
+          `).join('');
+        } else {
+          console.error('Failed to load users:', data.error);
+        }
+      } catch (error) {
+        console.error('Load users error:', error);
+      }
+    }
+    
+    async function handleDeleteUser(userId) {
+      if (!confirm('确定要删除该用户吗？')) return;
+      
+      try {
+        const response = await fetch(`http://localhost:3000/api/auth/users/${userId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        
+        if (response.ok) {
+          document.getElementById('adminMsg')?.remove();
+          const msg = document.createElement('p');
+          msg.id = 'adminMsg';
+          msg.style.cssText = 'color: #10b981; text-align: center; margin: 10px 0; font-weight: 600;';
+          msg.textContent = '✓ 用户删除成功';
+          document.querySelector('#adminModal .modal-body').appendChild(msg);
+          loadUserList();
+          setTimeout(() => msg.remove(), 2000);
+        } else {
+          const data = await response.json();
+          alert('删除失败: ' + (data.error || '未知错误'));
+        }
+      } catch (error) {
+        console.error('Delete user error:', error);
+        alert('删除失败，网络连接错误');
+      }
+    }
+    
+    let selectedResetUserId = null;
+    
+    function showResetPassword(userId, userName) {
+      selectedResetUserId = userId;
+      document.getElementById('resetUserName').textContent = '正在重置: ' + userName;
+      document.getElementById('resetPasswordSection').style.display = 'block';
+      document.getElementById('newPasswordInput').value = '';
+      document.getElementById('resetPasswordMsg').textContent = '';
+    }
+    
+    function cancelResetPassword() {
+      selectedResetUserId = null;
+      document.getElementById('resetPasswordSection').style.display = 'none';
+    }
+    
+    async function confirmResetPassword() {
+      if (!selectedResetUserId) return;
+      
+      const newPassword = document.getElementById('newPasswordInput').value;
+      if (!newPassword || newPassword.length < 6) {
+        document.getElementById('resetPasswordMsg').textContent = '密码至少6位';
+        document.getElementById('resetPasswordMsg').style.color = '#ef4444';
+        return;
+      }
+      
+      try {
+        const response = await fetch(`http://localhost:3000/api/auth/reset-password/${selectedResetUserId}`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({ newPassword })
+        });
+        
+        if (response.ok) {
+          document.getElementById('resetPasswordMsg').textContent = '✓ 密码重置成功';
+          document.getElementById('resetPasswordMsg').style.color = '#10b981';
+          setTimeout(() => {
+            cancelResetPassword();
+          }, 1500);
+        } else {
+          const data = await response.json();
+          document.getElementById('resetPasswordMsg').textContent = data.error || '重置失败';
+          document.getElementById('resetPasswordMsg').style.color = '#ef4444';
+        }
+      } catch (error) {
+        console.error('Reset password error:', error);
+        document.getElementById('resetPasswordMsg').textContent = '网络连接失败';
+        document.getElementById('resetPasswordMsg').style.color = '#ef4444';
+      }
+    }
+    
+    // ===== 礼花效果 =====
+    function createConfetti() {
+      const container = document.getElementById('confetti-container');
+      if (!container) return;
+      
+      const emojis = ['🎉', '🎊', '✨', '🌟', '💫', '🎁', '🎈', '🎀'];
+      const count = 30;
+      
+      for (let i = 0; i < count; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.setProperty('--drift', (Math.random() - 0.5) * 200 + 'px');
+        piece.style.fontSize = (1.2 + Math.random() * 0.8) + 'rem';
+        piece.style.animationDelay = Math.random() * 0.3 + 's';
+        
+        container.appendChild(piece);
+        
+        setTimeout(() => {
+          piece.remove();
+        }, 2500);
+      }
+    }
+    
+    // 页面加载时检查登录状态
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = getUser();
+      if (user) {
+        isLoggedIn = true;
+        currentWelcomeName = user.name;
+      }
+      updateAuthButtons();
+    });
 
     startDanmaku();
 
@@ -4018,8 +4756,6 @@
           wEl.focus();
           return;
         }
-        
-        createConfetti();
         
         const w = width;
         const l = length;
@@ -4453,8 +5189,6 @@
           return;
         }
         
-        createConfetti();
-        
         const w = width;
         const l = length;
         const handle = parseFloat(document.getElementById('st-handle').value) || 8;
@@ -4670,8 +5404,6 @@
           wEl.focus();
           return;
         }
-        
-        createConfetti();
         
         const w = width;
         const l = length;
@@ -4976,8 +5708,6 @@
           wEl.focus();
           return;
         }
-        
-        createConfetti();
         
         const w = width;
         const l = length;
@@ -5301,6 +6031,8 @@
     }
 
     // ===== 显示结果 =====
+    let skipSaveHistory = false;
+    
     function showResult(data) {
       document.getElementById('resultSection').classList.add('show');
       const titleMap = {
@@ -5340,8 +6072,11 @@
       // 设置总价用于历史记录
       q.totalPrice = money.totalAmount;
       
-      // 保存历史记录
-      saveToHistory(data);
+      // 保存历史记录（查看历史时不重复保存）
+      if (!skipSaveHistory) {
+        saveToHistory(data);
+      }
+      skipSaveHistory = false;
       
       // 优先使用用户手动输入的详细地址
       q.displayRegion = customAddress || q.region;
@@ -5555,16 +6290,29 @@
 
     // ===== 操作按钮功能 =====
     function showActionButtons() {
-      document.getElementById('copyQuoteArea').style.display = 'block';
-      document.getElementById('custom-contact').style.display = 'block';
+      const user = getUser();
+      if (user) {
+        document.getElementById('copyQuoteArea').style.display = 'block';
+        document.getElementById('custom-contact').style.display = 'block';
+      } else {
+        document.getElementById('copyQuoteArea').style.display = 'none';
+        document.getElementById('custom-contact').style.display = 'none';
+      }
     }
     
     // ===== 历史记录管理 =====
     const MAX_HISTORY = 10;
     
+    function getHistoryKey() {
+      const user = getUser();
+      return user ? `quoteHistory_${user.id}` : null;
+    }
+    
     function getHistory() {
+      const key = getHistoryKey();
+      if (!key) return [];
       try {
-        const history = localStorage.getItem('quoteHistory');
+        const history = localStorage.getItem(key);
         if (!history) return [];
         const parsed = JSON.parse(history);
         return Array.isArray(parsed) ? parsed : [];
@@ -5575,6 +6323,8 @@
     }
     
     function saveToHistory(data) {
+      const key = getHistoryKey();
+      if (!key) return;
       try {
         let history = getHistory();
         
@@ -5593,21 +6343,29 @@
           history = history.slice(0, MAX_HISTORY);
         }
         
-        localStorage.setItem('quoteHistory', JSON.stringify(history));
+        localStorage.setItem(key, JSON.stringify(history));
       } catch (e) {
         console.error('保存历史记录失败:', e);
       }
     }
     
     function clearHistory() {
+      const key = getHistoryKey();
+      if (!key) return;
       try {
-        localStorage.removeItem('quoteHistory');
+        localStorage.removeItem(key);
       } catch (e) {
         console.error('清除历史记录失败:', e);
       }
     }
     
     function showHistoryModal() {
+      const user = getUser();
+      if (!user) {
+        alert('请先登录后再查看历史记录');
+        openLoginModal();
+        return;
+      }
       const history = getHistory();
       
       let modal = document.getElementById('historyModal');
@@ -5706,8 +6464,9 @@
       if (!record.quote) return;
       
       closeHistoryModal();
-      
+      skipSaveHistory = true;
       showResult({ type: record.type, quote: record.quote, steps: record.steps || [] });
+      showActionButtons();
     }
     
     function viewHistoryCalc(index) {
@@ -5721,7 +6480,9 @@
       }
       
       closeHistoryModal();
+      skipSaveHistory = true;
       showResult({ type: record.type, quote: record.quote, steps: record.steps || [] });
+      showActionButtons();
       
       document.getElementById('resultSection').classList.add('show');
       
@@ -5732,6 +6493,13 @@
     }
     
     function toggleUpdateLog() {
+      const user = getUser();
+      if (!user) {
+        alert('请先登录后再查看更新日志');
+        openLoginModal();
+        return;
+      }
+      
       const content = document.getElementById('updateContent');
       const arrow = document.querySelector('.update-arrow');
       
@@ -5762,6 +6530,12 @@
     }
 
     function copyQuote() {
+      const user = getUser();
+      if (!user) {
+        alert('请先登录后再复制报价单');
+        openLoginModal();
+        return;
+      }
       console.log('copyQuote called, starting image copy');
       copyQuoteImage();
     }
@@ -5859,12 +6633,14 @@
                 console.log('Mobile device, downloading image');
                 downloadCanvasAsImage(canvas, blob);
                 updateBtn('✅ 图片已保存');
+                updateStats('copy');
               } else {
                 console.log('Desktop device, copying image to clipboard');
                 const item = new ClipboardItem({ 'image/png': blob });
                 navigator.clipboard.write([item]).then(() => {
                   console.log('Image copied to clipboard successfully');
                   updateBtn('✅ 图片已复制');
+                  updateStats('copy');
                 }).catch(err => {
                   console.error('复制失败:', err);
                   downloadCanvasAsImage(canvas, blob);
@@ -5889,6 +6665,12 @@
     }
     
     function copyCalcAnalysis() {
+      const user = getUser();
+      if (!user) {
+        alert('请先登录后再复制计算解析');
+        openLoginModal();
+        return;
+      }
       const calcCard = document.querySelector('.calc-process-card');
       const btn = document.getElementById('copyCalcBtn');
       const originalText = btn?.innerHTML || '📊 复制计算解析';
@@ -6053,6 +6835,27 @@
       e.preventDefault();
       const btn = document.querySelector('.calculate-btn');
       
+      // 验证尺寸输入
+      let widthEl, lengthEl;
+      if (currentType === 'kuaidi') {
+        widthEl = document.getElementById('kd-width');
+        lengthEl = document.getElementById('kd-length');
+      } else if (currentType === 'shouti') {
+        widthEl = document.getElementById('st-width');
+        lengthEl = document.getElementById('st-length');
+      } else if (currentType === 'qipao') {
+        widthEl = document.getElementById('qp-width');
+        lengthEl = document.getElementById('qp-length');
+      } else if (currentType === 'lianjuan') {
+        widthEl = document.getElementById('lj-width');
+        lengthEl = document.getElementById('lj-length');
+      }
+      
+      if (!widthEl || !lengthEl || !widthEl.value || !lengthEl.value) {
+        alert('请输入尺寸');
+        return;
+      }
+      
       // 添加加载状态
       btn.classList.add('loading');
       
@@ -6062,6 +6865,12 @@
           else if (currentType === 'shouti') calcShouti();
           else if (currentType === 'qipao') calcQipao();
           else if (currentType === 'lianjuan') calcLianjuan();
+          
+          // 更新计算统计
+          updateStats('calculate');
+          
+          // 添加礼花效果
+          createConfetti();
           
           // ✅ 用户点击计算按钮后，才精确定位到结果区域
           setTimeout(() => {
@@ -6397,6 +7206,135 @@
     "featureList": "快递袋报价,气泡袋报价,连卷袋报价,在线计算,报价单生成"
   }
   </script>
+
+  <!-- 登录模态框 -->
+  <div id="loginModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header" style="justify-content: center; position: relative;">
+        <h2 style="text-align: center; flex: 1;">🔐 用户登录</h2>
+        <button class="modal-close" onclick="closeLoginModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-item" style="text-align: center;">
+            <label style="text-align: center;">手机号</label>
+            <input type="tel" id="loginPhone" placeholder="请输入手机号" required>
+          </div>
+          <div class="form-item" style="text-align: center;">
+            <label style="text-align: center;">密码</label>
+            <input type="password" id="loginPassword" placeholder="请输入密码" required>
+          </div>
+          <button type="submit" class="submit-btn">登录</button>
+          <button type="button" class="submit-btn secondary" onclick="copyWechat()">📧 没有账号？联系微信：hdbz02</button>
+        </form>
+        <p id="loginError" class="error-msg"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 个人设置模态框 -->
+  <div id="profileModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header" style="justify-content: center; position: relative;">
+        <h2 style="text-align: center; flex: 1;">⚙️ 个人设置</h2>
+        <button class="modal-close" onclick="closeProfileModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="profileInfo" style="margin-bottom: 20px; padding: 16px; background: #f8fafc; border-radius: 12px; text-align: center;">
+          <p style="margin: 8px 0;"><strong>昵称：</strong><span id="showUserName"></span></p>
+          <p style="margin: 8px 0;"><strong>手机：</strong><span id="showUserPhone"></span></p>
+        </div>
+        <form id="profileForm" onsubmit="handleProfileUpdate(event)">
+          <div class="form-item" style="text-align: center;">
+            <label style="text-align: center; display: block;">新昵称</label>
+            <input type="text" id="newName" placeholder="留空则不修改" style="margin: 0 auto; text-align: center;">
+          </div>
+          <div class="form-item" style="text-align: center;">
+            <label style="text-align: center; display: block;">原密码</label>
+            <input type="password" id="oldPassword" placeholder="请输入原密码" style="margin: 0 auto; text-align: center;">
+          </div>
+          <div class="form-item" style="text-align: center;">
+            <label style="text-align: center; display: block;">新密码</label>
+            <input type="password" id="newPassword" placeholder="请输入新密码" style="margin: 0 auto; text-align: center;">
+          </div>
+          <button type="submit" class="submit-btn">保存修改</button>
+        </form>
+        <p id="profileError" class="error-msg"></p>
+        <p id="profileSuccess" class="success-msg"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 管理员后台模态框 -->
+  <div id="adminModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 800px;">
+      <div class="modal-header">
+        <h2>🔧 管理员后台</h2>
+        <button class="modal-close" onclick="closeAdminModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- 添加用户表单 -->
+        <div style="margin-bottom: 24px; padding: 16px; background: #f8fafc; border-radius: 12px;">
+          <h3 style="margin: 0 0 16px 0; font-size: 1rem;">➕ 添加新用户</h3>
+          <form id="addUserForm" onsubmit="handleAddUser(event)">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+              <div class="form-item">
+                <label>昵称</label>
+                <input type="text" id="addUserName" placeholder="请输入昵称" required>
+              </div>
+              <div class="form-item">
+                <label>手机号</label>
+                <input type="tel" id="addUserPhone" placeholder="请输入手机号" required>
+              </div>
+              <div class="form-item">
+                <label>密码</label>
+                <input type="password" id="addUserPassword" placeholder="请输入密码" required>
+              </div>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 12px;">
+              <button type="submit" class="submit-btn" style="flex: 1;">添加用户</button>
+              <button type="button" class="submit-btn secondary" style="flex: 1;" onclick="resetAddUserForm()">重置</button>
+            </div>
+          </form>
+          <p id="addUserMsg" class="error-msg"></p>
+        </div>
+        
+        <!-- 用户列表 -->
+        <div>
+          <h3 style="margin: 0 0 16px 0; font-size: 1rem;">👥 用户列表</h3>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+              <thead>
+                <tr style="background: #f1f5f9;">
+                  <th style="padding: 10px; text-align: left; border-bottom: 1px solid #e2e8f0;">昵称</th>
+                  <th style="padding: 10px; text-align: left; border-bottom: 1px solid #e2e8f0;">手机号</th>
+                  <th style="padding: 10px; text-align: left; border-bottom: 1px solid #e2e8f0;">角色</th>
+                  <th style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">计算次数</th>
+                  <th style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">复制次数</th>
+                  <th style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">在线时间</th>
+                  <th style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">操作</th>
+                </tr>
+              </thead>
+              <tbody id="userTableBody"></tbody>
+            </table>
+          </div>
+          <div id="resetPasswordSection" style="margin-top: 16px; padding: 16px; background: #fff7ed; border-radius: 12px; display: none;">
+            <h4 style="margin: 0 0 12px 0; font-size: 0.95rem;">🔑 重置用户密码</h4>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+              <span id="resetUserName" style="font-weight: 600;"></span>
+              <input type="password" id="newPasswordInput" placeholder="输入新密码" style="padding: 8px 12px; border: 2px solid #fed7aa; border-radius: 8px; font-size: 0.9rem;">
+              <button onclick="confirmResetPassword()" style="padding: 8px 16px; background: #f97316; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">确认重置</button>
+              <button onclick="cancelResetPassword()" style="padding: 8px 16px; background: #e5e7eb; color: #374151; border: none; border-radius: 8px; cursor: pointer;">取消</button>
+            </div>
+            <p id="resetPasswordMsg" style="margin: 8px 0 0 0; font-size: 0.85rem;"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 礼花容器 -->
+  <div id="confetti-container"></div>
 
 </body>
 </html>
