@@ -4161,7 +4161,8 @@
       const password = document.getElementById('loginPassword').value;
       
       try {
-        const response = await fetch('http://localhost:3000/api/auth/login', {
+        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
+        const response = await fetch(API_BASE + '/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ phone, password })
@@ -4231,7 +4232,8 @@
       }
       
       try {
-        const response = await fetch('http://localhost:3000/api/auth/me', {
+        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
+        const response = await fetch(API_BASE + '/api/auth/me', {
           method: 'PUT',
           headers: { 
             'Content-Type': 'application/json',
@@ -4273,7 +4275,8 @@
       if (!user) return;
       
       try {
-        await fetch(`http://localhost:3000/api/auth/stats/${user.id}/${statType}`, {
+        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
+        await fetch(`${API_BASE}/api/auth/stats/${user.id}/${statType}`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${getToken()}` }
         });
@@ -4301,7 +4304,8 @@
       const password = document.getElementById('addUserPassword').value;
       
       try {
-        const response = await fetch('http://localhost:3000/api/auth/users', {
+        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
+        const response = await fetch(API_BASE + '/api/auth/users', {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
@@ -4338,7 +4342,8 @@
     
     async function loadUserList() {
       try {
-        const response = await fetch('http://localhost:3000/api/auth/users', {
+        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
+        const response = await fetch(API_BASE + '/api/auth/users', {
           headers: { 'Authorization': `Bearer ${getToken()}` }
         });
         
@@ -4372,7 +4377,8 @@
       if (!confirm('确定要删除该用户吗？')) return;
       
       try {
-        const response = await fetch(`http://localhost:3000/api/auth/users/${userId}`, {
+        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
+        const response = await fetch(`${API_BASE}/api/auth/users/${userId}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${getToken()}` }
         });
@@ -4422,7 +4428,8 @@
       }
       
       try {
-        const response = await fetch(`http://localhost:3000/api/auth/reset-password/${selectedResetUserId}`, {
+        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
+        const response = await fetch(`${API_BASE}/api/auth/reset-password/${selectedResetUserId}`, {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
