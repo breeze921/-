@@ -3091,8 +3091,8 @@
                   <div class="form-group">
                     <label>印刷类型</label>
                     <select id="qp-print-type">
-                      <option value="normal">小面积</option>
-                      <option value="full">满版</option>
+                      <option value="normal">片料-小面积</option>
+                      <option value="full">片料-满版</option>
                     </select>
                   </div>
 
@@ -3109,13 +3109,6 @@
                     </select>
                   </div>
 
-                  <div class="form-group">
-                    <label>版料类型</label>
-                    <select id="qp-plate-type">
-                      <option value="pian">片料</option>
-                      <option value="tong">桶料</option>
-                    </select>
-                  </div>
                 </div>
               </div>
             </div>
@@ -3315,7 +3308,7 @@
     <footer>
       <div class="version-badge">
         <span class="version-icon">🚀</span>
-        <span class="version-text">版本 2.7.4</span>
+        <span class="version-text">版本 2.7.5</span>
         <span class="version-date">2026.05</span>
       </div>
       <div class="update-log">
@@ -3326,11 +3319,11 @@
         </button>
         <div id="updateContent" class="update-content" style="display: none;">
           <ul class="update-list">
+            <li>气泡袋仅保留片料计算，移除桶料选项</li>
+            <li>气泡袋印刷类型改为"片料-小面积"和"片料-满版"</li>
             <li>新增历史报价记录功能（保存最近10条）</li>
             <li>优化损耗计算逻辑（宽×长×0.95×厚度×数量）</li>
             <li>优化克重取值（四舍五入到2位小数）</li>
-            <li>优化弹幕效果（降低速度、居中显示）</li>
-            <li>修复多项功能异常</li>
           </ul>
         </div>
       </div>
@@ -4002,15 +3995,15 @@
 
         const steps = [];
 
-        // 克重计算（向上取整保留1位小数），手提长度合并计入总长度
+        // 克重计算（保留2位小数），手提长度合并计入总长度
         const totalLength = l + handle;
         const weightRaw = (w * (totalLength + seal / 2) * 0.95 * thick) * 0.001;
-        const weight = Math.ceil(weightRaw * 10) / 10;
+        const weight = Math.round(weightRaw * 100) / 100;
         const lengthDisplay = handle > 0 ? `${l}+${handle}` : `${l}`;
         steps.push({
           title: '克重计算',
           formula: `克重 = (宽 × (长${handle > 0 ? '+手提' : ''} + 封口÷2) × 0.95 × 厚度) × 0.001`,
-          result: `= (${w} × (${lengthDisplay} + ${seal}÷2) × 0.95 × ${thick}) × 0.001 = ${weightRaw.toFixed(2)}g → 向上取整 = <strong>${weight.toFixed(1)} g</strong>`
+          result: `= (${w} × (${lengthDisplay} + ${seal}÷2) × 0.95 × ${thick}) × 0.001 = <strong>${weight.toFixed(2)} g</strong>`
         });
 
         // 起订量
@@ -4105,26 +4098,31 @@
         let actualMaterial = 0;
         
         const qty = quantity || moq;
+        const userInputQty = quantity > 0; // 是否用户输入了数量
         
-        // 1. 起订量损耗：150kg起订
-        const orderWeight = qty * weight / 1000;
-        if (orderWeight < 80) {
-          lossKg = 30;
-          lossDescription.push(`不满80kg，按30kg计算损耗`);
-        } else if (orderWeight < 140) {
-          lossKg = 15;
-          lossDescription.push(`80kg≤重量<140kg，按15kg计算损耗`);
+        // 1. 计算实际材料重量：袋子克重 × 数量 ÷ 1000
+        actualMaterial = weight * qty / 1000;
+        
+        // 2. 起订量损耗：150kg起订，只有用户输入的数量不满足起订量才加损耗
+        if (userInputQty) {
+          if (actualMaterial < 80) {
+            lossKg = 30;  // 小于80kg加30kg损耗
+            lossDescription.push(`重量<80kg，加30kg损耗`);
+          } else if (actualMaterial < 150) {
+            lossKg = 15;  // 80-150kg加15kg损耗
+            lossDescription.push(`80kg≤重量<150kg，加15kg损耗`);
+          }
+          // 大于等于150kg不加损耗
         }
         
-        // 2. 特殊尺寸损耗：长度<35cm或≥90cm，宽度<15cm或≥80cm，加5%损耗
+        // 3. 尺寸损耗：宽度≤15cm或≥80cm，长度≥80cm
         let sizeLossRate = 0;
-        if (l < 35 || l >= 90 || w < 15 || w >= 80) {
-          sizeLossRate = 0.05;  // 5%尺寸损耗
-          lossDescription.push(`特殊尺寸（长：${l}cm，宽：${w}cm），加5%尺寸损耗`);
+        const widthSpecial = w <= 15 || w >= 80;
+        const lengthSpecial = l >= 80;
+        if (widthSpecial || lengthSpecial) {
+          sizeLossRate = 0.05;  // 加5%损耗（宽度和长度同时超范围也只加5%）
+          lossDescription.push(`特殊尺寸（宽：${w}cm，长：${l}cm），加5%尺寸损耗`);
         }
-        
-        // 3. 计算实际材料重量：宽×长×0.95(损耗系数)×厚度×数量
-        actualMaterial = w * l * 0.95 * thick * qty / 1000;
         
         // 计算重量损耗对应的单价影响
         let totalPrice = basePrice;
@@ -4133,25 +4131,28 @@
           const sizeLossWeight = actualMaterial * sizeLossRate;
           const totalMaterial = actualMaterial + lossKg + sizeLossWeight;
           
-          // 每袋重量 = 总材料 / 数量
-          const perBagWeightKg = totalMaterial / qty;
-          // 每袋成本 = 每袋重量(kg) × 吨位价
-          const perBagCost = perBagWeightKg * priceUpper;
-          // 除以0.95（5个点损耗）
-          const finalCost = perBagCost / 0.95;
+          // 每袋重量(g) = 总材料(kg) × 1000 / 数量
+          const perBagWeightG = totalMaterial * 1000 / qty;
+          // 每袋成本 = 每袋重量(g) × 吨位价 ÷ 1000000
+          let perBagCost = perBagWeightG * priceUpper / 1000000;
+          // 尺寸损耗加价：使用除法计算损耗
+          let finalCost = perBagCost;
+          if (sizeLossRate > 0) {
+            finalCost = perBagCost / (1 - sizeLossRate);
+          }
           
           totalPrice = finalCost;
           
           steps.push({
             title: '损耗费用计算',
-            formula: `实际材料：${w}×${l}×0.95×${thick}×${qty.toLocaleString()}=${actualMaterial.toFixed(1)}kg；损耗${lossKg}kg；尺寸损耗${sizeLossWeight.toFixed(1)}kg`,
-            result: `总材料：${totalMaterial.toFixed(1)}kg；每袋：${(perBagWeightKg*1000).toFixed(1)}g\n吨位价：¥${priceUpper}；每袋成本：¥${perBagCost.toFixed(4)}\n<strong>最终单价 = ¥${totalPrice.toFixed(4)}/个</strong>`
+            formula: `实际材料：${weight.toFixed(1)}g × ${qty.toLocaleString()}个 ÷ 1000 = ${actualMaterial.toFixed(1)}kg；损耗${lossKg}kg；尺寸损耗${sizeLossWeight.toFixed(1)}kg`,
+            result: `总材料：${totalMaterial.toFixed(1)}kg；每袋：${perBagWeightG.toFixed(1)}g\n吨位价：¥${priceUpper}；每袋成本：${perBagWeightG.toFixed(1)} × ${priceUpper} ÷ 1000000 = ¥${perBagCost.toFixed(4)}${sizeLossRate > 0 ? `\n尺寸损耗加价：÷ ${(1 - sizeLossRate).toFixed(2)} = ¥${finalCost.toFixed(4)}` : ''}\n<strong>最终单价 = ¥${totalPrice.toFixed(4)}/个</strong>`
           });
         } else {
-          lossDescription.push('常规尺寸+满足起订量，无额外损耗');
+          lossDescription.push(userInputQty ? '满足起订量，无额外损耗' : '使用默认起订量，无额外损耗');
           steps.push({
             title: '损耗费用计算',
-            formula: `常规尺寸：长度35-90cm，宽度15-80cm；重量≥140kg`,
+            formula: `常规尺寸：长度35-90cm，宽度15-80cm${userInputQty ? '；重量≥150kg' : '；使用默认起订量'}`,
             result: `<strong>无额外损耗</strong>，单价 = ¥${totalPrice.toFixed(3)}/个`
           });
         }
@@ -4201,6 +4202,7 @@
           });
         }
 
+        const orderWeight = qty * weight / 1000;
         steps.push({
           title: '数量取值规则说明',
           formula: `用户输入数量优先，无输入则使用起订量`,
@@ -4386,12 +4388,12 @@
 
         const totalLength = l + handle;
         const weightRaw = (w * (totalLength + seal / 2) * 0.95 * thick) * 0.001;
-        const weight = Math.ceil(weightRaw * 10) / 10;
+        const weight = Math.round(weightRaw * 100) / 100;
         const lengthDisplay = `${l}+${handle}`;
         steps.push({
           title: '克重计算',
           formula: `克重 = (宽 × (长+手提 + 封口÷2) × 0.95 × 厚度) × 0.001`,
-          result: `= (${w} × (${lengthDisplay} + ${seal}÷2) × 0.95 × ${thick}) × 0.001 = ${weightRaw.toFixed(2)}g → 向上取整 = <strong>${weight.toFixed(1)} g</strong>`
+          result: `= (${w} × (${lengthDisplay} + ${seal}÷2) × 0.95 × ${thick}) × 0.001 = <strong>${weight.toFixed(2)} g</strong>`
         });
 
         const moq = Math.ceil(150000 / weight / 100) * 100;
@@ -4422,58 +4424,10 @@
           result: `【吨位价上】${priceUpper} 元/吨 → 单价 = ${weight.toFixed(1)} × ${priceUpper} ÷ 1000000 = <strong>¥${pricePerUnitUpper.toFixed(3)}/个</strong>\n【吨位价下】${priceLower} 元/吨 → 单价 = ${weight.toFixed(1)} × ${priceLower} ÷ 1000000 = <strong>¥${pricePerUnitLower.toFixed(3)}/个</strong>`
         });
 
-        let basePrice = pricePerUnitUpper;
-        
-        let lossDescription = [];
-        let lossKg = 0;
-        let actualMaterial = 0;
-        
-        const qty = quantity || moq;
-        
-        const orderWeight = qty * weight / 1000;
-        if (orderWeight < 80) {
-          lossKg = 30;
-          lossDescription.push(`不满80kg，按30kg计算损耗`);
-        } else if (orderWeight < 140) {
-          lossKg = 15;
-          lossDescription.push(`80kg≤重量<140kg，按15kg计算损耗`);
-        }
-        
-        let sizeLossRate = 0;
-        if (l < 35 || l >= 90 || w < 15 || w >= 80) {
-          sizeLossRate = 0.05;
-          lossDescription.push(`特殊尺寸（长：${l}cm，宽：${w}cm），加5%尺寸损耗`);
-        }
-        
-        actualMaterial = w * l * 0.95 * weightPerM2 * qty / 1000;
-        
-        let totalPrice = basePrice;
-        if (lossKg > 0 || sizeLossRate > 0) {
-          const sizeLossWeight = actualMaterial * sizeLossRate;
-          const totalMaterial = actualMaterial + lossKg + sizeLossWeight;
-          
-          const perBagWeightKg = totalMaterial / qty;
-          const perBagCost = perBagWeightKg * priceUpper;
-          const finalCost = perBagCost / 0.95;
-          
-          totalPrice = finalCost;
-          
-          steps.push({
-            title: '损耗费用计算',
-            formula: `实际材料：${w}×${l}×0.95×${weightPerM2}×${qty.toLocaleString()}=${actualMaterial.toFixed(1)}kg；损耗${lossKg}kg；尺寸损耗${sizeLossWeight.toFixed(1)}kg`,
-            result: `总材料：${totalMaterial.toFixed(1)}kg；每袋：${(perBagWeightKg*1000).toFixed(1)}g\n吨位价：¥${priceUpper}；每袋成本：¥${perBagCost.toFixed(4)}\n<strong>最终单价 = ¥${totalPrice.toFixed(4)}/个</strong>`
-          });
-        } else {
-          lossDescription.push('常规尺寸+满足起订量，无额外损耗');
-          steps.push({
-            title: '损耗费用计算',
-            formula: `常规尺寸：长度35-90cm，宽度15-80cm；重量≥140kg`,
-            result: `<strong>无额外损耗</strong>，单价 = ¥${totalPrice.toFixed(3)}/个`
-          });
-        }
-        
-        const pricePerUnit = totalPrice;
+        let pricePerUnit = pricePerUnitUpper;
 
+        const qty = quantity || moq;
+        const orderWeight = qty * weight / 1000;
         steps.push({
           title: '数量取值规则说明',
           formula: `用户输入数量优先，无输入则使用起订量`,
@@ -4608,7 +4562,6 @@
         const needPrint = document.getElementById('qp-print').checked;
         const printType = document.getElementById('qp-print-type').value;
         const colors = parseInt(document.getElementById('qp-colors').value);
-        const plateType = document.getElementById('qp-plate-type').value;
         const qtyEl = document.getElementById('qp-quantity');
         const qtyInput = qtyEl && qtyEl.value.trim();
         const quantity = qtyInput ? parseFloat(qtyInput) : null;
@@ -4745,56 +4698,6 @@
         result: `<strong>¥${pricePerUnit.toFixed(3)}/个</strong>`
       });
 
-      // ===== 连卷袋损耗计算 =====
-      const ljQty = quantity || moq;
-      const ljOrderWeight = ljQty * thick / 1000;
-      let ljLossKg = 0;
-      let ljLossDescription = [];
-      
-      if (ljOrderWeight < 80) {
-        ljLossKg = 30;
-        ljLossDescription.push(`不满80kg，按30kg计算损耗`);
-      } else if (ljOrderWeight < 140) {
-        ljLossKg = 15;
-        ljLossDescription.push(`80kg≤重量<140kg，按15kg计算损耗`);
-      }
-      
-      let ljSizeLossRate = 0;
-      if (l < 35 || l >= 90 || w < 15 || w >= 80) {
-        ljSizeLossRate = 0.05;
-        ljLossDescription.push(`特殊尺寸（长：${l}cm，宽：${w}cm），加5%尺寸损耗`);
-      }
-      
-      // 计算实际材料重量：宽×长×0.95(损耗系数)×厚度(丝)×数量
-      const ljActualMaterial = w * l * 0.95 * thick * ljQty / 1000;
-      
-      if (ljLossKg > 0 || ljSizeLossRate > 0) {
-        const ljSizeLossWeight = ljActualMaterial * ljSizeLossRate;
-        const ljTotalMaterial = ljActualMaterial + ljLossKg + ljSizeLossWeight;
-        
-        // 每袋重量 = 总材料 / 数量
-        const ljPerBagWeightKg = ljTotalMaterial / ljQty;
-        // 每袋成本 = 每袋重量(kg) × 吨位价
-        const ljPerBagCost = ljPerBagWeightKg * priceUpper;
-        // 除以0.95（5个点损耗）
-        const ljFinalCost = ljPerBagCost / 0.95;
-        
-        pricePerUnit = ljFinalCost;
-        
-        steps.push({
-          title: '损耗费用计算',
-          formula: `实际材料：${w}×${l}×0.95×${thick}×${ljQty.toLocaleString()}=${ljActualMaterial.toFixed(1)}kg；损耗${ljLossKg}kg；尺寸损耗${ljSizeLossWeight.toFixed(1)}kg`,
-          result: `总材料：${ljTotalMaterial.toFixed(1)}kg；每袋：${(ljPerBagWeightKg*1000).toFixed(1)}g\n吨位价：¥${priceUpper}；每袋成本：¥${ljPerBagCost.toFixed(4)}\n<strong>最终单价 = ¥${pricePerUnit.toFixed(4)}/个</strong>`
-        });
-      } else {
-        ljLossDescription.push('常规尺寸+满足起订量，无额外损耗');
-        steps.push({
-          title: '损耗费用计算',
-          formula: `常规尺寸：长度35-90cm，宽度15-80cm；重量≥140kg`,
-          result: `<strong>无额外损耗</strong>，单价 = ¥${pricePerUnit.toFixed(3)}/个`
-        });
-      }
-
       steps.push({
         title: '数量取值规则说明',
         formula: `用户输入数量优先，无输入则使用起订量`,
@@ -4813,7 +4716,7 @@
         const needDoublePlate = totalLength < 60;
         const rawPlateL = needDoublePlate ? totalLength * 2 + 10 : totalLength + 10;
         
-        const plateLengths = plateType === 'pian' ? PLATE_LENGTHS_PIAN : PLATE_LENGTHS_TONG;
+        const plateLengths = PLATE_LENGTHS_PIAN;
         let plateL = plateLengths[plateLengths.length - 1].length;
         let plateInfo = plateLengths[plateLengths.length - 1];
         for (const pl of plateLengths) {
@@ -4827,7 +4730,6 @@
         let basePlateZhou = w + 0.2;
         let plateZhou = basePlateZhou;
         let multiplier = 1;
-        // 如果版周小于最小版宽，需要加倍，支持多次加倍（×2、×3等）
         while (plateZhou < minWidth) {
           multiplier++;
           plateZhou = basePlateZhou * multiplier;
@@ -4839,7 +4741,7 @@
         const zhouInfo = multiplier > 1 ? `（${basePlateZhou.toFixed(1)} × ${multiplier}）` : '';
         steps.push({
           title: '版费计算',
-          formula: `${plateType === 'pian' ? '片料' : '桶料'}版长：` + (needDoublePlate ? `双开版长 = (${l}×2 + ${seal})×2 + 10 = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）` : `单开版长 = ${l}×2 + ${seal} + 10 = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）`),
+          formula: '片料版长：' + (needDoublePlate ? `双开版长 = (${l}×2 + ${seal})×2 + 10 = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）` : `单开版长 = ${l}×2 + ${seal} + 10 = ${rawPlateL} → 标准版长 ${plateL} cm（选大不选小）`),
           result: `版周 = ${basePlateZhou.toFixed(1)}${zhouInfo} = ${plateZhou.toFixed(1)} cm（最小版宽${minWidth}cm）\n单色版费 = ${plateL} × ${plateZhou.toFixed(1)} × 0.11 = ${singlePlateFee}元\n${colors}色版费 = ${singlePlateFee} × ${colors} = ${singlePlateFee * colors < 200 ? '<strong>¥200</strong>（最低200元）' : `<strong>¥${plateFee.toLocaleString()}</strong>`}`
         });
       }
@@ -4911,7 +4813,7 @@
           material: customMaterial || `共挤膜 ${weightPerM2}g/㎡`,
           weight: `${weightPerM2}g/㎡`,
           region: regionName,
-          print: needPrint ? `${colors}色${printType === 'full' ? '满版' : '小面积印刷'}（${plateType === 'pian' ? '片料' : '桶料'}）` : '不印刷',
+          print: needPrint ? `${colors}色${printType === 'full' ? '满版' : '小面积印刷'}（片料）` : '不印刷',
           moq: moq,
           quantity: quantity || null,
           displayQty: displayQty,
@@ -4963,7 +4865,8 @@
 
       // 克重（无封口，手提长度合并计入）
       const totalLength = l + handle;
-      const weight = (w * totalLength * 0.95 * thick) * 0.001;
+      const weightRaw = (w * totalLength * 0.95 * thick) * 0.001;
+      const weight = Math.round(weightRaw * 100) / 100;
       const lengthDisplay = handle > 0 ? `${l}+${handle}` : `${l}`;
       steps.push({
         title: '克重计算（连卷袋无封口）',
@@ -5066,6 +4969,47 @@
         formula: `使用吨位价上计算（大订单可议吨位价下）`,
         result: `<strong>¥${pricePerUnit.toFixed(3)}/个</strong>`
       });
+
+      // ===== 连卷袋损耗计算 =====
+      const ljQty = quantity || moq;
+      const userInputQty = quantity > 0;
+      let ljLossKg = 0;
+      let ljActualMaterial = weight * ljQty / 1000;
+      
+      if (userInputQty) {
+        if (ljActualMaterial < 80) {
+          ljLossKg = 30;  // 小于80kg加30kg损耗
+        } else if (ljActualMaterial < 150) {
+          ljLossKg = 15;  // 80-150kg加15kg损耗
+        }
+        // 大于等于150kg不加损耗
+      }
+      
+      let ljSizeLossRate = 0;
+      const ljWidthSpecial = w <= 15 || w >= 80;
+      const ljLengthSpecial = l >= 80;
+      if (ljWidthSpecial || ljLengthSpecial) {
+        ljSizeLossRate = 0.05;  // 加5%损耗（宽度和长度同时超范围也只加5%）
+      }
+      
+      if (ljLossKg > 0 || ljSizeLossRate > 0) {
+        const ljSizeLossWeight = ljActualMaterial * ljSizeLossRate;
+        const ljTotalMaterial = ljActualMaterial + ljLossKg + ljSizeLossWeight;
+        const ljPerBagWeightG = ljTotalMaterial * 1000 / ljQty;
+        let ljPerBagCost = ljPerBagWeightG * priceUpper / 1000000;
+        let ljFinalCost = ljPerBagCost;
+        if (ljSizeLossRate > 0) {
+          ljFinalCost = ljPerBagCost / (1 - ljSizeLossRate);
+        }
+        
+        pricePerUnit = ljFinalCost;
+        
+        steps.push({
+          title: '损耗费用计算',
+          formula: `实际材料：${weight.toFixed(1)}g × ${ljQty.toLocaleString()}个 ÷ 1000 = ${ljActualMaterial.toFixed(1)}kg；损耗${ljLossKg}kg；尺寸损耗${ljSizeLossWeight.toFixed(1)}kg`,
+          result: `总材料：${ljTotalMaterial.toFixed(1)}kg；每袋：${ljPerBagWeightG.toFixed(1)}g\n吨位价：¥${priceUpper}；每袋成本：${ljPerBagWeightG.toFixed(1)} × ${priceUpper} ÷ 1000000 = ¥${ljPerBagCost.toFixed(4)}${ljSizeLossRate > 0 ? `\n尺寸损耗加价：÷ ${(1 - ljSizeLossRate).toFixed(2)} = ¥${ljFinalCost.toFixed(4)}` : ''}\n<strong>最终单价 = ¥${pricePerUnit.toFixed(4)}/个</strong>`
+        });
+      }
 
       steps.push({
         title: '数量取值规则说明',
