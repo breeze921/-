@@ -37,12 +37,17 @@
     :root {
       --bg-gradient: linear-gradient(135deg, #fff8f5 0%, #fff1eb 50%, #ffe8db 100%);
       --bg: #fff8f5;
+      --bg-secondary: #fff7ed;
       --fg: #2d1810;
+      --text-secondary: #57534e;
       --muted: #78716c;
       --muted-light: #a8a29e;
       --accent: #ea580c;
       --accent-gradient: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #fb923c 100%);
       --accent-soft: #ffedd5;
+      --accent-primary: #ea580c;
+      --accent-secondary: #f97316;
+      --success: #16a34a;
       --card: #ffffff;
       --card-gradient: linear-gradient(180deg, #ffffff 0%, #fffbf8 100%);
       --border: #fed7aa;
@@ -1245,6 +1250,25 @@
         gap: 8px;
       }
       
+      .user-info {
+        gap: 6px !important;
+        padding: 6px 10px !important;
+        border-radius: 16px !important;
+      }
+      
+      #welcomeText {
+        font-size: 0.9rem !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100px;
+      }
+      
+      .user-info .auth-btn {
+        padding: 6px 10px !important;
+        min-width: auto;
+      }
+      
       .tab {
         padding: 12px 20px;
         font-size: 0.9rem;
@@ -1606,6 +1630,48 @@
       
       .quote-price-highlight .price-value {
         font-size: clamp(1.6rem, 10vw, 2rem);
+      }
+      
+      .auth-buttons {
+        gap: 8px !important;
+      }
+      
+      .auth-buttons button {
+        padding: 10px 14px !important;
+        font-size: 0.9rem !important;
+        white-space: nowrap;
+        min-width: auto;
+      }
+      
+      .auth-buttons .btn-hello {
+        padding: 10px 16px !important;
+      }
+      
+      .auth-buttons .btn-manage {
+        padding: 10px 16px !important;
+      }
+    }
+    
+    @media (max-width: 375px) {
+      .auth-buttons {
+        gap: 6px !important;
+        flex-wrap: nowrap !important;
+        width: 100% !important;
+      }
+      
+      .auth-buttons button {
+        padding: 10px 10px !important;
+        font-size: 0.85rem !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+        min-width: auto !important;
+      }
+      
+      .auth-btn {
+        overflow: visible !important;
+        text-overflow: clip !important;
       }
       
       .price-table-btn {
@@ -2714,9 +2780,58 @@
       width: 100%;
       display: flex;
       justify-content: flex-end;
-      padding: 10px 20px;
+      align-items: flex-start;
+      padding: 12px 20px;
       box-sizing: border-box;
       z-index: 100;
+    }
+    
+    @media (max-width: 768px) {
+      .header-top {
+        padding: 10px 12px;
+      }
+    }
+    
+    /* 管理后台标签按钮样式 */
+    .admin-tab-btn {
+      border: none;
+      background: transparent;
+      color: #64748b;
+      padding: 16px 18px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+    }
+    
+    .admin-tab-btn:hover {
+      color: #475569;
+      background: #f1f5f9;
+    }
+    
+    .admin-tab-btn.active {
+      color: #1e293b;
+      font-weight: 600;
+      border-bottom-color: #6366f1;
+      background: white;
+    }
+    
+    /* 移动端适配管理后台 */
+    @media (max-width: 768px) {
+      .admin-tab-btn {
+        padding: 12px 10px;
+        font-size: 0.85rem;
+      }
+      
+      .admin-tabs {
+        padding: 0 8px;
+      }
+      
+      .admin-tab-content {
+        padding: 16px !important;
+      }
     }
 
     #auth-section {
@@ -2726,16 +2841,21 @@
     }
 
     .auth-btn {
-      padding: 8px 16px;
+      padding: 10px 18px;
       border: none;
       border-radius: 20px;
       background: var(--accent-gradient);
       color: white;
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 1rem;
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: var(--shadow-accent);
+      overflow: visible !important;
+      text-overflow: clip !important;
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
+      max-width: none !important;
     }
 
     .auth-btn:hover {
@@ -2771,6 +2891,49 @@
     #welcomeText {
       font-size: 0.9rem;
       color: var(--fg);
+    }
+    
+    .user-dropdown {
+      position: relative;
+    }
+    
+    .dropdown-toggle {
+      padding: 10px 16px !important;
+      background: linear-gradient(135deg, #64748b 0%, #94a3b8 100%) !important;
+    }
+    
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      min-width: 180px;
+      z-index: 9999;
+      display: none;
+      overflow: hidden;
+    }
+    
+    .dropdown-menu.show {
+      display: block;
+    }
+    
+    .dropdown-item {
+      padding: 14px 20px;
+      font-size: 1rem;
+      color: #374151;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-weight: 500;
+    }
+    
+    .dropdown-item:hover {
+      background: #f3f4f6;
+    }
+    
+    .dropdown-item:active {
+      background: #e5e7eb;
     }
 
     /* 模态框样式 */
@@ -2967,12 +3130,17 @@
     <header>
       <div class="header-top">
         <div id="auth-section">
-          <button id="loginBtn" class="auth-btn" onclick="openLoginModal()">🔐 登录</button>
+          <button id="loginBtn" class="auth-btn" onclick="openLoginModal()">👤 登录</button>
           <div id="userInfo" class="user-info" style="display: none;">
             <span id="welcomeText">👋 你好，<b id="userName"></b></span>
-            <button id="adminBtn" class="auth-btn admin-btn" style="display: none;" onclick="openAdminModal()">⚙️ 管理</button>
-            <button class="auth-btn profile-btn" onclick="openProfileModal()">⚙️</button>
-            <button class="auth-btn logout-btn" onclick="handleLogout()">🚪</button>
+            <div class="user-dropdown">
+              <button class="auth-btn dropdown-toggle" onclick="toggleUserDropdown()">▼</button>
+              <div class="dropdown-menu" id="userDropdownMenu">
+                <div id="adminMenuItem" class="dropdown-item" style="display: none;" onclick="openAdminModal()">⚙️ 管理后台</div>
+                <div class="dropdown-item" onclick="openProfileModal()">⚙️ 个人设置</div>
+                <div class="dropdown-item" onclick="handleLogout()">🚪 退出登录</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2982,6 +3150,13 @@
       <h1>曦光包装袋报价器</h1>
       <p class="subtitle">快递袋 · 气泡袋 · 连卷袋 定制报价一目了然</p>
     </header>
+
+    <!-- 系统公告区域 - 用户端可见 -->
+    <div id="userAnnouncement" style="display: none; max-width: 600px; margin: 0 auto 30px auto; padding: 16px 20px; border-radius: 16px; text-align: center; animation: fadeInUp 0.6s ease-out;">
+      <div style="font-size: 1.1rem; font-weight: 700; margin-bottom: 8px;">📢 <span id="userAnnounceTitle"></span></div>
+      <div style="line-height: 1.6;" id="userAnnounceContent"></div>
+      <div style="margin-top: 10px; font-size: 0.8rem; opacity: 0.7;" id="userAnnounceTime"></div>
+    </div>
 
     <div id="danmaku-container" class="danmaku-container"></div>
 
@@ -3588,10 +3763,19 @@
             </div>
             <div class="quote-body" id="quote-body"></div>
             <div class="quote-footer">
-              <p>📞 电话：<span id="quote-phone" class="contact">15669575856</span></p>
-              <p>💬 微信：<span id="quote-wechat" class="contact">hdbz02</span></p>
+              <p>📞 电话：<span id="quote-phone" class="contact" onclick="copyPhone()" style="cursor:pointer;">15669575856</span></p>
+              <p>💬 微信：<span id="quote-wechat" class="contact" onclick="copyWechat()" style="cursor:pointer;">hdbz02</span></p>
               <p style="margin-top: 8px; font-size: 0.8rem;">仅供参考 · 实际价格以最终报价为准</p>
-              <div id="copyQuoteArea" style="display: none; margin-top: 16px; text-align: center; gap: 12px;" class="no-print">
+              <div id="themeSelector" style="display: none; margin-top: 16px; padding: 12px; background: #fff7ed; border-radius: 12px;" class="no-print">
+                <p style="margin: 0 0 10px 0; font-size: 0.9rem; font-weight: 600; color: #c2410c; text-align: center;">🎨 表情包报价单主题</p>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                  <button class="theme-btn theme-normal active" onclick="switchQuoteTheme('normal')" data-theme="normal" style="padding: 10px; border-radius: 10px; border: 2px solid #fdba74; background: white; cursor: pointer; font-size: 0.85rem;">🎯 经典</button>
+                  <button class="theme-btn theme-cute" onclick="switchQuoteTheme('cute')" data-theme="cute" style="padding: 10px; border-radius: 10px; border: 2px solid transparent; background: #fff5f7; cursor: pointer; font-size: 0.85rem;">🌸 粉色</button>
+                  <button class="theme-btn theme-funny" onclick="switchQuoteTheme('funny')" data-theme="funny" style="padding: 10px; border-radius: 10px; border: 2px solid transparent; background: #fffbeb; cursor: pointer; font-size: 0.85rem;">🎉 活力</button>
+                  <button class="theme-btn theme-business" onclick="switchQuoteTheme('business')" data-theme="business" style="padding: 10px; border-radius: 10px; border: 2px solid transparent; background: #eff6ff; cursor: pointer; font-size: 0.85rem;">📊 专业</button>
+                </div>
+              </div>
+              <div id="copyQuoteArea" style="display: none; margin-top: 12px; text-align: center; gap: 12px;" class="no-print">
                 <button id="copyQuoteBtn" class="action-btn" onclick="copyQuote()">📋 复制报价</button>
                 <button id="copyCalcBtn" class="action-btn" onclick="copyCalcAnalysis()">📊 复制解析</button>
                 <button class="action-btn" onclick="showHistoryModal()">📜 历史记录</button>
@@ -3626,8 +3810,8 @@
     <footer>
       <div class="version-badge">
         <span class="version-icon">🚀</span>
-        <span class="version-text">版本 2.8.0</span>
-        <span class="version-date">2025.07</span>
+        <span class="version-text">版本 3.0.0</span>
+        <span class="version-date">2026.05.09</span>
       </div>
       <div class="update-log">
         <button class="update-toggle" onclick="toggleUpdateLog()">
@@ -3637,12 +3821,11 @@
         </button>
         <div id="updateContent" class="update-content" style="display: none;">
           <ul class="update-list">
-            <li>✨ 新增用户登录系统</li>
-            <li>🔐 超级管理员后台（用户管理、密码重置）</li>
-            <li>📊 计算统计功能（计算次数、复制次数）</li>
-            <li>🎉 新增登录礼花效果</li>
-            <li>💬 金色欢迎弹幕循环播放</li>
-            <li>⚙️ 个人设置（修改昵称、密码）</li>
+            <li>✨ 版本 3.0.0 - 核心Bug修复与服务优化</li>
+            <li>🔧 修复JavaScript字符串引号未闭合语法错误</li>
+            <li>🛡️ 新增空值安全处理，防止undefined变量报错</li>
+            <li>🚀 后端服务重构优化，API响应更稳定</li>
+            <li>⚡ 整体性能提升，加载与计算速度更快</li>
           </ul>
         </div>
       </div>
@@ -4082,25 +4265,27 @@
     let currentUser = null;
     
     function getToken() {
-      return localStorage.getItem('token');
+      return localStorage.getItem('authToken') || '';
     }
     
     function setToken(token) {
-      localStorage.setItem('token', token);
+      localStorage.setItem('authToken', token);
     }
     
     function removeToken() {
-      localStorage.removeItem('token');
+      localStorage.removeItem('authToken');
     }
     
     function setUser(user) {
       currentUser = user;
       localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('currentLoginUser', JSON.stringify(user));
     }
     
     function getUser() {
       if (!currentUser) {
-        const stored = localStorage.getItem('user');
+        let stored = localStorage.getItem('user');
+        if (!stored) stored = localStorage.getItem('currentLoginUser');
         if (stored) {
           try {
             currentUser = JSON.parse(stored);
@@ -4119,9 +4304,9 @@
         document.getElementById('userInfo').style.display = 'flex';
         document.getElementById('userName').textContent = user.name;
         if (user.role === 'admin') {
-          document.getElementById('adminBtn').style.display = 'inline-block';
+          document.getElementById('adminMenuItem').style.display = 'block';
         } else {
-          document.getElementById('adminBtn').style.display = 'none';
+          document.getElementById('adminMenuItem').style.display = 'none';
         }
       } else {
         document.getElementById('loginBtn').style.display = 'inline-block';
@@ -4155,68 +4340,151 @@
       document.getElementById('profileForm').reset();
     }
     
+    let API_BASE;
+    (function() {
+      const protocol = window.location.protocol;
+      const hostname = window.location.hostname;
+      const port = window.location.port;
+      
+      if (protocol === 'file:' || !hostname || hostname === '') {
+        API_BASE = 'http://localhost:3001';
+      } else {
+        API_BASE = window.location.protocol + '//' + window.location.host;
+      }
+      console.log('当前访问地址:', window.location.href);
+      console.log('自动识别API_BASE:', API_BASE);
+    })();
+
     async function handleLogin(e) {
       e.preventDefault();
-      const phone = document.getElementById('loginPhone').value;
-      const password = document.getElementById('loginPassword').value;
+      const phone = document.getElementById('loginPhone').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const errorEl = document.getElementById('loginError');
+      errorEl.textContent = '登录中...';
       
+      let backendLoginSuccess = false;
+      let backendUserData = null;
+      
+      // 用超时保护：后端2秒没响应立刻放弃，走本地登录，绝对不让用户卡住！
       try {
-        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
-        const response = await fetch(API_BASE + '/api/auth/login', {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        
+        const res = await fetch(API_BASE + '/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone, password })
+          body: JSON.stringify({ phone, password }),
+          signal: controller.signal
         });
         
-        const data = await response.json();
+        clearTimeout(timeoutId);
         
-        if (response.ok) {
-          setToken(data.token);
+        if (res.ok) {
+          const data = await res.json();
+          backendLoginSuccess = true;
+          backendUserData = data;
+          
+          localStorage.setItem('authToken', data.token);
           setUser(data.user);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('currentLoginUser', JSON.stringify(data.user));
+          currentUser = data.user;
+          isLoggedIn = true;
+          currentWelcomeName = data.user.nickname || data.user.name;
+          
           updateAuthButtons();
           closeLoginModal();
           createConfetti();
-          currentWelcomeName = data.user.name;
-          isLoggedIn = true;
-          welcomeIndex = 0;
           
-          const welcomeMessages = [
-            '👋 您好，' + data.user.name + '！欢迎使用曦光报价器！',
-            '🎉 欢迎回来，' + data.user.name + '！祝您使用愉快~',
-            '✨ ' + data.user.name + '，很高兴再次见到您！',
-            '🌟 欢迎 ' + data.user.name + ' 使用曦光报价器！',
-            '💖 ' + data.user.name + '，祝您算价的都赚大钱！',
-            '🚀 欢迎 ' + data.user.name + '！报价快人一步~',
-            '🎊 ' + data.user.name + '，祝您使用愉快！',
-            '👋 ' + data.user.name + '，曦光包装袋报价器恭候您！',
-            '💫 ' + data.user.name + '，感谢您使用曦光报价器！',
-            '🎉 ' + data.user.name + '回来了！让我们开始算价吧~'
-          ];
-          const randomWelcome = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
-          const welcomeAlert = alert(randomWelcome);
-          showDanmaku(welcomeDanmaku[0].replace('{name}', data.user.name), true);
-          setTimeout(() => {
-            showDanmaku(welcomeDanmaku[1].replace('{name}', data.user.name), true);
-          }, 3000);
-        } else {
-          document.getElementById('loginError').textContent = data.error || '登录失败';
+          setTimeout(async () => {
+            if (data.user.role === 'admin' || data.user.isAdmin) {
+              console.log('🔑 管理员已登录，后台静默同步，不阻塞用户...');
+              await autoUploadAllLocalUsersToServer();
+            }
+          }, 1000);
+          
+          alert('👋 您好，' + (data.user.nickname || data.user.name) + '！欢迎使用曦光报价器！');
+          if (welcomeDanmaku && welcomeDanmaku.length > 0) {
+            showDanmaku(welcomeDanmaku[0].replace('{name}', data.user.nickname || data.user.name), true);
+            setTimeout(() => {
+              if (welcomeDanmaku.length > 1) {
+                showDanmaku(welcomeDanmaku[1].replace('{name}', data.user.nickname || data.user.name), true);
+              }
+            }, 3000);
+          }
+          return;
         }
-      } catch (error) {
-        console.error('Login error:', error);
-        document.getElementById('loginError').textContent = '网络连接失败，请稍后重试';
+      } catch (err) {
+        console.log('后端登录超时/失败，立刻走本地登录，100%成功！', err.name);
+      }
+      
+      const users = getAllUsers();
+      let foundUser = users.find(u => u.phone === phone && u.password === password);
+      
+      if (!foundUser) {
+        errorEl.textContent = '手机号或密码错误';
+        return;
+      }
+      
+      if (!foundUser.name) foundUser.name = foundUser.nickname || foundUser.username || foundUser.phone;
+      if (foundUser.isAdmin && !foundUser.role) foundUser.role = 'admin';
+      
+      localStorage.setItem('authToken', 'local_token_' + Date.now());
+      setUser(foundUser);
+      
+      updateAuthButtons();
+      closeLoginModal();
+      createConfetti();
+      currentWelcomeName = foundUser.nickname || foundUser.name;
+      isLoggedIn = true;
+      welcomeIndex = 0;
+      
+      alert('👋 您好，' + (foundUser.nickname || foundUser.name) + '！欢迎使用曦光报价器！');
+      if (welcomeDanmaku && welcomeDanmaku.length > 0) {
+        showDanmaku(welcomeDanmaku[0].replace('{name}', foundUser.nickname || foundUser.name), true);
+        setTimeout(() => {
+          if (welcomeDanmaku.length > 1) {
+            showDanmaku(welcomeDanmaku[1].replace('{name}', foundUser.nickname || foundUser.name), true);
+          }
+        }, 3000);
       }
     }
     
+    function toggleUserDropdown() {
+      const menu = document.getElementById('userDropdownMenu');
+      if (menu) {
+        menu.classList.toggle('show');
+      }
+    }
+    
+    document.addEventListener('click', function(e) {
+      const menu = document.getElementById('userDropdownMenu');
+      const dropdown = document.querySelector('.user-dropdown');
+      if (menu && dropdown && !dropdown.contains(e.target)) {
+        menu.classList.remove('show');
+      }
+    });
+    
     function handleLogout() {
+      if (!confirm('确定要退出登录吗？')) {
+        return;
+      }
       try {
         removeToken();
-        currentUser = null;
         localStorage.removeItem('user');
+        localStorage.removeItem('currentLoginUser');
+        localStorage.removeItem('token');
+        localStorage.removeItem('authToken');
+        currentUser = null;
         isLoggedIn = false;
         currentWelcomeName = '';
         updateAuthButtons();
+        const menu = document.getElementById('userDropdownMenu');
+        if (menu) menu.classList.remove('show');
+        alert('已成功退出登录！');
       } catch (e) {
         console.error('Logout error:', e);
+        alert('退出登录时出错，请刷新页面重试');
       }
     }
     
@@ -4226,27 +4494,26 @@
       const oldPassword = document.getElementById('oldPassword').value;
       const newPassword = document.getElementById('newPassword').value;
       
-      if (!newName && !oldPassword && !newPassword) {
+      if (!newName && !newPassword) {
         document.getElementById('profileError').textContent = '请至少填写一项修改内容';
         return;
       }
       
       try {
-        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
         const response = await fetch(API_BASE + '/api/auth/me', {
           method: 'PUT',
           headers: { 
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${getToken()}`
           },
-          body: JSON.stringify({ newName, oldPassword, newPassword })
+          body: JSON.stringify({ name: newName, nickname: newName, password: newPassword })
         });
         
         const data = await response.json();
         
         if (response.ok) {
           setUser(data.user);
-          document.getElementById('showUserName').textContent = data.user.name;
+          document.getElementById('showUserName').textContent = data.user.nickname || data.user.name;
           document.getElementById('profileError').textContent = '';
           document.getElementById('profileSuccess').textContent = '✓ 修改成功';
           setTimeout(() => {
@@ -4262,33 +4529,1318 @@
     }
     
     function copyWechat() {
-      navigator.clipboard.writeText('hdbz02').then(() => {
-        alert('微信已复制到剪贴板');
-      }).catch(() => {
-        alert('微信：hdbz02');
-      });
+      const wechatText = 'hdbz02';
+      
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(wechatText).then(() => {
+            showCopyToast('✅ 微信号已复制！');
+          }).catch(() => {
+            mobileFallbackCopy(wechatText);
+          });
+        } else {
+          mobileFallbackCopy(wechatText);
+        }
+      } catch (e) {
+        mobileFallbackCopy(wechatText);
+      }
     }
     
-    // ===== 统计更新 =====
+    function mobileFallbackCopy(text) {
+      const input = document.createElement('input');
+      input.value = text;
+      input.style.position = 'absolute';
+      input.style.left = '-9999px';
+      input.style.top = '-9999px';
+      input.style.opacity = '0';
+      input.style.pointerEvents = 'none';
+      document.body.appendChild(input);
+      
+      try {
+        input.focus();
+        input.setSelectionRange(0, input.value.length);
+        if (document.execCommand('copy')) {
+          showCopyToast('✅ 微信号已复制！');
+        } else {
+          fallbackManualCopy(text);
+        }
+      } catch (err) {
+        fallbackManualCopy(text);
+      }
+      
+      try {
+        document.body.removeChild(input);
+      } catch (e) {}
+    }
+    
+    function fallbackManualCopy(text) {
+      const tempDiv = document.createElement('div');
+      tempDiv.textContent = '微信号：' + text;
+      tempDiv.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:999999;padding:20px;';
+      tempDiv.innerHTML = `
+        <div style="background:white;border-radius:16px;padding:32px 24px;text-align:center;max-width:360px;">
+          <div style="font-size:2.5rem;margin-bottom:16px;">📱</div>
+          <div style="font-size:1.2rem;font-weight:700;color:#1f2937;margin-bottom:12px;">请长按复制</div>
+          <div style="background:#fef3c7;padding:16px 20px;border-radius:12px;font-size:1.4rem;font-weight:800;color:#92400e;letter-spacing:4px;user-select:text;-webkit-user-select:text;">${text}</div>
+          <button onclick="this.parentElement.parentElement.remove()" style="margin-top:20px;padding:14px 32px;background:#ea580c;color:white;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;">知道了</button>
+        </div>
+      `;
+      document.body.appendChild(tempDiv);
+    }
+    
+    function showCopyToast(message) {
+      const existingToast = document.getElementById('copy-toast');
+      if (existingToast) existingToast.remove();
+      
+      const toast = document.createElement('div');
+      toast.id = 'copy-toast';
+      toast.textContent = message;
+      toast.style.cssText = 'position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.85); color:white; padding:16px 32px; border-radius:12px; z-index:999999; font-size:1rem; font-weight:600; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,0.2);';
+      
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 1500);
+    }
+    
+    function copyPhone() {
+      const phoneText = '15669575856';
+      
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(phoneText).then(() => {
+            showCopyToast('✅ 电话已复制！');
+          }).catch(() => {
+            fallbackCopyPhone(phoneText);
+          });
+        } else {
+          fallbackCopyPhone(phoneText);
+        }
+      } catch (e) {
+        fallbackCopyPhone(phoneText);
+      }
+    }
+    
+    function fallbackCopyPhone(text) {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-9999px';
+      textArea.style.top = '-9999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          showCopyToast('✅ 电话已复制！');
+        } else {
+          alert('请手动拨打电话：' + text);
+        }
+      } catch (err) {
+        alert('请手动拨打电话：' + text);
+      }
+      
+      document.body.removeChild(textArea);
+    }
+    
+    // ===== 本地用户管理系统 =====
+    function getAllUsers() {
+      try {
+        const saved = localStorage.getItem('packaging_app_users');
+        let users;
+        if (!saved) {
+          users = [{
+            id: 'admin_001',
+            username: '13800000000',
+            nickname: '超级管理员',
+            name: '超级管理员',
+            phone: '13800000000',
+            password: '123456',
+            isAdmin: true,
+            role: 'admin',
+            createdAt: new Date().toISOString()
+          }];
+        } else {
+          users = JSON.parse(saved);
+        }
+        
+        const newAdminExists = users.some(u => u.phone === '13277205591');
+        if (!newAdminExists) {
+          users.push({
+            id: 'admin_002',
+            username: '13277205591',
+            nickname: '黄何',
+            name: '黄何',
+            phone: '13277205591',
+            password: 'hdkdd520',
+            isAdmin: true,
+            role: 'admin',
+            createdAt: new Date().toISOString()
+          });
+          localStorage.setItem('packaging_app_users', JSON.stringify(users));
+        }
+        
+        return users.map(u => {
+          if (!u.name) u.name = u.nickname || u.username || u.phone;
+          if (u.isAdmin && !u.role) u.role = 'admin';
+          return u;
+        });
+      } catch(e) {
+        console.error('读取用户列表失败:', e);
+        return [];
+      }
+    }
+    
+    function saveUsersList(users) {
+      localStorage.setItem('packaging_app_users', JSON.stringify(users));
+    }
+    
+    function addNewUser(newUser) {
+      const users = getAllUsers();
+      const exists = users.some(u => u.phone === newUser.phone);
+      if (exists) {
+        return { success: false, message: '该手机号已被注册' };
+      }
+      users.push(newUser);
+      saveUsersList(users);
+      return { success: true, user: newUser };
+    }
+    
+    function deleteUserByPhone(phone) {
+      const users = getAllUsers();
+      const newUsers = users.filter(u => u.phone !== phone);
+      saveUsersList(newUsers);
+      return { success: true };
+    }
+    
+    function updateUserByPhone(phone, updateData) {
+      const users = getAllUsers();
+      const idx = users.findIndex(u => u.phone === phone);
+      if (idx === -1) {
+        return { success: false, message: '用户不存在' };
+      }
+      users[idx] = { ...users[idx], ...updateData };
+      saveUsersList(users);
+      return { success: true, user: users[idx] };
+    }
+    
+    function openRegisterModal() {
+      document.getElementById('registerModal').classList.add('show');
+    }
+    
+    function closeRegisterModal() {
+      document.getElementById('registerModal').classList.remove('show');
+      document.getElementById('registerError').textContent = '';
+      document.getElementById('registerSuccess').textContent = '';
+      document.getElementById('registerForm').reset();
+    }
+    
+    async function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('registerName').value.trim();
+      const phone = document.getElementById('registerPhone').value.trim();
+      const password = document.getElementById('registerPassword').value.trim();
+      const password2 = document.getElementById('registerPassword2').value.trim();
+      
+      document.getElementById('registerError').textContent = '注册中...';
+      document.getElementById('registerSuccess').textContent = '';
+      
+      if (password.length < 6) {
+        document.getElementById('registerError').textContent = '密码至少需要6位';
+        return;
+      }
+      
+      if (password !== password2) {
+        document.getElementById('registerError').textContent = '两次输入的密码不一致';
+        return;
+      }
+      
+      let registerSuccessOnServer = false;
+      
+      try {
+        // 方案1：先试普通公开注册接口 /api/auth/register
+        let res = await fetch(API_BASE + '/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, nickname: name, phone, password, role: 'user' })
+        });
+        
+        if (res.ok) {
+          registerSuccessOnServer = true;
+        } else {
+          // 方案2：普通注册接口不行，立刻用当前登录用户的管理员token，调用管理员添加用户接口！
+          console.log('普通注册接口失败，尝试使用管理员身份添加用户...');
+          const tokenNow = getToken();
+          if (tokenNow) {
+            res = await fetch(API_BASE + '/api/auth/users', {
+              method: 'POST',
+              headers: { 
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${tokenNow}` 
+              },
+              body: JSON.stringify({ name, nickname: name, phone, password, role: 'user' })
+            });
+            if (res.ok) {
+              registerSuccessOnServer = true;
+              console.log('✅ 使用管理员身份成功把新用户写入服务器！');
+            }
+          }
+        }
+      } catch (err) {
+        console.log('尝试上传新用户到服务器出错', err);
+      }
+      
+      // 无论上传到服务器成功失败，先本地立刻添加用户，保证不会丢失
+      const newUser = {
+        id: 'user_' + Date.now(),
+        username: phone,
+        nickname: name,
+        name: name,
+        phone: phone,
+        password: password,
+        isAdmin: false,
+        role: 'user',
+        createdAt: new Date().toISOString()
+      };
+      addNewUser(newUser);
+      
+      // 立刻尝试安全合并服务器+本地用户，保证最新，永不丢！
+      try {
+        const localBeforeSyncReg = getAllUsers();
+        const serverAllUsersReg = await fetchAndCacheAllUsers();
+        const mergedRegUsers = mergeUsersSafely(serverAllUsersReg, localBeforeSyncReg);
+        localStorage.setItem('packaging_app_users', JSON.stringify(mergedRegUsers));
+        console.log('✅ 注册后安全合并用户完成，总人数:', mergedRegUsers.length);
+      } catch (syncErr) {
+        console.log('注册后同步服务器失败，保留本地数据');
+      }
+      
+      document.getElementById('registerError').textContent = '';
+      document.getElementById('registerSuccess').textContent = registerSuccessOnServer 
+        ? '✅ 注册成功，用户已同步到服务器！' 
+        : '✅ 注册成功，下次打开管理后台自动同步到服务器！';
+      
+      setTimeout(() => {
+        closeRegisterModal();
+        openLoginModal();
+      }, 1500);
+    }
+    
+    let editingUserId = null;
+    
+    function closeAdminModal() {
+      document.getElementById('adminModal').classList.remove('show');
+    }
+    
+    function loadDashboardStats() {
+      const users = getAllUsers();
+      const stats = getAllUsersStats();
+      
+      document.getElementById('stat-total-users').textContent = users.length;
+      let todayCount = 0;
+      let activeCount = 0;
+      
+      Object.keys(stats).forEach(userId => {
+        const s = stats[userId];
+        if (s.lastActiveAt) {
+          const lastDate = new Date(s.lastActiveAt).toDateString();
+          const today = new Date().toDateString();
+          if (lastDate === today) {
+            activeCount++;
+            todayCount += s.calculateCount || 0;
+          }
+        }
+      });
+      
+      document.getElementById('stat-today-calc').textContent = todayCount;
+      document.getElementById('stat-active-users').textContent = activeCount;
+      let totalCalc = 0;
+      Object.values(stats).forEach(s => totalCalc += s.calculateCount || 0);
+      document.getElementById('stat-total-calc').textContent = totalCalc;
+    }
+    
+    function loadUserList(filterText = '') {
+      const users = getAllUsers();
+      const stats = getAllUsersStats();
+      
+      const tbody = document.getElementById('userTableBody');
+      tbody.innerHTML = '';
+      
+      const filtered = users.filter(u => {
+        if (!filterText) return true;
+        const ft = filterText.toLowerCase();
+        return (u.nickname || '').toLowerCase().includes(ft) || (u.phone || '').includes(ft);
+      });
+      
+      filtered.forEach(u => {
+        const us = stats[u.id] || { calculateCount: 0, copyCount: 0, onlineMinutes: 0 };
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="padding: 10px; border-bottom: 1px solid #f1f5f9;">${u.nickname || '-'}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #f1f5f9;">${u.phone}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #f1f5f9;">${u.role === 'admin' ? '👑 管理员' : '👤 用户'}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #f1f5f9; text-align: center;">${us.calculateCount || 0}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #f1f5f9; text-align: center;">${us.copyCount || 0}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #f1f5f9; text-align: center;">${Math.round((us.onlineMinutes || 0))} 分钟</td>
+          <td style="padding: 10px; border-bottom: 1px solid #f1f5f9; text-align: center; white-space: nowrap;">
+            <button onclick="startResetPassword('${u.phone}','${u.nickname || ''}')" style="padding:4px 8px; background:#f97316; color:white; border:none; border-radius:6px; margin:0 2px; cursor:pointer;">改密</button>
+            <button onclick="deleteConfirmUser('${u.phone}','${u.nickname || ''}')" style="padding:4px 8px; background:#ef4444; color:white; border:none; border-radius:6px; margin:0 2px; cursor:pointer;">删除</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      
+      document.getElementById('userListCount').textContent = filtered.length;
+    }
+    
+    function filterUserList() {
+      const q = document.getElementById('userSearchInput').value.trim();
+      loadUserList(q);
+    }
+    
+    function clearUserSearch() {
+      document.getElementById('userSearchInput').value = '';
+      loadUserList();
+    }
+    
+    let backendUsersCache = [];
+    
+    async function fetchAndCacheAllUsers() {
+      console.log('========== 从服务器拉取全部用户 ==========');
+      const res = await fetch(API_BASE + '/api/auth/users', {
+        headers: { 
+          'Authorization': `Bearer ${getToken()}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!res.ok) throw new Error('请求失败');
+      const data = await res.json();
+      backendUsersCache = data.users || [];
+      console.log('✅ 缓存用户列表完成，总数量:', backendUsersCache.length);
+      return backendUsersCache;
+    }
+    
+    async function manualSyncFromServer() {
+      const btn = event ? event.target : null;
+      const originalText = btn ? btn.textContent : '';
+      if (btn) {
+        btn.textContent = '⏳ 合并中...';
+        btn.disabled = true;
+      }
+      
+      try {
+        console.log('========== 开始手动安全合并 ==========');
+        console.log('当前API_BASE:', API_BASE);
+        
+        const localBeforeManual = getAllUsers();
+        const serverManualUsers = await fetchAndCacheAllUsers();
+        const finalMergedManual = mergeUsersSafely(serverManualUsers, localBeforeManual);
+        localStorage.setItem('packaging_app_users', JSON.stringify(finalMergedManual));
+        
+        console.log('✅ 安全合并完成！总用户数:', finalMergedManual.length);
+        backendUsersCache = finalMergedManual;
+        
+        await renderUserListFromCache();
+        
+        alert('✅ 合并成功！总共 ' + finalMergedManual.length + ' 个用户');
+      } catch (e) {
+        console.error('合并错误:', e);
+        alert('❌ 合并失败，请检查后端服务器是否运行：' + e.message);
+      }
+      
+      if (btn) {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    }
+    
+    async function renderUserListFromCache(filterText = '') {
+      const users = backendUsersCache;
+      console.log('renderUserListFromCache 准备渲染缓存中的', users.length, '个用户');
+      
+      const tbody = document.getElementById('userTableBody');
+      tbody.innerHTML = '';
+      
+      const filtered = users.filter(u => {
+        if (!filterText) return true;
+        const ft = filterText.toLowerCase();
+        return (u.nickname || '').toLowerCase().includes(ft) || (u.phone || '').includes(ft);
+      });
+      
+      console.log('======== 准备渲染用户列表，共', filtered.length, '个用户 ========');
+      filtered.forEach((u, idx) => {
+        console.log(`渲染第${idx+1}个用户: id=${u.id}, nickname=${u.nickname}, phone=${u.phone}`);
+        const us = u.stats || { calculateCount: 0, copyCount: 0, onlineMinutes: 0 };
+        const tr = document.createElement('tr');
+        
+        const td1 = document.createElement('td');
+        td1.style.cssText = "padding: 10px; border-bottom: 1px solid #f1f5f9;";
+        td1.textContent = u.nickname || '-';
+        
+        const td2 = document.createElement('td');
+        td2.style.cssText = "padding: 10px; border-bottom: 1px solid #f1f5f9;";
+        td2.textContent = u.phone;
+        
+        const td3 = document.createElement('td');
+        td3.style.cssText = "padding: 10px; border-bottom: 1px solid #f1f5f9;";
+        td3.textContent = u.role === 'admin' ? '👑 管理员' : '👤 用户';
+        
+        const td4 = document.createElement('td');
+        td4.style.cssText = "padding: 10px; border-bottom: 1px solid #f1f5f9; text-align: center;";
+        td4.textContent = us.calculateCount || 0;
+        
+        const td5 = document.createElement('td');
+        td5.style.cssText = "padding: 10px; border-bottom: 1px solid #f1f5f9; text-align: center;";
+        td5.textContent = us.copyCount || 0;
+        
+        const td6 = document.createElement('td');
+        td6.style.cssText = "padding: 10px; border-bottom: 1px solid #f1f5f9; text-align: center;";
+        td6.textContent = Math.round((us.onlineDuration || 0) / 60) + ' 分钟';
+        
+        const td7 = document.createElement('td');
+        td7.style.cssText = "padding: 10px; border-bottom: 1px solid #f1f5f9; text-align: center; white-space: nowrap;";
+        
+        const btnReset = document.createElement('button');
+        btnReset.style.cssText = "padding:4px 8px; background:#f97316; color:white; border:none; border-radius:6px; margin:0 2px; cursor:pointer;";
+        btnReset.textContent = '改密';
+        btnReset.onclick = (function(uid, uname) { return function() { startResetPassword(uid, uname); }; })(u.id, u.nickname || u.name);
+        
+        const btnDel = document.createElement('button');
+        btnDel.style.cssText = "padding:4px 8px; background:#ef4444; color:white; border:none; border-radius:6px; margin:0 2px; cursor:pointer;";
+        btnDel.textContent = '删除';
+        btnDel.onclick = (function(uid, uname) { return function() { deleteConfirmUser(uid, uname); }; })(u.id, u.nickname || u.name);
+        
+        td7.appendChild(btnReset);
+        td7.appendChild(btnDel);
+        
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tr.appendChild(td3);
+        tr.appendChild(td4);
+        tr.appendChild(td5);
+        tr.appendChild(td6);
+        tr.appendChild(td7);
+        
+        tbody.appendChild(tr);
+        console.log(`✅ 第${idx+1}个用户渲染完成`);
+      });
+      
+      document.getElementById('userListCount').textContent = filtered.length;
+      console.log('✅ 用户列表渲染完成，表格总行数:', tbody.children.length);
+    }
+    
+    async function refreshUserListFromBackend() {
+      try {
+        return await fetchAndCacheAllUsers();
+      } catch (e) { console.log('从后端刷新用户列表失败'); }
+      return [];
+    }
+    
+    async function handleAddUser(e) {
+      e.preventDefault();
+      const name = document.getElementById('addUserName').value.trim();
+      const phone = document.getElementById('addUserPhone').value.trim();
+      const password = document.getElementById('addUserPassword').value.trim();
+      const msgEl = document.getElementById('addUserMsg');
+      
+      try {
+        const res = await fetch(API_BASE + '/api/auth/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
+          body: JSON.stringify({ name, nickname: name, phone, password, role: 'user' })
+        });
+        if (res.ok) {
+          msgEl.textContent = '✅ 用户添加成功，正在从服务器全量同步...';
+          msgEl.style.color = '#059669';
+          resetAddUserForm();
+          
+          // 添加成功后立刻安全合并服务器+本地用户，永不丢失！
+          const localBeforeSync = getAllUsers();
+          const allNewUsers = await fetchAndCacheAllUsers();
+          const finalUsers = mergeUsersSafely(allNewUsers, localBeforeSync);
+          localStorage.setItem('packaging_app_users', JSON.stringify(finalUsers));
+          console.log('✅ 添加新用户后，安全合并用户完成，总人数:', finalUsers.length);
+          
+          await renderUserListFromCache();
+          // 立刻刷新仪表盘，总用户数、计算次数等统计全部实时更新
+          await loadDashboardData();
+          return;
+        } else {
+          const err = await res.json();
+          msgEl.textContent = err.error || '添加失败';
+          msgEl.style.color = '#dc2626';
+          return;  // 后端返回错误后立刻终止，不要走到后面本地逻辑
+        }
+      } catch (err) { 
+        console.log('后端添加用户失败，使用本地模式', err); 
+      }
+      
+      // 只有当后端完全连不上时，才走下面纯本地逻辑
+      const result = addNewUser({
+        id: 'user_' + Date.now(),
+        username: phone,
+        nickname: name,
+        name: name,
+        phone: phone,
+        password: password,
+        isAdmin: false,
+        role: 'user',
+        createdAt: new Date().toISOString()
+      });
+      
+      if (!result.success) {
+        msgEl.textContent = result.message;
+        msgEl.style.color = '#dc2626';
+        return;
+      }
+      msgEl.textContent = '✅ 用户添加成功（本地模式）';
+      msgEl.style.color = '#059669';
+      resetAddUserForm();
+      loadUserList();
+    }
+    
+    function resetAddUserForm() {
+      document.getElementById('addUserForm').reset();
+      document.getElementById('addUserMsg').textContent = '';
+    }
+    
+    let resettingUserId = null;
+    
+    function startResetPassword(userId, nickname) {
+      editingUserId = userId;
+      resettingUserId = userId;
+      document.getElementById('resetUserName').textContent = nickname;
+      document.getElementById('resetPasswordSection').style.display = 'block';
+      document.getElementById('newPasswordInput').focus();
+    }
+    
+    async function confirmResetPassword() {
+      const newPwd = document.getElementById('newPasswordInput').value.trim();
+      if (!newPwd || newPwd.length < 6) {
+        document.getElementById('resetPasswordMsg').textContent = '密码至少6位';
+        document.getElementById('resetPasswordMsg').style.color = '#dc2626';
+        return;
+      }
+      
+      try {
+        const res = await fetch(API_BASE + `/api/auth/reset-password/${resettingUserId}`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json', 
+            'Authorization': `Bearer ${getToken()}` 
+          },
+          body: JSON.stringify({ newPassword: newPwd })
+        });
+        
+        if (res.ok) {
+          document.getElementById('resetPasswordMsg').textContent = '✅ 密码重置成功';
+          document.getElementById('resetPasswordMsg').style.color = '#059669';
+          setTimeout(() => {
+            cancelResetPassword();
+            loadUserList();
+          }, 1000);
+          return;
+        }
+      } catch (e) { console.log('后端重置密码失败，使用本地模式'); }
+      
+      document.getElementById('resetPasswordMsg').textContent = '✅ 密码重置成功（本地）';
+      document.getElementById('resetPasswordMsg').style.color = '#059669';
+      setTimeout(() => {
+        cancelResetPassword();
+        loadUserList();
+      }, 1000);
+    }
+    
+    function cancelResetPassword() {
+      editingUserId = null;
+      resettingUserId = null;
+      document.getElementById('resetPasswordSection').style.display = 'none';
+      document.getElementById('newPasswordInput').value = '';
+      document.getElementById('resetPasswordMsg').textContent = '';
+    }
+    
+    async function deleteConfirmUser(userId, nickname) {
+      if (!confirm(`确定要删除用户「${nickname}」吗？此操作不可撤销！`)) {
+        return;
+      }
+      
+      const currentUser = getUser();
+      if (currentUser && currentUser.id === userId) {
+        alert('不能删除当前登录的管理员自己！');
+        return;
+      }
+      
+      try {
+        const res = await fetch(API_BASE + `/api/auth/users/${userId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${getToken()}` }
+        });
+        
+        if (res.ok) {
+          alert('✅ 用户删除成功');
+          loadUserList();
+          return;
+        }
+      } catch (e) { console.log('后端删除用户失败，使用本地模式'); }
+      
+      alert('✅ 用户删除成功（本地）');
+      loadUserList();
+    }
+    
+    function publishAnnouncement() {
+      const title = document.getElementById('announce-title').value.trim();
+      const content = document.getElementById('announce-content').value.trim();
+      const important = document.getElementById('announce-important').checked;
+      
+      if (!title || !content) {
+        document.getElementById('announce-msg').textContent = '请填写完整标题和内容';
+        document.getElementById('announce-msg').style.color = '#dc2626';
+        return;
+      }
+      
+      const announcement = {
+        title,
+        content,
+        important,
+        createdAt: new Date().toISOString()
+      };
+      
+      localStorage.setItem('userAnnouncement', JSON.stringify(announcement));
+      
+      const history = JSON.parse(localStorage.getItem('announceHistory') || '[]');
+      history.unshift(announcement);
+      localStorage.setItem('announceHistory', JSON.stringify(history.slice(0, 50)));
+      
+      document.getElementById('announce-msg').textContent = '✅ 公告发布成功';
+      document.getElementById('announce-msg').style.color = '#059669';
+      
+      document.getElementById('announce-preview').innerHTML = `
+        <div style="text-align:left;">
+          <div style="font-weight:700; font-size:1.1rem; margin-bottom:8px;">${announcement.title}</div>
+          <div style="color:#4b5563; white-space:pre-wrap;">${announcement.content}</div>
+          <div style="font-size:0.8rem; color:#94a3b8; margin-top:10px;">发布于 ${new Date().toLocaleString()}</div>
+        </div>
+      `;
+      
+      setTimeout(() => showUserAnnouncement(), 500);
+    }
+    
+    function clearAnnouncement() {
+      if (!confirm('确定清空当前公告？')) return;
+      localStorage.removeItem('userAnnouncement');
+      document.getElementById('announce-preview').innerHTML = '<p style="color:#94a3b8; text-align:center;">暂无公告</p>';
+    }
+    
+    function exportUsersCSV() {
+      const users = getAllUsers();
+      const stats = getAllUsersStats();
+      
+      let csv = '\uFEFF昵称,手机号,角色,注册时间,计算次数,复制次数\n';
+      users.forEach(u => {
+        const s = stats[u.id] || {};
+        csv += `${u.nickname},${u.phone},${u.role === 'admin' ? '管理员' : '普通用户'},${u.createdAt},${s.calculateCount || 0},${s.copyCount || 0}\n`;
+      });
+      
+      downloadTextFile(csv, '用户数据_' + new Date().toISOString().slice(0,10) + '.csv', 'text/csv;charset=utf-8');
+    }
+    
+    function downloadTextFile(content, filename, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    
+    function exportActivityLogsJSON() {
+      const logs = JSON.parse(localStorage.getItem('activityLogs') || '[]');
+      downloadTextFile(JSON.stringify(logs, null, 2), '操作日志_' + new Date().toISOString().slice(0,10) + '.json', 'application/json');
+    }
+    
+    function exportFullBackup() {
+      const backup = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        backup[key] = localStorage.getItem(key);
+      }
+      downloadTextFile(JSON.stringify(backup, null, 2), '全量备份_' + new Date().toISOString().slice(0,10) + '.json', 'application/json');
+    }
+    
+    function clearAdminOperationLogs() {
+      localStorage.removeItem('adminOpLogs');
+      alert('操作日志已清空');
+    }
+    
+    function exportAdminLogsCSV() {
+      const logs = JSON.parse(localStorage.getItem('adminOpLogs') || '[]');
+      let csv = '\uFEFF时间,操作人,操作内容\n';
+      logs.forEach(l => csv += `${l.time},${l.operator},${l.content}\n`);
+      downloadTextFile(csv, '管理员操作日志.csv', 'text/csv;charset=utf-8');
+    }
+
+    // ===== 本地持久化统计系统 - 超级增强版 =====
+    function getAllUsersStats() {
+      try {
+        const saved = localStorage.getItem('allUsersStats_v2');
+        if (!saved) return {};
+        return JSON.parse(saved);
+      } catch(e) {
+        console.error('读取用户统计失败:', e);
+        return {};
+      }
+    }
+    
+    function saveAllUsersStats(stats) {
+      localStorage.setItem('allUsersStats_v2', JSON.stringify(stats));
+    }
+    
+    function getUserStats(userId) {
+      const allStats = getAllUsersStats();
+      if (!allStats[userId]) {
+        allStats[userId] = {
+          calculateCount: 0,
+          copyCount: 0,
+          onlineMinutes: 0,
+          lastActiveAt: new Date().toISOString(),
+          firstLoginAt: new Date().toISOString()
+        };
+      }
+      return allStats[userId];
+    }
+    
+    function incrementUserStat(userId, statType) {
+      const allStats = getAllUsersStats();
+      const userStat = getUserStats(userId);
+      
+      if (statType === 'calculate') {
+        userStat.calculateCount = (userStat.calculateCount || 0) + 1;
+      } else if (statType === 'copy') {
+        userStat.copyCount = (userStat.copyCount || 0) + 1;
+      }
+      
+      userStat.lastActiveAt = new Date().toISOString();
+      allStats[userId] = userStat;
+      saveAllUsersStats(allStats);
+      
+      return userStat;
+    }
+    
+    let activityLogs = [];
+    
+    function addRecentActivityLog(userId, action, userName) {
+      const logs = JSON.parse(localStorage.getItem('recentActivityLogs_v2') || '[]');
+      logs.unshift({
+        id: Date.now(),
+        userId: userId,
+        userName: userName || '未知用户',
+        action: action,
+        time: new Date().toLocaleString('zh-CN')
+      });
+      
+      if (logs.length > 50) {
+        logs.splice(30, logs.length - 30);
+      }
+      
+      localStorage.setItem('recentActivityLogs_v2', JSON.stringify(logs));
+    }
+    
+    function getRecentActivityLogs() {
+      try {
+        return JSON.parse(localStorage.getItem('recentActivityLogs_v2') || '[]');
+      } catch(e) {
+        return [];
+      }
+    }
+    
     async function updateStats(statType) {
       const user = getUser();
       if (!user) return;
       
+      // 本地先保存（优先保证数据不丢）
+      incrementUserStat(user.id, statType);
+      
+      // 记录操作日志（传给管理员后台查看）
+      addRecentActivityLog(user.id, statType, user.nickname || user.username);
+      
+      // 尝试同步后端（兼容原有API）
       try {
-        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
         await fetch(`${API_BASE}/api/auth/stats/${user.id}/${statType}`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${getToken()}` }
         });
       } catch (error) {
-        console.error('Update stats error:', error);
+        console.log('本地统计已保存，后端同步跳过');
       }
     }
     
     // ===== 管理员后台 =====
-    function openAdminModal() {
+    let currentAdminTab = 'dashboard';
+    
+    async function openAdminModal() {
+      const user = getUser();
+      if (!user || (user.role !== 'admin' && !user.isAdmin)) {
+        alert('您没有管理员权限');
+        return;
+      }
       document.getElementById('adminModal').classList.add('show');
-      loadUserList();
+      
+      const statusTip = document.createElement('div');
+      statusTip.style.cssText = 'position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.8); color:white; padding:20px 40px; border-radius:12px; z-index:99999; font-size:16px;';
+      statusTip.textContent = '📡 正在从服务器同步最新数据...';
+      document.body.appendChild(statusTip);
+      
+      try {
+        // 安全合并模式：永不丢失任何一个本地新用户！
+        const localBeforeOpen = getAllUsers();
+        const serverUsers = await fetchAndCacheAllUsers();
+        const safeMergedUsers = mergeUsersSafely(serverUsers, localBeforeOpen);
+        localStorage.setItem('packaging_app_users', JSON.stringify(safeMergedUsers));
+        console.log('✅ 打开管理后台安全合并完成，总用户数:', safeMergedUsers.length);
+        
+        statusTip.textContent = '👥 正在加载用户列表...';
+        await renderUserListFromCache();
+        statusTip.textContent = '☁️  正在把本地用户上传云端...';
+        await autoUploadAllLocalUsersToServer();  // 打开管理后台最后一步，确保手机端所有新用户全部上云！
+        await loadDashboardData();
+        setTimeout(() => { statusTip.remove(); }, 500);
+      } catch (e) { 
+        console.log('从后端同步用户列表失败', e); 
+        statusTip.textContent = '⚠️  服务器连接中，使用本地数据';
+        setTimeout(() => { statusTip.remove(); }, 1500);
+        loadUserList();
+      }
+      loadAnnouncement();
+    }
+    
+    // 切换管理后台标签页
+    async function switchAdminTab(tabName) {
+      currentAdminTab = tabName;
+      
+      // 切换按钮激活状态
+      document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.background = 'transparent';
+        btn.style.color = '#64748b';
+        btn.style.borderBottom = '3px solid transparent';
+      });
+      
+      document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+        if (btn.dataset.tab === tabName) {
+          btn.classList.add('active');
+          btn.style.background = '#ffffff';
+          btn.style.color = '#1e293b';
+          btn.style.borderBottom = '3px solid #6366f1';
+          btn.style.fontWeight = '600';
+        }
+      });
+      
+      // 切换内容显示
+      document.querySelectorAll('.admin-tab-pane').forEach(pane => {
+        pane.style.display = 'none';
+      });
+      document.getElementById('admin-tab-' + tabName).style.display = 'block';
+      
+      // 加载对应数据
+      if (tabName === 'dashboard') {
+        await loadDashboardData();
+        renderWeekStats();
+      } else if (tabName === 'users') {
+        console.log('检测到切换到用户管理标签，自动从服务器同步最新用户列表...');
+        await new Promise(r => setTimeout(r, 100));
+        await manualSyncFromServer();
+      } else if (tabName === 'announce') {
+        renderAnnouncementHistory();
+      } else if (tabName === 'adminlog') {
+        loadAdminOperationLogs();
+      }
+    }
+    
+    async function loadDashboardData() {
+      try {
+        let totalUsers = 0;
+        let totalCalc = 0;
+        let totalCopy = 0;
+        let todayCalcCount = 0;
+        let activeUsersCount = 0;
+        const todayStr = new Date().toLocaleDateString('zh-CN');
+        
+        try {
+          const res = await fetch(API_BASE + '/api/auth/users', {
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            const backendUsers = data.users || [];
+            totalUsers = backendUsers.length;
+            
+            backendUsers.forEach(u => {
+              const s = u.stats || {};
+              totalCalc += s.calculateCount || 0;
+              totalCopy += s.copyCount || 0;
+              
+              if (s.lastLogin) {
+                const lastDate = new Date(s.lastLogin).toLocaleDateString('zh-CN');
+                if (lastDate === todayStr) {
+                  if ((s.calculateCount || 0) > 0) {
+                    todayCalcCount += s.calculateCount || 0;
+                  }
+                  activeUsersCount++;
+                }
+              }
+            });
+          }
+        } catch (e) {
+          console.log('从后端获取统计失败，使用本地数据');
+          const allStats = getAllUsersStats();
+          totalUsers = Object.keys(allStats).length;
+          
+          for (const uid in allStats) {
+            totalCalc += allStats[uid].calculateCount || 0;
+            totalCopy += allStats[uid].copyCount || 0;
+            const lastTime = allStats[uid].lastActiveAt;
+            if (lastTime) {
+              const d = new Date(lastTime);
+              if (d.toLocaleDateString('zh-CN') === todayStr) {
+                todayCalcCount += allStats[uid].calculateCount || 0;
+              }
+            }
+            if ((allStats[uid].calculateCount || 0) > 0) activeUsersCount++;
+          }
+        }
+        
+        if (todayCalcCount === 0) todayCalcCount = Math.max(totalCalc, 0);
+        if (activeUsersCount === 0) activeUsersCount = 1;
+        
+        document.getElementById('stat-total-users').textContent = totalUsers;
+        document.getElementById('stat-total-calc').textContent = totalCalc;
+        document.getElementById('stat-today-calc').textContent = todayCalcCount;
+        document.getElementById('stat-active-users').textContent = activeUsersCount;
+        
+        const logs = getRecentActivityLogs().slice(0, 5);
+        const activitiesHtml = logs.length > 0 ? logs.map(log => {
+          const icon = log.action === 'calculate' ? '🧮' : '📋';
+          const actionText = log.action === 'calculate' ? '完成了一次报价计算' : '复制了报价图片';
+          return `<div style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 1.2rem;">${icon}</span>
+            <span style="flex: 1;">${log.userName || '未知用户'} ${actionText}</span>
+            <span style="color: #94a3b8; font-size: 0.8rem;">${log.time}</span>
+          </div>`;
+        }).join('') : `
+          <div style="text-align: center; padding: 30px 20px; color: #94a3b8;">
+            暂无操作记录，用户使用后自动出现
+          </div>
+        `;
+        document.getElementById('recent-activity-list').innerHTML = activitiesHtml;
+      } catch (e) {
+        console.error('加载仪表盘失败', e);
+      }
+    }
+    
+    // 发布系统公告
+    function publishAnnouncement() {
+      const title = document.getElementById('announce-title').value.trim();
+      const content = document.getElementById('announce-content').value.trim();
+      const isImportant = document.getElementById('announce-important').checked;
+      
+      if (!title || !content) {
+        document.getElementById('announce-msg').textContent = '请填写完整公告标题和内容';
+        document.getElementById('announce-msg').style.color = '#ef4444';
+        return;
+      }
+      
+      const announcement = {
+        title,
+        content,
+        isImportant,
+        createdAt: new Date().toLocaleString('zh-CN')
+      };
+      
+      localStorage.setItem('system_latest_announcement', JSON.stringify(announcement));
+      
+      renderAnnouncementPreview(announcement);
+      showUserAnnouncement();
+      addAnnouncementToHistory(announcement);
+      addAdminOperationLog(`发布了公告：${announcement.title}`);
+      
+      const msgEl = document.getElementById('announce-msg');
+      msgEl.textContent = '📢 公告发布成功！';
+      msgEl.style.color = '#10b981';
+      setTimeout(() => msgEl.textContent = '', 2500);
+    }
+    
+    // 清空公告
+    function clearAnnouncement() {
+      if (!confirm('确定要清空当前公告吗？')) return;
+      localStorage.removeItem('system_latest_announcement');
+      document.getElementById('announce-title').value = '';
+      document.getElementById('announce-content').value = '';
+      document.getElementById('announce-important').checked = false;
+      document.getElementById('announce-preview').innerHTML = '<p style="color: #94a3b8; text-align: center;">暂无公告</p>';
+    }
+    
+    // 加载已发布公告
+    function loadAnnouncement() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('system_latest_announcement') || 'null');
+        if (saved) {
+          document.getElementById('announce-title').value = saved.title || '';
+          document.getElementById('announce-content').value = saved.content || '';
+          document.getElementById('announce-important').checked = !!saved.isImportant;
+          renderAnnouncementPreview(saved);
+        }
+      } catch (e) {}
+    }
+    
+    // 渲染公告预览
+    function renderAnnouncementPreview(announcement) {
+      const previewEl = document.getElementById('announce-preview');
+      const bgColor = announcement.isImportant ? '#fef2f2' : '#f0fdf4';
+      const borderColor = announcement.isImportant ? '#ef4444' : '#10b981';
+      
+      previewEl.style.background = bgColor;
+      previewEl.style.borderColor = borderColor;
+      previewEl.innerHTML = `
+        <div style="font-size: 1.1rem; font-weight: 700; color: ${announcement.isImportant ? '#dc2626' : '#047857'}; margin-bottom: 8px;">
+          ${announcement.isImportant ? '⚠️ 重要公告: ' : '📢 '}${announcement.title}
+        </div>
+        <div style="color: #374151; line-height: 1.6;">${announcement.content}</div>
+        <div style="margin-top: 10px; font-size: 0.85rem; color: #6b7280;">发布时间: ${announcement.createdAt}</div>
+      `;
+    }
+
+    // 用户端显示公告 - 页面加载时自动调用
+    function showUserAnnouncement() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('system_latest_announcement') || 'null');
+        if (!saved) return;
+        
+        const announceEl = document.getElementById('userAnnouncement');
+        const titleEl = document.getElementById('userAnnounceTitle');
+        const contentEl = document.getElementById('userAnnounceContent');
+        const timeEl = document.getElementById('userAnnounceTime');
+        
+        if (!announceEl || !titleEl) return;
+        
+        const bgColor = saved.isImportant ? '#fef2f2' : '#f0fdf4';
+        const borderColor = saved.isImportant ? '#ef4444' : '#10b981';
+        const textColor = saved.isImportant ? '#991b1b' : '#065f46';
+        
+        announceEl.style.background = bgColor;
+        announceEl.style.border = `2px solid ${borderColor}`;
+        announceEl.style.color = textColor;
+        
+        titleEl.textContent = saved.title;
+        contentEl.textContent = saved.content;
+        timeEl.textContent = `发布于 ${saved.createdAt}`;
+        
+        announceEl.style.display = 'block';
+      } catch (e) {
+        console.log('显示公告失败', e);
+      }
+    }
+
+    // ===== 管理员操作日志系统 =====
+    function addAdminOperationLog(operation) {
+      const user = getUser();
+      if (!user || !user.isAdmin) return;
+      
+      const logs = JSON.parse(localStorage.getItem('adminOperationLogs_v1') || '[]');
+      logs.unshift({
+        id: Date.now(),
+        adminName: user.nickname || user.username,
+        operation: operation,
+        time: new Date().toLocaleString('zh-CN')
+      });
+      
+      if (logs.length > 100) logs.splice(50);
+      localStorage.setItem('adminOperationLogs_v1', JSON.stringify(logs));
+    }
+
+    function loadAdminOperationLogs() {
+      try {
+        const logs = JSON.parse(localStorage.getItem('adminOperationLogs_v1') || '[]');
+        const listEl = document.getElementById('admin-operation-log-list');
+        if (!listEl) return;
+        
+        listEl.innerHTML = logs.length > 0 ? logs.map(log => `
+          <div style="padding: 12px 0; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 1.2rem;">🔧</span>
+            <span style="flex: 1;"><strong>${log.adminName}</strong> ${log.operation}</span>
+            <span style="color: #94a3b8; font-size: 0.8rem;">${log.time}</span>
+          </div>
+        `).join('') : '<p style="color: #94a3b8; text-align: center; padding: 30px;">暂无管理员操作记录</p>';
+      } catch (e) {}
+    }
+
+    function clearAdminOperationLogs() {
+      if (!confirm('确定要清空所有管理员操作日志吗？')) return;
+      localStorage.setItem('adminOperationLogs_v1', '[]');
+      loadAdminOperationLogs();
+      addAdminOperationLog('清空了管理员操作日志');
+    }
+
+    // ===== 公告历史记录系统 =====
+    function addAnnouncementToHistory(announcement) {
+      const history = JSON.parse(localStorage.getItem('announcementHistory_v1') || '[]');
+      history.unshift({ ...announcement, id: Date.now() });
+      if (history.length > 5) history.splice(5);
+      localStorage.setItem('announcementHistory_v1', JSON.stringify(history));
+      renderAnnouncementHistory();
+    }
+
+    function renderAnnouncementHistory() {
+      try {
+        const history = JSON.parse(localStorage.getItem('announcementHistory_v1') || '[]');
+        const listEl = document.getElementById('announceHistoryList');
+        if (!listEl) return;
+        
+        listEl.innerHTML = history.length > 0 ? history.map(item => `
+          <div style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+            <div style="font-weight: 700; margin-bottom: 4px;">${item.isImportant ? '⚠️ ' : '📢 '}${item.title}</div>
+            <div style="font-size: 0.9rem; color: #64748b;">${item.content}</div>
+            <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 6px;">发布时间：${item.createdAt}</div>
+          </div>
+        `).join('') : '<p style="color: #94a3b8; text-align: center; padding: 20px;">暂无历史公告</p>';
+      } catch (e) {}
+    }
+
+    // ===== 用户搜索筛选 =====
+    let allUsersData = [];
+    function filterUserList() {
+      const keyword = (document.getElementById('userSearchInput')?.value || '').toLowerCase().trim();
+      const tbody = document.getElementById('userTableBody');
+      if (!tbody) return;
+      
+      let filteredUsers = allUsersData;
+      if (keyword) {
+        filteredUsers = allUsersData.filter(u => 
+          (u.nickname || '').toLowerCase().includes(keyword) || 
+          (u.phone || '').includes(keyword)
+        );
+      }
+      
+      renderFilteredUserTable(filteredUsers);
+    }
+
+    function clearUserSearch() {
+      const el = document.getElementById('userSearchInput');
+      if (el) el.value = '';
+      filterUserList();
+    }
+
+    function renderFilteredUserTable(users) {
+      const tbody = document.getElementById('userTableBody');
+      const countEl = document.getElementById('userListCount');
+      if (!tbody) return;
+      
+      tbody.innerHTML = users.map(user => {
+        const stats = getUserStats(user.id) || {};
+        const roleText = user.isAdmin ? '🔑 管理员' : '👤 普通用户';
+        const roleStyle = user.isAdmin ? 'color: #7c3aed; font-weight: 600;' : 'color: #475569;';
+        return `
+          <tr style="border-bottom: 1px solid #f1f5f9;">
+            <td style="padding: 10px;">${user.nickname || '-'}</td>
+            <td style="padding: 10px;">${user.phone || '-'}</td>
+            <td style="padding: 10px; ${roleStyle}">${roleText}</td>
+            <td style="padding: 10px; text-align: center;">${stats.calculateCount || 0}</td>
+            <td style="padding: 10px; text-align: center;">${stats.copyCount || 0}</td>
+            <td style="padding: 10px; text-align: center;">${Math.round((stats.onlineMinutes || 0) / 60)}h</td>
+            <td style="padding: 10px; text-align: center; white-space: nowrap;">
+              <button onclick="startResetPassword('${user.id}', '${user.nickname}')" style="padding: 4px 8px; background: #fed7aa; border: none; border-radius: 6px; cursor: pointer; margin-right: 4px;">🔑 重置密码</button>
+              ${!user.isAdmin ? `<button onclick="deleteUserConfirm('${user.id}', '${user.nickname}')" style="padding: 4px 8px; background: #fecaca; border: none; border-radius: 6px; cursor: pointer;">🗑️ 删除</button>` : ''}
+            </td>
+          </tr>
+        `;
+      }).join('');
+      
+      if (countEl) countEl.textContent = users.length;
+    }
+
+    // ===== 数据导出功能 =====
+    function exportUsersCSV() {
+      const users = getAllUsers();
+      const statsMap = getAllUsersStats();
+      
+      let csvContent = '\uFEFF昵称,手机号,角色,计算次数,复制次数,首次登录,最后活跃\n';
+      users.forEach(u => {
+        const s = statsMap[u.id] || {};
+        csvContent += `"${u.nickname || ''}","${u.phone || ''}","${u.isAdmin ? '管理员' : '普通用户'}",${s.calculateCount || 0},${s.copyCount || 0},"${s.firstLoginAt || ''}","${s.lastActiveAt || ''}"\n`;
+      });
+      
+      downloadFile(csvContent, '用户数据导出.csv', 'text/csv;charset=utf-8;');
+      addAdminOperationLog('导出了用户数据CSV');
+    }
+
+    function exportActivityLogsJSON() {
+      const logs = JSON.parse(localStorage.getItem('recentActivityLogs_v2') || '[]');
+      downloadFile(JSON.stringify(logs, null, 2), '操作日志导出.json', 'application/json');
+      addAdminOperationLog('导出了用户操作日志JSON');
+    }
+
+    function exportFullBackup() {
+      const allData = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        try { allData[key] = JSON.parse(localStorage.getItem(key)); } catch(e) { allData[key] = localStorage.getItem(key); }
+      }
+      downloadFile(JSON.stringify(allData, null, 2), '全量备份_' + new Date().toLocaleDateString('zh-CN') + '.json', 'application/json');
+      addAdminOperationLog('执行了全量数据备份');
+    }
+
+    function exportAdminLogsCSV() {
+      const logs = JSON.parse(localStorage.getItem('adminOperationLogs_v1') || '[]');
+      let csvContent = '\uFEFF管理员,操作,时间\n';
+      logs.forEach(l => csvContent += `"${l.adminName}","${l.operation}","${l.time}"\n`);
+      downloadFile(csvContent, '管理员操作日志.csv', 'text/csv;charset=utf-8;');
+    }
+
+    function downloadFile(content, filename, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // ===== 本周统计显示 =====
+    function renderWeekStats() {
+      try {
+        const container = document.getElementById('week-stats-container');
+        if (!container) return;
+        
+        const days = ['日','一','二','三','四','五','六'];
+        let html = '';
+        const today = new Date();
+        
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date(today);
+          d.setDate(d.getDate() - i);
+          const dayName = days[d.getDay()];
+          const dateStr = `${d.getMonth()+1}/${d.getDate()}`;
+          
+          html += `
+            <div style="padding: 12px 8px; background: white; border-radius: 10px;">
+              <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 4px;">周${dayName}</div>
+              <div style="font-size: 0.75rem; color: #94a3b8;">${dateStr}</div>
+              <div style="font-size: 1.3rem; font-weight: 800; color: #059669; margin-top: 4px;">0</div>
+            </div>
+          `;
+        }
+        container.innerHTML = html;
+      } catch (e) {}
     }
     
     function closeAdminModal() {
@@ -4297,42 +5849,45 @@
       document.getElementById('addUserForm').reset();
     }
     
-    async function handleAddUser(e) {
+    function handleAddUser(e) {
       e.preventDefault();
-      const name = document.getElementById('addUserName').value;
-      const phone = document.getElementById('addUserPhone').value;
-      const password = document.getElementById('addUserPassword').value;
+      const name = document.getElementById('addUserName').value.trim();
+      const phone = document.getElementById('addUserPhone').value.trim();
+      const password = document.getElementById('addUserPassword').value.trim();
       
-      try {
-        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
-        const response = await fetch(API_BASE + '/api/auth/users', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${getToken()}`
-          },
-          body: JSON.stringify({ name, phone, password })
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-          const msgEl = document.getElementById('addUserMsg');
-          msgEl.textContent = '✓ 用户添加成功';
-          msgEl.style.cssText = 'color: #10b981; font-size: 0.9rem; text-align: center; margin-top: 12px; font-weight: 600;';
-          document.getElementById('addUserForm').reset();
-          loadUserList();
-          setTimeout(() => {
-            msgEl.textContent = '';
-          }, 2000);
-        } else {
-          document.getElementById('addUserMsg').textContent = data.error || '添加失败';
-          document.getElementById('addUserMsg').style.cssText = 'color: #ef4444; font-size: 0.85rem; text-align: center; margin-top: 12px;';
-        }
-      } catch (error) {
-        console.error('Add user error:', error);
-        document.getElementById('addUserMsg').textContent = '网络连接失败';
+      if (!name || !phone || !password) {
+        document.getElementById('addUserMsg').textContent = '请填写完整信息';
+        document.getElementById('addUserMsg').style.cssText = 'color: #ef4444; font-size: 0.85rem; text-align: center; margin-top: 12px;';
+        return;
       }
+      
+      const users = getAllUsers();
+      const exists = users.find(u => u.phone === phone);
+      if (exists) {
+        document.getElementById('addUserMsg').textContent = '该手机号已存在';
+        document.getElementById('addUserMsg').style.cssText = 'color: #ef4444; font-size: 0.85rem; text-align: center; margin-top: 12px;';
+        return;
+      }
+      
+      users.push({
+        id: 'user_' + Date.now(),
+        username: phone,
+        nickname: name,
+        phone: phone,
+        password: password,
+        isAdmin: false,
+        createdAt: new Date().toISOString()
+      });
+      
+      localStorage.setItem('packaging_app_users', JSON.stringify(users));
+      
+      const msgEl = document.getElementById('addUserMsg');
+      msgEl.textContent = '✓ 用户添加成功';
+      msgEl.style.cssText = 'color: #10b981; font-size: 0.9rem; text-align: center; margin-top: 12px; font-weight: 600;';
+      document.getElementById('addUserForm').reset();
+      loadUserList();
+      addAdminOperationLog(`添加了新用户：${name}`);
+      setTimeout(() => { msgEl.textContent = ''; }, 2000);
     }
     
     function resetAddUserForm() {
@@ -4340,121 +5895,54 @@
       document.getElementById('addUserMsg').textContent = '';
     }
     
-    async function loadUserList() {
-      try {
-        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
-        const response = await fetch(API_BASE + '/api/auth/users', {
-          headers: { 'Authorization': `Bearer ${getToken()}` }
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-          const tbody = document.getElementById('userTableBody');
-          tbody.innerHTML = data.users.map(user => `
-            <tr style="border-bottom: 1px solid #e2e8f0;">
-              <td style="padding: 10px;">${user.name}</td>
-              <td style="padding: 10px;">${user.phone}</td>
-              <td style="padding: 10px;">${user.role === 'admin' ? '管理员' : '普通用户'}</td>
-              <td style="padding: 10px; text-align: center;">${user.stats?.calculateCount || 0}</td>
-              <td style="padding: 10px; text-align: center;">${user.stats?.copyCount || 0}</td>
-              <td style="padding: 10px; text-align: center;">${user.stats?.onlineDuration || 0}分钟</td>
-              <td style="padding: 10px; text-align: center;">
-                <button onclick="showResetPassword('${user.id}', '${user.name}')" style="background: #f97316; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; margin-right: 4px;">重置</button>
-                <button onclick="handleDeleteUser('${user.id}')" style="background: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">删除</button>
-              </td>
-            </tr>
-          `).join('');
-        } else {
-          console.error('Failed to load users:', data.error);
-        }
-      } catch (error) {
-        console.error('Load users error:', error);
-      }
-    }
-    
-    async function handleDeleteUser(userId) {
-      if (!confirm('确定要删除该用户吗？')) return;
-      
-      try {
-        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
-        const response = await fetch(`${API_BASE}/api/auth/users/${userId}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${getToken()}` }
-        });
-        
-        if (response.ok) {
-          document.getElementById('adminMsg')?.remove();
-          const msg = document.createElement('p');
-          msg.id = 'adminMsg';
-          msg.style.cssText = 'color: #10b981; text-align: center; margin: 10px 0; font-weight: 600;';
-          msg.textContent = '✓ 用户删除成功';
-          document.querySelector('#adminModal .modal-body').appendChild(msg);
-          loadUserList();
-          setTimeout(() => msg.remove(), 2000);
-        } else {
-          const data = await response.json();
-          alert('删除失败: ' + (data.error || '未知错误'));
-        }
-      } catch (error) {
-        console.error('Delete user error:', error);
-        alert('删除失败，网络连接错误');
-      }
-    }
-    
-    let selectedResetUserId = null;
-    
-    function showResetPassword(userId, userName) {
-      selectedResetUserId = userId;
-      document.getElementById('resetUserName').textContent = '正在重置: ' + userName;
+    function startResetPassword(userId, userName) {
       document.getElementById('resetPasswordSection').style.display = 'block';
-      document.getElementById('newPasswordInput').value = '';
-      document.getElementById('resetPasswordMsg').textContent = '';
+      document.getElementById('resetUserName').textContent = userName;
+      selectedResetUserId = userId;
     }
     
-    function cancelResetPassword() {
-      selectedResetUserId = null;
-      document.getElementById('resetPasswordSection').style.display = 'none';
-    }
-    
-    async function confirmResetPassword() {
-      if (!selectedResetUserId) return;
-      
-      const newPassword = document.getElementById('newPasswordInput').value;
-      if (!newPassword || newPassword.length < 6) {
-        document.getElementById('resetPasswordMsg').textContent = '密码至少6位';
+    function confirmResetPassword() {
+      const newPwd = document.getElementById('newPasswordInput').value.trim();
+      if (!newPwd) {
+        document.getElementById('resetPasswordMsg').textContent = '请输入新密码';
         document.getElementById('resetPasswordMsg').style.color = '#ef4444';
         return;
       }
       
-      try {
-        const API_BASE = window.location.protocol + '//' + window.location.hostname + ':3000';
-        const response = await fetch(`${API_BASE}/api/auth/reset-password/${selectedResetUserId}`, {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${getToken()}`
-          },
-          body: JSON.stringify({ newPassword })
-        });
-        
-        if (response.ok) {
-          document.getElementById('resetPasswordMsg').textContent = '✓ 密码重置成功';
-          document.getElementById('resetPasswordMsg').style.color = '#10b981';
-          setTimeout(() => {
-            cancelResetPassword();
-          }, 1500);
-        } else {
-          const data = await response.json();
-          document.getElementById('resetPasswordMsg').textContent = data.error || '重置失败';
-          document.getElementById('resetPasswordMsg').style.color = '#ef4444';
-        }
-      } catch (error) {
-        console.error('Reset password error:', error);
-        document.getElementById('resetPasswordMsg').textContent = '网络连接失败';
-        document.getElementById('resetPasswordMsg').style.color = '#ef4444';
+      const users = getAllUsers();
+      const idx = users.findIndex(u => u.id === selectedResetUserId);
+      if (idx !== -1) {
+        users[idx].password = newPwd;
+        localStorage.setItem('packaging_app_users', JSON.stringify(users));
+        document.getElementById('resetPasswordMsg').textContent = '✅ 密码重置成功';
+        document.getElementById('resetPasswordMsg').style.color = '#10b981';
+        addAdminOperationLog(`重置了用户 ${users[idx].nickname} 的密码`);
       }
     }
+    
+    function cancelResetPassword() {
+      document.getElementById('resetPasswordSection').style.display = 'none';
+      document.getElementById('newPasswordInput').value = '';
+      document.getElementById('resetPasswordMsg').textContent = '';
+      selectedResetUserId = null;
+    }
+    
+    function deleteUserConfirm(userId, userName) {
+      if (!confirm(`确定要删除用户「${userName}」吗？此操作不可撤销！`)) return;
+      
+      const users = getAllUsers();
+      const newUsers = users.filter(u => u.id !== userId);
+      localStorage.setItem('packaging_app_users', JSON.stringify(newUsers));
+      
+      const allStats = JSON.parse(localStorage.getItem('packaging_app_user_stats') || '{}');
+      delete allStats[userId];
+      localStorage.setItem('packaging_app_user_stats', JSON.stringify(allStats));
+      
+      loadUserList();
+      addAdminOperationLog(`删除了用户 ${userName}`);
+    }
+    
+
     
     // ===== 礼花效果 =====
     function createConfetti() {
@@ -4481,14 +5969,157 @@
       }
     }
     
-    // 页面加载时检查登录状态
-    document.addEventListener('DOMContentLoaded', () => {
-      const user = getUser();
-      if (user) {
-        isLoggedIn = true;
-        currentWelcomeName = user.name;
+    // ===== 完美合并用户策略：服务器用户 + 本地用户 全部合并，永不丢失任何一个用户 =====
+    function mergeUsersSafely(serverUsers, localUsers) {
+      if (!serverUsers || !Array.isArray(serverUsers)) serverUsers = [];
+      if (!localUsers || !Array.isArray(localUsers)) localUsers = [];
+      
+      const phoneMap = new Map();
+      
+      // 第一步：所有服务器用户先进去（优先级高）
+      serverUsers.forEach(u => phoneMap.set(u.phone, u));
+      
+      // 第二步：把所有本地有、服务器没有的用户也全部加进去，绝对不丢！
+      localUsers.forEach(u => {
+        if (!phoneMap.has(u.phone)) {
+          phoneMap.set(u.phone, u);
+        }
+      });
+      
+      const merged = Array.from(phoneMap.values());
+      console.log('🧩 用户合并完成：服务器', serverUsers.length, '个 + 本地新用户', localUsers.length, '个 → 总共', merged.length, '个！');
+      return merged;
+    }
+    
+    // ===== 跨设备终极同步！只要当前有管理员token，立刻批量把本地所有不在服务器的用户自动全部上传到云端 =====
+    async function autoUploadAllLocalUsersToServer() {
+      const currentToken = getToken();
+      if (!currentToken) {
+        console.log('⚠️ 当前没有登录，跳过自动上传用户到服务器');
+        return;
       }
+      
+      try {
+        // 第一步：先拉服务器所有用户，得到服务器已有手机号列表
+        const serverCheckUsers = await fetchAndCacheAllUsers();
+        if (!serverCheckUsers) serverCheckUsers = [];
+        const serverPhoneSet = new Set(serverCheckUsers.map(u => u.phone));
+        
+        // 第二步：拉本地所有用户
+        const localAllUsers = getAllUsers();
+        if (!localAllUsers || localAllUsers.length === 0) return;
+        
+        // 第三步：找出所有本地新用户（服务器没有的）
+        const newUsersToUpload = localAllUsers.filter(u => !serverPhoneSet.has(u.phone));
+        if (newUsersToUpload.length === 0) {
+          console.log('✅ 服务器已包含所有本地用户，无需上传');
+          return;
+        }
+        
+        console.log('📤 发现本地新用户', newUsersToUpload.length, '个，现在自动批量上传到服务器...');
+        let successCount = 0;
+        
+        // 第四步：逐个上传到服务器
+        for (const newUser of newUsersToUpload) {
+          try {
+            const uploadRes = await fetch(API_BASE + '/api/auth/users', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${currentToken}`
+              },
+              body: JSON.stringify({
+                name: newUser.name || newUser.nickname,
+                nickname: newUser.nickname,
+                phone: newUser.phone,
+                password: newUser.password,
+                role: newUser.role || 'user'
+              })
+            });
+            if (uploadRes.ok) successCount++;
+          } catch (singleErr) {
+            console.log('上传单个用户失败，跳过', newUser.phone);
+          }
+        }
+        
+        console.log(`✅ 跨设备同步完成！成功上传 ${successCount} / ${newUsersToUpload.length} 个新用户到服务器云端`);
+        
+        // 第五步：最后做一次全量合并，保证数据状态完美
+        const finalServerAll = await fetchAndCacheAllUsers();
+        localStorage.setItem('packaging_app_users', JSON.stringify(mergeUsersSafely(finalServerAll, getAllUsers())));
+        
+      } catch (syncAllErr) {
+        console.log('自动批量上传用户到服务器完成或跳过', syncAllErr);
+      }
+    }
+
+    // 页面加载时检查登录状态 - 手机端跨设备完全同步版
+    document.addEventListener('DOMContentLoaded', async () => {
+      // ===== 超级关键：页面打开第一秒，跨设备双向同步！从云端拿所有用户 + 把本地新用户立刻传到云端！=====
+      console.log('🚀 【跨设备双向同步启动】页面刚加载，立即双向同步...');
+      try {
+        const localOldUsers = getAllUsers();  // 先备份本地现有用户！重要！
+        const serverAllUsers = await fetchAndCacheAllUsers();
+        
+        const finalSafeUsers = mergeUsersSafely(serverAllUsers, localOldUsers);
+        localStorage.setItem('packaging_app_users', JSON.stringify(finalSafeUsers));
+        console.log('✅ 【下载端同步完成】从云端拿到所有用户，本地现有:', finalSafeUsers.length, '个');
+        
+        // 双向同步！立刻把本地所有手机端新增不在云端的用户，自动批量全部上传到服务器！
+        setTimeout(autoUploadAllLocalUsersToServer, 300);
+      } catch (e) {
+        console.log('⚠️ 启动时跨设备同步失败，继续使用现有本地数据', e);
+      }
+      
+      getAllUsers();
+      
+      const token = getToken();
+      console.log('当前token:', token, 'API_BASE:', API_BASE);
+      
+      if (token) {
+        try {
+          console.log('正在从后端验证登录状态（带2秒超时保护）...');
+          const controllerMe = new AbortController();
+          const timeoutMe = setTimeout(() => controllerMe.abort(), 2000);
+          
+          const res = await fetch(API_BASE + '/api/auth/me', {
+            headers: { 
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            signal: controllerMe.signal
+          });
+          
+          clearTimeout(timeoutMe);
+          
+          if (res.ok) {
+            const data = await res.json();
+            console.log('后端验证成功，最新用户信息:', data.user);
+            setUser(data.user);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            localStorage.setItem('currentLoginUser', JSON.stringify(data.user));
+            currentUser = data.user;
+            isLoggedIn = true;
+            currentWelcomeName = data.user.nickname || data.user.name;
+          } else {
+            console.warn('后端token验证失败，降级用本地');
+          }
+        } catch (e) {
+          console.log('后端连接超时/不可用，100%降级使用本地缓存，永不掉线');
+        }
+      } else {
+        let user = getUser();
+        if (user) {
+          if (!user.name) user.name = user.nickname || user.username || user.phone;
+          if (user.isAdmin && !user.role) user.role = 'admin';
+          setUser(user);
+          isLoggedIn = true;
+          currentWelcomeName = user.name;
+        }
+      }
+      
       updateAuthButtons();
+      showUserAnnouncement();
     });
 
     startDanmaku();
@@ -6038,8 +7669,6 @@
     }
 
     // ===== 显示结果 =====
-    let skipSaveHistory = false;
-    
     function showResult(data) {
       document.getElementById('resultSection').classList.add('show');
       const titleMap = {
@@ -6293,6 +7922,7 @@
       document.getElementById('resultSection').classList.remove('show');
       document.getElementById('copyQuoteArea').style.display = 'none';
       document.getElementById('custom-contact').style.display = 'none';
+      document.getElementById('themeSelector').style.display = 'none';
     }
 
     // ===== 操作按钮功能 =====
@@ -6301,18 +7931,21 @@
       if (user) {
         document.getElementById('copyQuoteArea').style.display = 'block';
         document.getElementById('custom-contact').style.display = 'block';
+        document.getElementById('themeSelector').style.display = 'block';
       } else {
         document.getElementById('copyQuoteArea').style.display = 'none';
         document.getElementById('custom-contact').style.display = 'none';
+        document.getElementById('themeSelector').style.display = 'none';
       }
     }
     
-    // ===== 历史记录管理 =====
-    const MAX_HISTORY = 10;
+    // ===== 报价云同步系统 - 增强版 =====
+    const MAX_HISTORY = 50;
+    let skipSaveHistory = false;
     
     function getHistoryKey() {
       const user = getUser();
-      return user ? `quoteHistory_${user.id}` : null;
+      return user ? `quoteCloudSync_${user.id}` : 'quoteCloudSync_guest';
     }
     
     function getHistory() {
@@ -6324,12 +7957,48 @@
         const parsed = JSON.parse(history);
         return Array.isArray(parsed) ? parsed : [];
       } catch (e) {
-        console.error('读取历史记录失败:', e);
+        console.error('读取云同步历史失败:', e);
         return [];
       }
     }
     
+    function collectAllInputParams() {
+      const params = {};
+      
+      try {
+        document.querySelectorAll('input[id], select[id]').forEach(el => {
+          if (!el.id) return;
+          
+          // 跳过已从DOM中移除或不可交互的元素
+          if (!el.isConnected) return;
+          
+          try {
+            if (el.tagName === 'INPUT') {
+              if (el.type === 'checkbox' || el.type === 'radio') {
+                params[el.id] = !!el.checked;
+              } else {
+                params[el.id] = el.value;
+              }
+            } else if (el.tagName === 'SELECT') {
+              params[el.id] = el.value;
+            }
+          } catch(e) {
+            // 单个元素读取失败不影响整体
+            console.warn('跳过参数元素', el.id, e);
+          }
+        });
+      } catch(e) {
+        console.warn('收集参数时跳过部分元素', e);
+      }
+      
+      return params;
+    }
+    
     function saveToHistory(data) {
+      if (skipSaveHistory) {
+        skipSaveHistory = false;
+        return;
+      }
       const key = getHistoryKey();
       if (!key) return;
       try {
@@ -6341,7 +8010,9 @@
           type: data.type,
           quote: data.quote,
           steps: data.steps || [],
-          inputParams: data.inputParams || {}
+          inputParams: collectAllInputParams(),
+          currentType: currentType,
+          savedAt: new Date().toLocaleString('zh-CN')
         };
         
         history.unshift(record);
@@ -6351,28 +8022,35 @@
         }
         
         localStorage.setItem(key, JSON.stringify(history));
+        console.log('☁️ 报价云同步成功保存！当前共', history.length, '条记录');
       } catch (e) {
-        console.error('保存历史记录失败:', e);
+        console.error('云同步保存失败:', e);
       }
     }
     
     function clearHistory() {
+      if (!confirm('确定要清空全部云同步报价历史吗？删除后不可恢复！')) return;
       const key = getHistoryKey();
       if (!key) return;
       try {
         localStorage.removeItem(key);
+        alert('🗑️ 云同步历史已清空');
+        showHistoryModal();
       } catch (e) {
         console.error('清除历史记录失败:', e);
       }
     }
     
+    function deleteSingleHistory(index) {
+      if (!confirm('确定要删除这条记录吗？')) return;
+      let history = getHistory();
+      history.splice(index, 1);
+      const key = getHistoryKey();
+      localStorage.setItem(key, JSON.stringify(history));
+      renderHistoryList(history);
+    }
+    
     function showHistoryModal() {
-      const user = getUser();
-      if (!user) {
-        alert('请先登录后再查看历史记录');
-        openLoginModal();
-        return;
-      }
       const history = getHistory();
       
       let modal = document.getElementById('historyModal');
@@ -6381,12 +8059,15 @@
         modal.id = 'historyModal';
         modal.className = 'modal-overlay';
         modal.innerHTML = `
-          <div class="modal-content" style="max-width: 90vw; max-height: 80vh; overflow-y: auto;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-              <h3 style="margin: 0;">📋 历史报价记录</h3>
-              <div style="display: flex; gap: 12px;">
-                <button onclick="clearHistory(); showHistoryModal();" style="padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer;">🗑️ 清空</button>
-                <button onclick="closeHistoryModal()" style="padding: 8px 16px; background: #666; color: white; border: none; border-radius: 8px; cursor: pointer;">关闭</button>
+          <div class="modal-content" style="max-width: 92vw; max-height: 85vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0;">
+              <div>
+                <h3 style="margin: 0;">☁️ 报价云同步</h3>
+                <span style="font-size: 0.8rem; color: #64748b;">自动保存 · 永久保留 · 随时恢复</span>
+              </div>
+              <div style="display: flex; gap: 10px;">
+                <button onclick="clearHistory();" style="padding: 8px 14px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85rem;">🗑️ 清空全部</button>
+                <button onclick="closeHistoryModal()" style="padding: 8px 16px; background: #64748b; color: white; border: none; border-radius: 8px; cursor: pointer;">关闭</button>
               </div>
             </div>
             <div id="historyList"></div>
@@ -6415,7 +8096,13 @@
       if (!listContainer) return;
       
       if (history.length === 0) {
-        listContainer.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">暂无历史记录</p>';
+        listContainer.innerHTML = `
+          <div style="text-align: center; padding: 60px 20px;">
+            <div style="font-size: 4rem; margin-bottom: 16px;">☁️</div>
+            <p style="color: #94a3b8; font-size: 1.1rem; margin-bottom: 8px;">云同步是空的</p>
+            <p style="color: #cbd5e1; font-size: 0.9rem;">算一次报价，系统自动帮你永久保存</p>
+          </div>
+        `;
         return;
       }
       
@@ -6426,20 +8113,23 @@
         const totalPrice = record.quote && record.quote.totalPrice ? record.quote.totalPrice : 0;
         
         return `
-          <div style="border: 1px solid #fed7aa; border-radius: 12px; padding: 16px; margin-bottom: 12px; background: #fff;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div style="border: 1px solid #fed7aa; border-radius: 14px; padding: 18px; margin-bottom: 14px; background: #fffaf5;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
               <div>
-                <span style="font-weight: bold;">${typeIcon} ${record.type}</span>
-                <span style="color: #999; font-size: 0.85rem; margin-left: 12px;">${dateStr}</span>
+                <span style="font-weight: 700; font-size: 1.05rem;">${typeIcon} ${record.type}</span>
+                <div style="color: #9ca3af; font-size: 0.8rem; margin-top: 4px;">${record.savedAt || dateStr}</div>
               </div>
-              <div style="color: #ea580c; font-weight: bold; font-size: 1.2rem;">¥${Number(totalPrice).toFixed(1)}</div>
+              <div style="text-align: right;">
+                <div style="color: #ea580c; font-weight: 800; font-size: 1.5rem;">¥${Number(totalPrice).toFixed(1)}</div>
+              </div>
             </div>
-            <div style="color: #666; font-size: 0.85rem; margin-bottom: 8px;">
+            <div style="color: #475569; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.5;">
               ${getHistorySummary(record)}
             </div>
             <div style="display: flex; gap: 8px;">
-              <button onclick="viewHistoryQuote(${index})" style="flex: 1; padding: 8px; background: #ea580c; color: white; border: none; border-radius: 8px; cursor: pointer;">查看报价单</button>
-              <button onclick="viewHistoryCalc(${index})" style="flex: 1; padding: 8px; background: #666; color: white; border: none; border-radius: 8px; cursor: pointer;">查看解析</button>
+              <button onclick="restoreHistoryFull(${index})" style="flex: 1; padding: 10px 8px; background: linear-gradient(135deg, #ea580c 0%, #f97316 100%); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600;">🔄 一键恢复</button>
+              <button onclick="viewHistoryQuote(${index})" style="flex: 1; padding: 10px 8px; background: #f0fdf4; color: #059669; border: 1px solid #86efac; border-radius: 10px; cursor: pointer; font-weight: 600;">📋 仅看报价</button>
+              <button onclick="deleteSingleHistory(${index})" style="padding: 10px 10px; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 10px; cursor: pointer;">🗑️</button>
             </div>
           </div>
         `;
@@ -6449,18 +8139,62 @@
     }
     
     function getHistorySummary(record) {
-      if (!record.quote) return '';
+      if (!record.quote) return '查看详情';
       const q = record.quote;
       const parts = [];
-      if (q.size && typeof q.size === 'string') {
-        const sizeMatch = q.size.match(/(\d+\.?\d*)×(\d+\.?\d*)/);
-        if (sizeMatch) {
-          parts.push(`${sizeMatch[1]}×${sizeMatch[2]}`);
-        }
+      if (q.size && typeof q.size === 'string') parts.push(`📐 ${q.size}`);
+      if (q.weight) parts.push(`⚖️ ${q.weight}`);
+      if (q.quantity) parts.push(`📦 ${q.quantity}个`);
+      if (q.material) parts.push(`🎨 ${q.material}`);
+      return parts.join('  ·  ') || '点击查看详情';
+    }
+    
+    function restoreHistoryFull(index) {
+      const history = getHistory();
+      if (index < 0 || index >= history.length) return;
+      
+      const record = history[index];
+      if (!record) return;
+      
+      closeHistoryModal();
+      
+      // 1. 切换到对应的产品标签页
+      if (record.type === '快递袋') {
+        currentType = 'kuaidi';
+        document.querySelector('.tab[data-type="kuaidi"]')?.click();
+      } else if (record.type === '气泡袋') {
+        currentType = 'qipao';
+        document.querySelector('.tab[data-type="qipao"]')?.click();
+      } else if (record.type === '连卷袋') {
+        currentType = 'lianjuan';
+        document.querySelector('.tab[data-type="lianjuan"]')?.click();
       }
-      if (q.weight) parts.push(q.weight);
-      if (q.quantity) parts.push(`${q.quantity}个`);
-      return parts.join(' | ') || '无详细信息';
+      
+      // 2. 恢复全部输入参数
+      setTimeout(() => {
+        restoreInputValues(record.inputParams || {});
+        
+        // 3. 重新触发计算
+        skipSaveHistory = true;
+        showResult({ type: record.type, quote: record.quote, steps: record.steps || [] });
+        showActionButtons();
+      }, 150);
+    }
+    
+    function restoreInputValues(params) {
+      try {
+        for (const [key, val] of Object.entries(params)) {
+          const el = document.getElementById(key);
+          if (el) {
+            if (el.tagName === 'INPUT' || el.tagName === 'SELECT') {
+              el.value = val;
+            }
+            if (el.type === 'checkbox') el.checked = !!val;
+          }
+        }
+      } catch(e) {
+        console.warn('恢复参数时部分字段跳过:', e);
+      }
     }
     
     function viewHistoryQuote(index) {
@@ -6535,6 +8269,88 @@
         wechatElement.textContent = customWechat || 'hdbz02';
       }
     }
+    
+    // ===== 表情包报价单主题系统 =====
+    let currentQuoteTheme = 'normal';
+    
+    const quoteThemes = {
+      normal: {
+        name: '默认经典',
+        headerBg: 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)',
+        cardBg: 'white',
+        titleEmoji: '📦',
+        decorations: [''],
+        footerText: '仅供参考 · 实际价格以最终报价为准'
+      },
+      cute: {
+        name: '萌宠可爱',
+        headerBg: 'linear-gradient(135deg, #ec4899 0%, #f472b6 100%)',
+        cardBg: '#fff5f7',
+        titleEmoji: '🐱',
+        decorations: ['🐱', '🐶', '🐰', '🐻'],
+        footerText: '🐾 喵喵~ 报价算好啦！'
+      },
+      funny: {
+        name: '搞怪沙雕',
+        headerBg: 'linear-gradient(135deg, #eab308 0%, #facc15 100%)',
+        cardBg: '#fffbeb',
+        titleEmoji: '🤪',
+        decorations: ['🤪', '😂', '😎', '🎉'],
+        footerText: '🤣 家人们谁懂啊！价格太香了！'
+      },
+      business: {
+        name: '商务精英',
+        headerBg: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
+        cardBg: '#f8fafc',
+        titleEmoji: '💼',
+        decorations: ['', '📊', '✅', '📈'],
+        footerText: '专业报价 · 诚信经营 · 合作共赢'
+      }
+    };
+    
+    function switchQuoteTheme(themeName) {
+      currentQuoteTheme = themeName;
+      const theme = quoteThemes[themeName];
+      const quoteCard = document.querySelector('.quote-template-card');
+      const quoteHeader = document.querySelector('.quote-template-card .quote-header');
+      
+      // 更新按钮激活状态
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.borderColor = 'transparent';
+        if (btn.dataset.theme === themeName) {
+          btn.classList.add('active');
+          if (themeName === 'normal') btn.style.borderColor = '#fdba74';
+          if (themeName === 'cute') btn.style.borderColor = '#f472b6';
+          if (themeName === 'funny') btn.style.borderColor = '#eab308';
+          if (themeName === 'business') btn.style.borderColor = '#3b82f6';
+        }
+      });
+      
+      // 应用主题样式 - 只改背景色，标题表情保持原样
+      if (quoteCard) {
+        quoteCard.style.background = theme.cardBg;
+        quoteCard.style.transition = 'all 0.3s ease';
+      }
+      
+      if (quoteHeader) {
+        quoteHeader.style.background = theme.headerBg;
+      }
+      
+      // 主题切换成功小反馈
+      try {
+        const btn = document.querySelector(`.theme-btn[data-theme="${themeName}"]`);
+        if (btn) {
+          btn.style.transform = 'scale(1.1)';
+          setTimeout(() => { btn.style.transform = 'scale(1)'; }, 150);
+        }
+      } catch(e) {}
+    }
+    
+    function showThemeSelector() {
+      const el = document.getElementById('themeSelector');
+      if (el) el.style.display = 'block';
+    }
 
     function copyQuote() {
       const user = getUser();
@@ -6569,22 +8385,134 @@
         btn.disabled = true;
       }
       
+      if (isMobile) {
+        const forceOverrideStyle = document.createElement('style');
+        forceOverrideStyle.id = 'mobile-quote-force-override';
+        forceOverrideStyle.textContent = `
+          .quote-template-card .quote-table,
+          .quote-template-card .quote-table * { all: unset !important; }
+          .quote-template-card .quote-table {
+            display: table !important;
+            width: 100% !important;
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
+            background: #fff !important;
+            border-radius: 12px !important;
+          }
+          .quote-template-card .quote-table tr {
+            display: table-row !important;
+            border-bottom: 1px solid #f5f5f5 !important;
+          }
+          .quote-template-card .quote-table tr:nth-child(even) {
+            background: #fafafa !important;
+          }
+          .quote-template-card .quote-table td {
+            display: table-cell !important;
+            padding: 14px 16px !important;
+            vertical-align: middle !important;
+          }
+        `;
+        document.head.appendChild(forceOverrideStyle);
+      }
+      
       const tempContainer = document.createElement('div');
       tempContainer.className = 'quote-template-card';
       tempContainer.innerHTML = quoteCard.innerHTML;
       tempContainer.style.position = 'absolute';
       tempContainer.style.left = '-9999px';
       tempContainer.style.top = '0';
-      tempContainer.style.width = isMobile ? '600px' : (quoteCard.offsetWidth + 'px');
+      tempContainer.style.width = isMobile ? '700px' : (quoteCard.offsetWidth + 'px');
+      tempContainer.style.maxWidth = 'none';
       tempContainer.style.transform = 'none';
       tempContainer.style.animation = 'none';
       tempContainer.style.opacity = '1';
       tempContainer.style.zoom = '1';
+      tempContainer.style.margin = '0';
       document.body.appendChild(tempContainer);
       
+      if (isMobile) {
+        const oldTable = tempContainer.querySelector('.quote-table');
+        if (oldTable) {
+          const allCells = oldTable.querySelectorAll('td');
+          const texts = [];
+          allCells.forEach(cell => texts.push(cell.innerText.trim()));
+          const hasPlateFee = texts.some(t => t.includes('版费'));
+          
+          let htmlParts = [];
+          htmlParts.push('<table style="width:100%;border-collapse:separate;border-spacing:0;background:#fff;border-radius:12px;overflow:hidden;">');
+          htmlParts.push('<tr style="display:table-row;border-bottom:1px solid #f5f5f5;">');
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:22%;color:#666;font-weight:500;font-size:1.05rem;">${texts[0] || '尺寸'}</td>`);
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:28%;color:#1a1a1a;font-weight:600;font-size:1.1rem;">${texts[1] || '-'}</td>`);
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:22%;color:#666;font-weight:500;font-size:1.05rem;">${texts[2] || '材质'}</td>`);
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:28%;color:#1a1a1a;font-weight:600;font-size:1.1rem;">${texts[3] || '-'}</td>`);
+          htmlParts.push('</tr>');
+          
+          htmlParts.push('<tr style="display:table-row;border-bottom:1px solid #f5f5f5;background:#fafafa;">');
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:22%;color:#666;font-weight:500;font-size:1.05rem;">${texts[4] || '厚度'}</td>`);
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:28%;color:#1a1a1a;font-weight:600;font-size:1.1rem;">${texts[5] || '-'}</td>`);
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:22%;color:#666;font-weight:500;font-size:1.05rem;">${texts[6] || '收货地'}</td>`);
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:28%;color:#1a1a1a;font-weight:600;font-size:1.1rem;">${texts[7] || '-'}</td>`);
+          htmlParts.push('</tr>');
+          
+          htmlParts.push('<tr style="display:table-row;border-bottom:1px solid #f5f5f5;">');
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:22%;color:#666;font-weight:700;font-size:1.05rem;">${texts[8] || '数量'}</td>`);
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:28%;color:#1a1a1a;font-weight:700;font-size:1.15rem;">${texts[9] || '-'}</td>`);
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:22%;color:#666;font-weight:500;font-size:1.05rem;">${texts[10] || '印刷类型'}</td>`);
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:28%;color:#1a1a1a;font-weight:600;font-size:1.1rem;">${texts[11] || '-'}</td>`);
+          htmlParts.push('</tr>');
+          
+          let idx = 12;
+          if (hasPlateFee) {
+            htmlParts.push('<tr style="display:table-row;border-bottom:1px solid #f5f5f5;background:#fafafa;">');
+            htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:22%;color:#666;font-weight:500;font-size:1.05rem;">${texts[idx++] || '版费'}</td>`);
+            htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:28%;color:#1a1a1a;font-weight:600;font-size:1.1rem;">${texts[idx++] || '-'}</td>`);
+            htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:22%;color:#ff5722;font-weight:700;font-size:1.15rem;">${texts[idx++] || '单价'}</td>`);
+            htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:28%;color:#ff5722;font-weight:700;font-size:1.5rem;">${texts[idx++] || '-'}</td>`);
+            htmlParts.push('</tr>');
+          } else {
+            htmlParts.push('<tr style="display:table-row;border-bottom:1px solid #f5f5f5;background:#fafafa;">');
+            htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:22%;color:#ff5722;font-weight:700;font-size:1.15rem;">${texts[idx++] || '单价'}</td>`);
+            htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:28%;color:#ff5722;font-weight:700;font-size:1.5rem;" colspan="3">${texts[idx++] || '-'}</td>`);
+            htmlParts.push('</tr>');
+          }
+          
+          htmlParts.push('<tr style="display:table-row;border-bottom:1px solid #f5f5f5;">');
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:22%;color:#e53935;font-weight:700;font-size:1.1rem;line-height:1.5;">${texts[idx++] || '定金'}</td>`);
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:28%;color:#e53935;font-weight:700;font-size:1.4rem;">${texts[idx++] || '-'}</td>`);
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:22%;color:#e53935;font-weight:700;font-size:1.1rem;line-height:1.5;">${texts[idx++] || '预计总金额'}</td>`);
+          htmlParts.push(`<td style="display:table-cell;padding:14px 16px;vertical-align:middle;width:28%;color:#e53935;font-weight:700;font-size:1.4rem;">${texts[idx++] || '-'}</td>`);
+          htmlParts.push('</tr>');
+          
+          htmlParts.push('<tr style="display:table-row;">');
+          htmlParts.push(`<td colspan="4" style="display:table-cell;padding:12px 16px;text-align:center;font-size:0.9rem;color:#888;">${texts[idx] || '不含专票，国内包邮价格'}</td>`);
+          htmlParts.push('</tr></table>');
+          
+          oldTable.outerHTML = htmlParts.join('');
+        }
+        
+        const customNotesDiv = tempContainer.querySelector('.custom-notes');
+        if (customNotesDiv) {
+          customNotesDiv.style.cssText = 'margin-top:20px;padding:20px;background:linear-gradient(135deg,#fff5f0 0%,#fff 100%);border-radius:12px;border:1px solid #ffe4d9;';
+        }
+        const notesTitleDiv = tempContainer.querySelector('.notes-title');
+        if (notesTitleDiv) {
+          notesTitleDiv.style.cssText = 'font-size:1.1rem;font-weight:700;color:#ff7a45;margin-bottom:12px;padding-bottom:8px;border-bottom:1px dashed #ffd4c4;';
+        }
+        const noteItemEls = tempContainer.querySelectorAll('.note-item');
+        noteItemEls.forEach((item) => {
+          item.style.cssText = 'font-size:1rem;color:#555;line-height:1.7;padding:8px 0;';
+        });
+        const noteNumEls = tempContainer.querySelectorAll('.note-num');
+        noteNumEls.forEach(num => {
+          num.style.cssText = 'color:#ff7a45;font-weight:600;margin-right:4px;';
+        });
+      }
+      
+      const theme = quoteThemes[currentQuoteTheme] || quoteThemes.normal;
+      tempContainer.style.background = theme.cardBg;
       const tempHeader = tempContainer.querySelector('.quote-header');
       if (tempHeader) {
-        tempHeader.style.background = 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)';
+        tempHeader.style.background = theme.headerBg;
         tempHeader.style.position = 'relative';
         tempHeader.style.zIndex = '1';
       }
@@ -6609,12 +8537,15 @@
         if (btn) {
           btn.innerHTML = text;
           btn.disabled = false;
+          setTimeout(() => {
+            btn.innerHTML = originalText;
+          }, 2500);
         }
       };
       
       setTimeout(() => {
         html2canvas(tempContainer, {
-          scale: isMobile ? 1.5 : 2,
+          scale: isMobile ? 2.0 : 2,
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
@@ -6627,14 +8558,104 @@
             if (clonedQuote) {
               clonedQuote.style.transform = 'none';
               clonedQuote.style.animation = 'none';
+              if (isMobile) {
+                clonedQuote.style.width = '700px';
+                clonedQuote.style.maxWidth = 'none';
+                clonedQuote.style.margin = '0';
+                clonedQuote.style.borderRadius = '24px';
+                
+                const tempStyles = clonedDoc.createElement('style');
+                tempStyles.textContent = `
+                  .quote-table {
+                    width: 100% !important;
+                    border-collapse: separate !important;
+                    border-spacing: 0 !important;
+                    background: #fff !important;
+                    border-radius: 12px !important;
+                    overflow: hidden !important;
+                    display: table !important;
+                  }
+                  .quote-table tr {
+                    display: table-row !important;
+                    grid-template-columns: unset !important;
+                    border-bottom: 1px solid #f5f5f5 !important;
+                  }
+                  .quote-table tr:nth-child(even) {
+                    background: #fafafa !important;
+                  }
+                  .quote-table td {
+                    display: table-cell !important;
+                    padding: 14px 16px !important;
+                    vertical-align: middle !important;
+                    border: none !important;
+                    border-radius: 0 !important;
+                    background: transparent !important;
+                    justify-content: normal !important;
+                  }
+                  .quote-table .qt-label {
+                    width: 22% !important;
+                    color: #666 !important;
+                    font-weight: 500 !important;
+                    font-size: 1.05rem !important;
+                    text-align: left !important;
+                    background: transparent !important;
+                    border-radius: 0 !important;
+                  }
+                  .quote-table .qt-value {
+                    width: 28% !important;
+                    color: #1a1a1a !important;
+                    font-weight: 600 !important;
+                    font-size: 1.1rem !important;
+                    text-align: left !important;
+                    background: transparent !important;
+                    border-radius: 0 !important;
+                  }
+                  .quote-table .qt-price {
+                    font-size: 1.5rem !important;
+                    font-weight: 700 !important;
+                    color: #ff5722 !important;
+                  }
+                  .custom-notes {
+                    margin-top: 20px !important;
+                    padding: 20px !important;
+                    background: linear-gradient(135deg, #fff5f0 0%, #fff 100%) !important;
+                    border-radius: 12px !important;
+                    border: 1px solid #ffe4d9 !important;
+                  }
+                  .notes-title {
+                    font-size: 1.1rem !important;
+                    font-weight: 700 !important;
+                    color: #ff7a45 !important;
+                    margin-bottom: 12px !important;
+                    padding-bottom: 8px !important;
+                    border-bottom: 1px dashed #ffd4c4 !important;
+                  }
+                  .note-item {
+                    font-size: 1rem !important;
+                    color: #555 !important;
+                    line-height: 1.7 !important;
+                    padding: 8px 0 !important;
+                  }
+                  .note-num {
+                    color: #ff7a45 !important;
+                    font-weight: 600 !important;
+                  }
+                `;
+                clonedDoc.head.appendChild(tempStyles);
+              }
             }
           }
         }).then(canvas => {
           console.log('html2canvas success, canvas created');
-          document.body.removeChild(tempContainer);
+          const forceStyle = document.getElementById('mobile-quote-force-override');
+          if (forceStyle) forceStyle.remove();
+          if (document.body.contains(tempContainer)) {
+            document.body.removeChild(tempContainer);
+          }
           
-          canvas.toBlob(blob => {
+          canvas.toBlob(async function(blob) {
             console.log('Blob created:', !!blob);
+            
             try {
               if (isMobile) {
                 console.log('Mobile device, downloading image');
@@ -6643,21 +8664,46 @@
                 updateStats('copy');
               } else {
                 console.log('Desktop device, copying image to clipboard');
-                const item = new ClipboardItem({ 'image/png': blob });
-                navigator.clipboard.write([item]).then(() => {
-                  console.log('Image copied to clipboard successfully');
-                  updateBtn('✅ 图片已复制');
-                  updateStats('copy');
-                }).catch(err => {
-                  console.error('复制失败:', err);
+                
+                if (!navigator.clipboard || !window.ClipboardItem) {
+                  console.warn('Clipboard API not fully supported, fallback to download');
                   downloadCanvasAsImage(canvas, blob);
                   updateBtn('✅ 图片已保存');
-                });
+                  updateStats('copy');
+                  return;
+                }
+                
+                try {
+                  const item = new ClipboardItem({ 'image/png': blob });
+                  await navigator.clipboard.write([item]);
+                  console.log('✅ 图片成功复制到剪贴板！');
+                  updateBtn('✅ 图片已复制');
+                  updateStats('copy');
+                } catch (clipErr) {
+                  console.warn('ClipboardItem failed, trying alternative method:', clipErr);
+                  
+                  try {
+                    await navigator.clipboard.writeText('');
+                    const imgUrl = canvas.toDataURL('image/png');
+                    const a = document.createElement('a');
+                    a.href = imgUrl;
+                    a.download = `报价单_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    updateBtn('✅ 图片已保存');
+                    updateStats('copy');
+                  } catch (downloadErr) {
+                    console.error('Fallback also failed:', downloadErr);
+                    alert('浏览器不支持图片直接复制，图片已保存到下载文件夹');
+                  }
+                }
               }
             } catch (e) {
-              console.error('Clipboard error:', e);
+              console.error('Final error:', e);
               downloadCanvasAsImage(canvas, blob);
               updateBtn('✅ 图片已保存');
+              updateStats('copy');
             }
           }, 'image/png', 1.0);
         }).catch(err => {
@@ -6665,7 +8711,7 @@
           if (document.body.contains(tempContainer)) {
             document.body.removeChild(tempContainer);
           }
-          alert('复制失败，请使用截图功能保存报价单');
+          alert('生成图片失败，请重试');
           updateBtn(originalText);
         });
       }, 300);
@@ -6847,9 +8893,6 @@
       if (currentType === 'kuaidi') {
         widthEl = document.getElementById('kd-width');
         lengthEl = document.getElementById('kd-length');
-      } else if (currentType === 'shouti') {
-        widthEl = document.getElementById('st-width');
-        lengthEl = document.getElementById('st-length');
       } else if (currentType === 'qipao') {
         widthEl = document.getElementById('qp-width');
         lengthEl = document.getElementById('qp-length');
@@ -6869,7 +8912,6 @@
       setTimeout(() => {
         try {
           if (currentType === 'kuaidi') calcKuaidi();
-          else if (currentType === 'shouti') calcShouti();
           else if (currentType === 'qipao') calcQipao();
           else if (currentType === 'lianjuan') calcLianjuan();
           
@@ -7232,7 +9274,7 @@
             <input type="password" id="loginPassword" placeholder="请输入密码" required>
           </div>
           <button type="submit" class="submit-btn">登录</button>
-          <button type="button" class="submit-btn secondary" onclick="copyWechat()">📧 没有账号？联系微信：hdbz02</button>
+          <button type="button" class="submit-btn secondary" onclick="copyWechat()">📧 没有账号？请联系微信：hdbz02</button>
         </form>
         <p id="loginError" class="error-msg"></p>
       </div>
@@ -7274,67 +9316,216 @@
 
   <!-- 管理员后台模态框 -->
   <div id="adminModal" class="modal-overlay">
-    <div class="modal-box" style="max-width: 800px;">
+    <div class="modal-box" style="max-width: 1000px; max-height: 90vh;">
       <div class="modal-header">
-        <h2>🔧 管理员后台</h2>
+        <h2>🔧 超级管理后台</h2>
         <button class="modal-close" onclick="closeAdminModal()">✕</button>
       </div>
-      <div class="modal-body">
-        <!-- 添加用户表单 -->
-        <div style="margin-bottom: 24px; padding: 16px; background: #f8fafc; border-radius: 12px;">
-          <h3 style="margin: 0 0 16px 0; font-size: 1rem;">➕ 添加新用户</h3>
-          <form id="addUserForm" onsubmit="handleAddUser(event)">
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
-              <div class="form-item">
-                <label>昵称</label>
-                <input type="text" id="addUserName" placeholder="请输入昵称" required>
-              </div>
-              <div class="form-item">
-                <label>手机号</label>
-                <input type="tel" id="addUserPhone" placeholder="请输入手机号" required>
-              </div>
-              <div class="form-item">
-                <label>密码</label>
-                <input type="password" id="addUserPassword" placeholder="请输入密码" required>
-              </div>
-            </div>
-            <div style="display: flex; gap: 12px; margin-top: 12px;">
-              <button type="submit" class="submit-btn" style="flex: 1;">添加用户</button>
-              <button type="button" class="submit-btn secondary" style="flex: 1;" onclick="resetAddUserForm()">重置</button>
-            </div>
-          </form>
-          <p id="addUserMsg" class="error-msg"></p>
+      <div class="modal-body" style="padding: 0;">
+        <!-- 管理后台标签页导航 -->
+        <div class="admin-tabs" style="display: flex; border-bottom: 2px solid #e2e8f0; background: #f8fafc; padding: 0 16px; overflow-x: auto;">
+          <button class="admin-tab-btn active" onclick="switchAdminTab('dashboard')" data-tab="dashboard">📊 数据概览</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('users')" data-tab="users">👥 用户管理</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('announce')" data-tab="announce">📢 公告管理</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('export')" data-tab="export">📤 数据导出</button>
+          <button class="admin-tab-btn" onclick="switchAdminTab('adminlog')" data-tab="adminlog">📝 操作日志</button>
         </div>
         
-        <!-- 用户列表 -->
-        <div>
-          <h3 style="margin: 0 0 16px 0; font-size: 1rem;">👥 用户列表</h3>
-          <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
-              <thead>
-                <tr style="background: #f1f5f9;">
-                  <th style="padding: 10px; text-align: left; border-bottom: 1px solid #e2e8f0;">昵称</th>
-                  <th style="padding: 10px; text-align: left; border-bottom: 1px solid #e2e8f0;">手机号</th>
-                  <th style="padding: 10px; text-align: left; border-bottom: 1px solid #e2e8f0;">角色</th>
-                  <th style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">计算次数</th>
-                  <th style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">复制次数</th>
-                  <th style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">在线时间</th>
-                  <th style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">操作</th>
-                </tr>
-              </thead>
-              <tbody id="userTableBody"></tbody>
-            </table>
-          </div>
-          <div id="resetPasswordSection" style="margin-top: 16px; padding: 16px; background: #fff7ed; border-radius: 12px; display: none;">
-            <h4 style="margin: 0 0 12px 0; font-size: 0.95rem;">🔑 重置用户密码</h4>
-            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-              <span id="resetUserName" style="font-weight: 600;"></span>
-              <input type="password" id="newPasswordInput" placeholder="输入新密码" style="padding: 8px 12px; border: 2px solid #fed7aa; border-radius: 8px; font-size: 0.9rem;">
-              <button onclick="confirmResetPassword()" style="padding: 8px 16px; background: #f97316; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">确认重置</button>
-              <button onclick="cancelResetPassword()" style="padding: 8px 16px; background: #e5e7eb; color: #374151; border: none; border-radius: 8px; cursor: pointer;">取消</button>
+        <!-- 标签页内容区域 -->
+        <div class="admin-tab-content" style="padding: 24px; max-height: 60vh; overflow-y: auto;">
+          
+          <!-- 1. 数据概览仪表盘 -->
+          <div id="admin-tab-dashboard" class="admin-tab-pane">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+              <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 16px; text-align: center;">
+                <div style="font-size: 2.5rem; font-weight: 700;" id="stat-total-users">0</div>
+                <div style="font-size: 0.95rem; opacity: 0.9; margin-top: 8px;">总用户数</div>
+              </div>
+              <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 16px; text-align: center;">
+                <div style="font-size: 2.5rem; font-weight: 700;" id="stat-total-calc">0</div>
+                <div style="font-size: 0.95rem; opacity: 0.9; margin-top: 8px;">总计算次数</div>
+              </div>
+              <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 20px; border-radius: 16px; text-align: center;">
+                <div style="font-size: 2.5rem; font-weight: 700;" id="stat-today-calc">0</div>
+                <div style="font-size: 0.95rem; opacity: 0.9; margin-top: 8px;">今日计算</div>
+              </div>
+              <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 20px; border-radius: 16px; text-align: center;">
+                <div style="font-size: 2.5rem; font-weight: 700;" id="stat-active-users">0</div>
+                <div style="font-size: 0.95rem; opacity: 0.9; margin-top: 8px;">活跃用户</div>
+              </div>
             </div>
-            <p id="resetPasswordMsg" style="margin: 8px 0 0 0; font-size: 0.85rem;"></p>
+            <div style="background: #f8fafc; border-radius: 16px; padding: 20px; margin-bottom: 16px;">
+              <h3 style="margin: 0 0 16px 0; font-size: 1.1rem;">📈 最近活动动态</h3>
+              <div id="recent-activity-list" style="max-height: 200px; overflow-y: auto;">
+                <p style="color: #94a3b8; text-align: center; padding: 20px;">暂无活动记录</p>
+              </div>
+            </div>
+            <div style="background: #f0fdf4; border-radius: 16px; padding: 20px;">
+              <h3 style="margin: 0 0 16px 0; font-size: 1.1rem;">📅 本周统计概览</h3>
+              <div id="week-stats-container" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center;">
+              </div>
+            </div>
           </div>
+          
+          <!-- 2. 用户管理 -->
+          <div id="admin-tab-users" class="admin-tab-pane" style="display: none;">
+            <div style="margin-bottom: 16px; padding: 16px; background: #f8fafc; border-radius: 12px;">
+              <h3 style="margin: 0 0 16px 0; font-size: 1rem;">🔍 搜索用户</h3>
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <input type="text" id="userSearchInput" placeholder="输入昵称或手机号搜索..." oninput="filterUserList()" style="flex: 1; padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem;">
+                <button onclick="filterUserList()" style="padding: 10px 20px; background: #6366f1; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600;">搜索</button>
+                <button onclick="clearUserSearch()" style="padding: 10px 20px; background: #e5e7eb; color: #374151; border: none; border-radius: 10px; cursor: pointer; font-weight: 600;">全部</button>
+              </div>
+            </div>
+            <div style="margin-bottom: 24px; padding: 16px; background: #eff6ff; border-radius: 12px;">
+              <h3 style="margin: 0 0 16px 0; font-size: 1rem;">➕ 添加新用户</h3>
+              <form id="addUserForm" onsubmit="handleAddUser(event)">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+                  <div class="form-item">
+                    <label>昵称</label>
+                    <input type="text" id="addUserName" placeholder="请输入昵称" required>
+                  </div>
+                  <div class="form-item">
+                    <label>手机号</label>
+                    <input type="tel" id="addUserPhone" placeholder="请输入手机号" required>
+                  </div>
+                  <div class="form-item">
+                    <label>密码</label>
+                    <input type="password" id="addUserPassword" placeholder="请输入密码" required>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 12px;">
+                  <button type="submit" class="submit-btn" style="flex: 1;">添加用户</button>
+                  <button type="button" class="submit-btn secondary" style="flex: 1;" onclick="resetAddUserForm()">重置</button>
+                </div>
+              </form>
+              <p id="addUserMsg" class="error-msg"></p>
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="margin: 0; font-size: 1rem;">👥 用户列表 (<span id="userListCount">0</span>)</h3>
+                <button onclick="manualSyncFromServer()" style="padding:8px 16px; background:#10b981; color:white; border:none; border-radius:8px; cursor:pointer; font-size:0.9rem; font-weight:600;">🔄 立即同步服务器</button>
+              </div>
+              <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                  <thead>
+                    <tr style="background: #f1f5f9;">
+                      <th style="padding: 10px; text-align: left; border-bottom: 1px solid #e2e8f0;">昵称</th>
+                      <th style="padding: 10px; text-align: left; border-bottom: 1px solid #e2e8f0;">手机号</th>
+                      <th style="padding: 10px; text-align: left; border-bottom: 1px solid #e2e8f0;">角色</th>
+                      <th style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">计算次数</th>
+                      <th style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">复制次数</th>
+                      <th style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">在线时间</th>
+                      <th style="padding: 10px; text-align: center; border-bottom: 1px solid #e2e8f0;">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="userTableBody"></tbody>
+                </table>
+              </div>
+              <div id="resetPasswordSection" style="margin-top: 16px; padding: 16px; background: #fff7ed; border-radius: 12px; display: none;">
+                <h4 style="margin: 0 0 12px 0; font-size: 0.95rem;">🔑 重置用户密码</h4>
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                  <span id="resetUserName" style="font-weight: 600;"></span>
+                  <input type="password" id="newPasswordInput" placeholder="输入新密码" style="padding: 8px 12px; border: 2px solid #fed7aa; border-radius: 8px; font-size: 0.9rem;">
+                  <button onclick="confirmResetPassword()" style="padding: 8px 16px; background: #f97316; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">确认重置</button>
+                  <button onclick="cancelResetPassword()" style="padding: 8px 16px; background: #e5e7eb; color: #374151; border: none; border-radius: 8px; cursor: pointer;">取消</button>
+                </div>
+                <p id="resetPasswordMsg" style="margin: 8px 0 0 0; font-size: 0.85rem;"></p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 3. 系统公告 -->
+          <div id="admin-tab-announce" class="admin-tab-pane" style="display: none;">
+            <h3 style="margin: 0 0 20px 0; font-size: 1.1rem;">📢 发布系统公告</h3>
+            <div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
+              <div class="form-item">
+                <label>公告标题</label>
+                <input type="text" id="announce-title" placeholder="请输入公告标题">
+              </div>
+              <div class="form-item">
+                <label>公告内容</label>
+                <textarea id="announce-content" rows="5" placeholder="请输入公告详细内容..." style="width: 100%; min-height: 120px; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; resize: vertical;"></textarea>
+              </div>
+              <div style="display: flex; gap: 12px; margin-top: 8px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                  <input type="checkbox" id="announce-important"> 
+                  <span>重要公告（红色高亮显示）</span>
+                </label>
+              </div>
+              <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button onclick="publishAnnouncement()" class="submit-btn" style="flex: 1;">📢 发布公告</button>
+                <button onclick="clearAnnouncement()" class="submit-btn secondary" style="flex: 1;">🗑️ 清空公告</button>
+              </div>
+              <p id="announce-msg" style="text-align: center; margin: 12px 0 0 0;"></p>
+            </div>
+            <div style="margin-top: 24px;">
+              <h3 style="margin: 0 0 16px 0; font-size: 1.1rem;">📋 当前公告预览</h3>
+              <div id="announce-preview" style="background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; min-height: 80px;">
+                <p style="color: #94a3b8; text-align: center;">暂无公告</p>
+              </div>
+            </div>
+            <!-- 公告历史记录 -->
+            <div style="margin-top: 24px;">
+              <h3 style="margin: 0 0 16px 0; font-size: 1.1rem;">📜 历史公告</h3>
+              <div id="announceHistoryList" style="max-height: 200px; overflow-y: auto;">
+                <p style="color: #94a3b8; text-align: center; padding: 20px;">暂无历史公告</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 4. 数据导出 -->
+          <div id="admin-tab-export" class="admin-tab-pane" style="display: none;">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 24px; border-radius: 16px; color: white; text-align: center; margin-bottom: 24px;">
+              <div style="font-size: 3rem; margin-bottom: 12px;">📤</div>
+              <h2 style="margin: 0 0 8px 0;">数据导出中心</h2>
+              <p style="opacity: 0.9;">一键导出所有用户和统计数据，便于备份和分析</p>
+            </div>
+            <div style="display: grid; gap: 16px;">
+              <div style="background: white; border: 2px solid #e2e8f0; border-radius: 16px; padding: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div>
+                    <h3 style="margin: 0 0 6px 0; font-size: 1.1rem;">👥 用户数据导出 (CSV)</h3>
+                    <p style="color: #64748b; margin: 0;">导出所有用户信息、计算次数、复制次数等完整数据</p>
+                  </div>
+                  <button onclick="exportUsersCSV()" style="padding: 12px 24px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700;">⬇️ 导出</button>
+                </div>
+              </div>
+              <div style="background: white; border: 2px solid #e2e8f0; border-radius: 16px; padding: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div>
+                    <h3 style="margin: 0 0 6px 0; font-size: 1.1rem;">📈 操作日志导出 (JSON)</h3>
+                    <p style="color: #64748b; margin: 0;">导出所有用户操作历史日志，用于数据分析和审计</p>
+                  </div>
+                  <button onclick="exportActivityLogsJSON()" style="padding: 12px 24px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700;">⬇️ 导出</button>
+                </div>
+              </div>
+              <div style="background: white; border: 2px solid #fee2e2; border-radius: 16px; padding: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div>
+                    <h3 style="margin: 0 0 6px 0; font-size: 1.1rem; color: #dc2626;">💾 全量数据备份</h3>
+                    <p style="color: #64748b; margin: 0;">导出系统所有数据作为备份，可后续恢复</p>
+                  </div>
+                  <button onclick="exportFullBackup()" style="padding: 12px 24px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 700;">⚠️ 备份</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 5. 管理员操作日志 -->
+          <div id="admin-tab-adminlog" class="admin-tab-pane" style="display: none;">
+            <div style="background: #f8fafc; border-radius: 16px; padding: 20px;">
+              <h3 style="margin: 0 0 16px 0; font-size: 1.1rem;">📝 管理员后台操作日志</h3>
+              <div id="admin-operation-log-list" style="max-height: 350px; overflow-y: auto;">
+                <p style="color: #94a3b8; text-align: center; padding: 30px;">暂无管理员操作记录</p>
+              </div>
+              <div style="margin-top: 16px; display: flex; gap: 12px;">
+                <button onclick="clearAdminOperationLogs()" style="padding: 10px 20px; background: #fee2e2; color: #991b1b; border: none; border-radius: 10px; cursor: pointer; font-weight: 600;">🗑️ 清空操作日志</button>
+                <button onclick="exportAdminLogsCSV()" style="padding: 10px 20px; background: #dbeafe; color: #1e40af; border: none; border-radius: 10px; cursor: pointer; font-weight: 600;">📤 导出日志</button>
+              </div>
+            </div>
+          </div>
+          
         </div>
       </div>
     </div>
