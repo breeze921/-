@@ -1,10 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import sqlite3
 import hashlib
 import jwt
 import uuid
 import datetime
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'XiGuangBaoZhuang2026!@#'
@@ -382,11 +383,9 @@ def update_stats(user_id, stat_type):
         ''', (user_id, calc_count, copy_count, 0, datetime.datetime.now().isoformat()))
     else:
         if stat_type == 'calculate':
-            cursor.execute('UPDATE stats SET calculateCount = calculateCount + 1, lastActiveAt = ? WHERE userId = ?', 
-                         (datetime.datetime.now().isoformat(), user_id))
+            cursor.execute('UPDATE stats SET calculateCount = calculateCount + 1, lastActiveAt = ? WHERE userId = ?', (datetime.datetime.now().isoformat(), user_id))
         elif stat_type == 'copy':
-            cursor.execute('UPDATE stats SET copyCount = copyCount + 1, lastActiveAt = ? WHERE userId = ?', 
-                         (datetime.datetime.now().isoformat(), user_id))
+            cursor.execute('UPDATE stats SET copyCount = copyCount + 1, lastActiveAt = ? WHERE userId = ?', (datetime.datetime.now().isoformat(), user_id))
     
     conn.commit()
     conn.close()
@@ -419,7 +418,15 @@ def reset_password(user_id):
 
 @app.route('/', methods=['GET'])
 def index():
+    public_dir = os.path.join(os.path.dirname(__file__), 'public')
+    if os.path.exists(os.path.join(public_dir, 'index.html')):
+        return send_from_directory(public_dir, 'index.html')
     return '曦光包装袋报价器后端服务运行中...'
+
+@app.route('/<path:path>', methods=['GET'])
+def serve_static(path):
+    public_dir = os.path.join(os.path.dirname(__file__), 'public')
+    return send_from_directory(public_dir, path)
 
 if __name__ == '__main__':
     init_db()
